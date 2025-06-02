@@ -126,7 +126,54 @@ const form41Model = {
     deleteByIdSum: (id, callback) => {
         const sql = 'DELETE FROM cfp_report41_sums WHERE report41_sum_id = ?';
         db.query(sql, [id], callback);
+    },
+
+    getFormById: (id, callback) => {
+        const form41Query = 'SELECT * FROM cfp_report41_items WHERE report_41_id = ?';
+
+        db.query(form41Query, [id], (err, formResults) => {
+            if (err) return callback(err);
+            if (!formResults.length) return callback(new Error('Form41 not found'));
+
+            const form41 = formResults[0];
+
+            const companyQuery = 'SELECT * FROM companies WHERE company_id = ?';
+            const productQuery = 'SELECT * FROM products WHERE product_id = ?';
+            const processQuery = 'SELECT * FROM processes WHERE process_id = ?';
+            const report41SumQuery = 'SELECT * FROM cfp_report41_sums WHERE product_id = ?';
+
+            db.query(companyQuery, [form41.company_id], (err, companyResults) => {
+                if (err) return callback(err);
+                if (!companyResults.length) return callback(new Error('Company not found'));
+
+                db.query(productQuery, [form41.product_id], (err, productResults) => {
+                    if (err) return callback(err);
+                    if (!productResults.length) return callback(new Error('Product not found'));
+
+                    db.query(processQuery, [form41.process_id], (err, processResults) => {
+                        if (err) return callback(err);
+                        if (!processResults.length) return callback(new Error('Process not found'));
+
+                        db.query(report41SumQuery, [form41.product_id], (err, report41SumResults) => {
+                            if (err) return callback(err);
+                            if (!report41SumResults.length) return callback(new Error('Report41 Summary not found'));
+
+                            const result = {
+                                form41: form41,
+                                company: companyResults[0],
+                                product: productResults[0],
+                                process: processResults[0],
+                                report41Sum: report41SumResults.length ? report41SumResults[0] : null
+                            };
+
+                            callback(null, result);
+                        });
+                    });
+                });
+            });
+        });
     }
+
 
 
 

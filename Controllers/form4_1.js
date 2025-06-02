@@ -92,3 +92,15 @@ exports.remove_sum = async (req, res) => {
         res.json({ message: 'Deleted successfully' });
     });
 };
+
+
+exports.read_form = async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) return res.status(400).json({ error: 'Invalid ID' });
+
+    Form41.getFormById(id, (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!result) return res.status(404).json({ error: 'Not found' });
+        res.json(result);
+    });
+};

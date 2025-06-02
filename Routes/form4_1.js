@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router(); // Use router instead of app
 
 // const { read_item, create_item } = require('../Controllers/form4_1');
-const { read_item, create_item, update_item, remove_item, read_sum, create_sum, update_sum, remove_sum } = require('../Controllers/form4_1');
+const { read_item, create_item, update_item, remove_item, read_sum, create_sum, update_sum, remove_sum, read_form } = require('../Controllers/form4_1');
 
 
 
@@ -15,6 +15,8 @@ router.get('/f4-1/sum/:id', read_sum);
 router.post('/f4-1/sum/', create_sum);
 router.put('/f4-1/sum/:id', update_sum);
 router.delete('/f4-1/sum/:id', remove_sum);
+
+router.get('/f4-1/form/:id', read_form);
 
 
 
