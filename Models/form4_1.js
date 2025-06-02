@@ -129,41 +129,95 @@ const form41Model = {
     },
 
     getFormById: (id, callback) => {
-        const form41Query = 'SELECT * FROM cfp_report41_items WHERE report_41_id = ?';
+        const form41Query = `
+            SELECT i.*, p.process_name
+            FROM cfp_report41_items i
+            LEFT JOIN processes p ON i.process_id = p.process_id
+            WHERE i.product_id = ?
+            ORDER BY i.life_cycle_phase ASC
+        `;
 
         db.query(form41Query, [id], (err, formResults) => {
             if (err) return callback(err);
             if (!formResults.length) return callback(new Error('Form41 not found'));
 
-            const form41 = formResults[0];
+            const form41First = formResults[0];
 
-            const companyQuery = 'SELECT * FROM companies WHERE company_id = ?';
             const productQuery = 'SELECT * FROM products WHERE product_id = ?';
-            const processQuery = 'SELECT * FROM processes WHERE process_id = ?';
+            const companyQuery = 'SELECT * FROM companies WHERE company_id = ?';
+            const processQuery = 'SELECT * FROM processes WHERE product_id = ?';
             const report41SumQuery = 'SELECT * FROM cfp_report41_sums WHERE product_id = ?';
 
-            db.query(companyQuery, [form41.company_id], (err, companyResults) => {
+            db.query(companyQuery, [form41First.company_id], (err, companyResults) => {
                 if (err) return callback(err);
                 if (!companyResults.length) return callback(new Error('Company not found'));
 
-                db.query(productQuery, [form41.product_id], (err, productResults) => {
+                db.query(productQuery, [form41First.product_id], (err, productResults) => {
                     if (err) return callback(err);
                     if (!productResults.length) return callback(new Error('Product not found'));
 
-                    db.query(processQuery, [form41.process_id], (err, processResults) => {
+                    db.query(processQuery, [form41First.product_id], (err, processResults) => {
                         if (err) return callback(err);
-                        if (!processResults.length) return callback(new Error('Process not found'));
 
-                        db.query(report41SumQuery, [form41.product_id], (err, report41SumResults) => {
+                        db.query(report41SumQuery, [form41First.product_id], (err, report41SumResults) => {
                             if (err) return callback(err);
-                            if (!report41SumResults.length) return callback(new Error('Report41 Summary not found'));
+
+                            // เตรียม process map
+                            const processMap = {};
+                            processResults.forEach(p => {
+                                processMap[p.process_id] = p.process_name || 'Unknown Process';
+                            });
+
+                            // เตรียม process name list เฉพาะของ product นี้
+                            const processNames = [...new Set(processResults.map(p => p.process_name || 'Unknown Process'))];
+
+                            // สร้างโครงสร้างสำหรับเก็บข้อมูลจัดกลุ่ม
+                            const groupedData = {};
+
+                            // จัดกลุ่มจาก formResults: phase → process_name → production_class → items[]
+                            formResults.forEach(item => {
+                                const phase = item.life_cycle_phase;
+                                const processName = processMap[item.process_id] || 'Unknown Process';
+                                const prodClass = item.production_class || 'Unknown Production Class';
+
+                                if (!groupedData[phase]) groupedData[phase] = {};
+                                if (!groupedData[phase][processName]) groupedData[phase][processName] = {};
+                                if (!groupedData[phase][processName][prodClass]) groupedData[phase][processName][prodClass] = [];
+
+                                groupedData[phase][processName][prodClass].push(item);
+                            });
+
+                            // กำหนด phase ทั้งหมด (1–5)
+                            const allPhases = [1, 2, 3, 4, 5];
+
+                            // สร้างผลลัพธ์ groupedResult ครบทุก phase
+                            const groupedResult = allPhases.map(phase => {
+                                const processList = processNames.map(processName => {
+                                    const prodClassMap = groupedData[phase]?.[processName] || {};
+                                    const product = Object.entries(prodClassMap).map(([prodClass, items]) => ({
+                                        production_class: prodClass,
+                                        items: items
+                                    }));
+
+                                    return {
+                                        process_name: processName,
+                                        product: product.length > 0 ? product : []
+                                    };
+                                });
+
+                                return {
+                                    life_cycle_phase: phase,
+                                    process: processList
+                                };
+                            });
+
 
                             const result = {
-                                form41: form41,
+                                form41: groupedResult,
                                 company: companyResults[0],
                                 product: productResults[0],
-                                process: processResults[0],
-                                report41Sum: report41SumResults.length ? report41SumResults[0] : null
+                                process: processResults,
+                                report41Sum: report41SumResults
                             };
 
                             callback(null, result);
@@ -173,6 +227,10 @@ const form41Model = {
             });
         });
     }
+
+
+
+
 
 
 
