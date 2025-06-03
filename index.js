@@ -8,7 +8,7 @@ const path = require('path');
 const { readdirSync } = require('fs');
 
 const app = express();
-const port = 3000;
+const port = 5000;
 db.connect((err) => {
     if (err) throw err;
     console.log('Connected to MySQL database!');
