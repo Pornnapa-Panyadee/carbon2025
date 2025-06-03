@@ -10,7 +10,21 @@ from datetime import datetime
 import requests
 import shutil
 import json
+import sys
 
+import io
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+if len(sys.argv) < 3:
+        print("Usage: python runExcel.py <company_name> <product_1>")
+        sys.exit(1)
+
+company_name = sys.argv[1]
+product_1 = sys.argv[2]
+
+form1 = "http://localhost:3000/api/v1/f1/"+company_name + "/" + product_1
+form4_1= "http://localhost:3000/api/v1/f4-1/form/"+product_1
 
 def thai_date_format(iso_date_str):
     # แปลง string เป็น datetime object
@@ -122,7 +136,7 @@ def set_border(ws, cell_range):
 
 
 
-form1 = "http://localhost:3000/api/v1/f1/1005/7"
+
 
 # Fr-01, Fr.03, Fr.03
 form1 = requests.get(form1)
@@ -142,7 +156,7 @@ product_techinfo_array = [item.strip() for item in techinfo_list]
 
 
 
-form4_1= "http://localhost:3000/api/v1/f4-1/form/7"
+
 form4_1 = requests.get(form4_1)
 if form4_1.status_code == 200:
     data41 = form4_1.json()
@@ -155,8 +169,8 @@ else:
     print("เกิดข้อผิดพลาดในการเรียก API:", form4_1.status_code)
 
 
-file_path = "../excel/form_CFP.xlsx"
-output_path = "../excel/"+company["name"]+"_"+product["product_name_en"]+".xlsx"
+file_path = "ExcelReport/excel/form_CFP.xlsx"
+output_path = "ExcelReport/excel/"+company["name"]+"_"+product["product_name_en"]+".xlsx"
 shutil.copy(file_path, output_path)
 process = data["process"]
 wb = load_workbook(file_path)
@@ -184,7 +198,7 @@ ws01["J24"] = product.get("pcr_reference", "")
 ws01["J25"] = submitted_date_thai
 
 # image 
-image_url = "../../"+product.get("product_photo")
+image_url = ""+product.get("product_photo")
 img = Image(image_url)  
 img.width = 300 
 img.height = 300  
@@ -473,4 +487,4 @@ for i in range(len(phase)):
 
 ######## ---------------------------------------------------------------------
 wb.save(output_path)
-print("เขียนข้อมูลใน Excel เรียบร้อยแล้ว")
+print(output_path)
