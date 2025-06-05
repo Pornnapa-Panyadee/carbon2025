@@ -33,22 +33,23 @@ const processModel = {
     },
 
     updateById: (id, data, callback) => {
-        db.query('SELECT * FROM processes WHERE process_id = ?', [id], (err, [process]) => {
-            if (err || !process) return callback(err, process);
+        db.query('SELECT * FROM processes WHERE process_id = ?', [id], (err, results) => {
+            if (err || !results || results.length === 0) return callback(err || new Error('Process not found'));
+
+            const process = results[0]; // Safely get the first row
 
             const {
                 product_id = process.product_id,
-                pre_process_id = process.pre_process_id,
-                post_process_id = process.post_process_id,
+                ordering = process.ordering,
                 process_name = process.process_name,
                 mass_balanced = process.mass_balanced
             } = data;
 
             const sql = `
-                UPDATE processes SET product_id = ?, pre_process_id = ?, post_process_id = ?, process_name = ?, mass_balanced = ?,  updated_date = NOW()
+                UPDATE processes SET product_id = ?, ordering = ? , process_name = ?, mass_balanced = ?,  updated_date = NOW()
                 WHERE process_id = ?
             `;
-            db.query(sql, [product_id, pre_process_id, post_process_id, process_name, mass_balanced, id], callback);
+            db.query(sql, [product_id, ordering, process_name, mass_balanced, id], callback);
         });
     },
 
