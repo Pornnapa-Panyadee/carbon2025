@@ -2,46 +2,54 @@ const Company = require('../Models/company');
 
 
 exports.read = async (req, res) => {
-    const id = req.params.id;
-    Company.findById(id, (err, results) => {
-        if (err) return res.status(500).json({ error: err.message });
-        if (!results.length) return res.status(404).json({ message: 'Company not found' });
-        res.json(results[0]);
-    });
-}
+    try {
+        const id = req.params.id;
+        const result = await Company.findById(id);
+        if (!result) return res.status(404).json({ message: 'Company not found' });
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
 exports.list = async (req, res) => {
-    Company.findAll((err, results) => {
-        if (err) return res.status(500).json({ error: err.message });
+    try {
+        const results = await Company.findAll();
         res.json(results);
-    });
-
-}
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
 exports.create = async (req, res) => {
-    const data = req.body;
-    Company.create(data, (err, result) => {
-        if (err) return res.status(500).json({ error: err.message });
+    try {
+        const data = req.body;
+        const result = await Company.create(data);
         res.status(201).json({ message: 'Company created', companyId: result.insertId });
-    });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
 exports.update = async (req, res) => {
-    const id = req.params.id;
-    const data = req.body;
-    Company.updateById(id, data, (err, result) => {
-        if (err) return res.status(500).json({ error: err.message });
-        if (result.affectedRows === 0) return res.status(404).json({ message: 'Company not found' });
+    try {
+        const id = req.params.id;
+        const data = req.body;
+        const result = await Company.updateById(id, data);
+        if (!result || result.affectedRows === 0) return res.status(404).json({ message: 'Company not found' });
         res.json({ message: 'Company updated' });
-    });
-
-}
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
 exports.remove = async (req, res) => {
-    const id = req.params.id;
-    Company.deleteById(id, (err, result) => {
-        if (err) return res.status(500).json({ error: err.message });
-        if (result.affectedRows === 0) return res.status(404).json({ message: 'Company not found' });
+    try {
+        const id = req.params.id;
+        const result = await Company.deleteById(id);
+        if (!result || result.affectedRows === 0) return res.status(404).json({ message: 'Company not found' });
         res.json({ message: 'Company deleted' });
-    });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };

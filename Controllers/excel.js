@@ -2,8 +2,8 @@
 const path = require('path');
 const { runPythonExcel } = require('../Models/excel');
 
-async function getExcel(req, res) {
-    const { company_name, product_id } = req.params; // ← จะ error ถ้า req.params เป็น undefined
+const getExcel = async (req, res) => {
+    const { company_name, product_id } = req.params;
 
     try {
         const outputPath = await runPythonExcel(company_name, product_id);
@@ -20,6 +20,6 @@ async function getExcel(req, res) {
     } catch (error) {
         res.status(500).send(error.message);
     }
-}
+};
 
 module.exports = { getExcel };

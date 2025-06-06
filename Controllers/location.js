@@ -2,27 +2,33 @@ const Location = require('../Models/location');
 
 
 exports.list = async (req, res) => {
-    Location.findAllProvinces((err, results) => {
-        if (err) return res.status(500).json({ error: err });
+    try {
+        const results = await Location.findAllProvinces();
         res.json(results);
-    });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
 
 exports.listAmp = async (req, res) => {
-    const provinceName = req.params.provinceName;
-    Location.findDistrictsByProvince(provinceName, (err, results) => {
-        if (err) return res.status(500).json({ error: err });
+    try {
+        const provinceName = req.params.provinceName;
+        const results = await Location.findDistrictsByProvince(provinceName);
         res.json(results);
-    });
-};;
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
 
 exports.listTumbon = async (req, res) => {
-    const provinceName = req.params.provinceName;
-    const districtName = req.params.districtName;
-    Location.findSubDistrictsByDistrict(provinceName, districtName, (err, results) => {
-        if (err) return res.status(500).json({ error: err });
+    try {
+        const provinceName = req.params.provinceName;
+        const districtName = req.params.districtName;
+        const results = await Location.findSubDistrictsByDistrict(provinceName, districtName);
         res.json(results);
-    });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };

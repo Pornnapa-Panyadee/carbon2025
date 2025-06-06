@@ -1,6 +1,5 @@
 const User = require('../Models/user');
 
-
 exports.read = async (req, res) => {
     try {
         const userId = req.params.user_id;
@@ -8,60 +7,43 @@ exports.read = async (req, res) => {
             return res.status(400).json({ message: 'User ID is required' });
         }
 
-        User.finconnectDById(userId, (err, result) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).json({ message: 'Database error' });
-            }
-            if (result.length === 0) {
-                return res.status(404).json({ message: 'No users found' });
-            }
-            const user = result[0];
-            delete user.password;
-            res.json(result);
-        });
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'No user found' });
+        }
+
+        delete user.password;
+        res.json(user);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'server error' });
+        res.status(500).json({ message: 'Server error' });
     }
-}
+};
 
 exports.list = async (req, res) => {
     try {
-        //
-        User.findAll((err, result) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).json({ message: 'database error' });
-            }
-            if (result.length === 0) {
-                return res.status(404).json({ message: 'No users found' });
-            }
-            res.json(result);
-        });
-
+        const users = await User.findAll();
+        if (users.length === 0) {
+            return res.status(404).json({ message: 'No users found' });
+        }
+        res.json(users);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'server error' });
+        res.status(500).json({ message: 'Server error' });
     }
-
-}
+};
 
 exports.create = async (req, res) => {
     try {
-        console.log(req.body);
-        User.create(req.body, (err, result) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).json({ message: 'database error' });
-            }
-
-            res.json({ message: 'User created successfully', userID: result.insertId, user: req.body });
+        const result = await User.create(req.body);
+        res.status(201).json({
+            message: 'User created successfully',
+            userID: result.insertId,
+            user: req.body,
         });
-
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'server error' });
+        res.status(500).json({ message: 'Database error' });
     }
 };
 
@@ -72,22 +54,17 @@ exports.update = async (req, res) => {
             return res.status(400).json({ message: 'User ID is required' });
         }
 
-        User.updateById(userId, req.body, (err, result) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).json({ message: 'Database error' });
-            }
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ message: 'User not found' });
-            }
-            res.json({ message: 'User updated successfully' });
-        });
+        const result = await User.updateById(userId, req.body);
+        if (!result || result.affectedRows === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json({ message: 'User updated successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
     }
-
-}
+};
 
 exports.remove = async (req, res) => {
     try {
@@ -96,16 +73,12 @@ exports.remove = async (req, res) => {
             return res.status(400).json({ message: 'User ID is required' });
         }
 
-        User.deleteById(userId, (err, result) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).json({ message: 'Database error' });
-            }
-            if (result.length === 0) {
-                return res.status(404).json({ message: 'No users found' });
-            }
-            res.json({ message: 'User deleted successfully' });
-        });
+        const result = await User.deleteById(userId);
+        if (!result || result.affectedRows === 0) {
+            return res.status(404).json({ message: 'User not found or already deleted' });
+        }
+
+        res.json({ message: 'User deleted successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });

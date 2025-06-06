@@ -4,47 +4,37 @@ const bcrypt = require('bcrypt');
 const db = require('../Config/db.js');
 
 const locationModel = {
-    findAllProvinces: (callback) => {
-        const query = `SELECT * FROM provinces`;
-        db.query(query, callback);
+    findAllProvinces: async () => {
+        const [rows] = await db.query(`SELECT * FROM provinces`);
+        return rows;
     },
 
-    findDistrictsByProvince: (provinceName, callback) => {
-        const queryProvince = `SELECT province_id FROM provinces WHERE province_name = ?`;
-
-        db.query(queryProvince, [provinceName], (err, results) => {
-            if (err) return callback(err);
-
-            if (results.length === 0) {
-                return callback(null, []); // ไม่เจอจังหวัด
-            }
-
-            const provinceId = results[0].province_id;
-
-            const queryDistricts = `SELECT * FROM districts WHERE province_id = ?`;
-            db.query(queryDistricts, [provinceId], callback);
-        });
+    findDistrictsByProvince: async (provinceName) => {
+        const [provinces] = await db.query(`SELECT province_id FROM provinces WHERE province_name = ?`, [provinceName]);
+        if (!provinces.length) return [];
+        const provinceId = provinces[0].province_id;
+        const [districts] = await db.query(`SELECT * FROM districts WHERE province_id = ?`, [provinceId]);
+        return districts;
     },
 
-    findSubDistrictsByDistrict: (provinceName, districtName, callback) => {
-        const getProvinceIdQuery = `SELECT province_id FROM provinces WHERE province_name = ?`;
-        const getDistrictIdQuery = `SELECT district_id FROM districts WHERE province_id = ? AND district_name = ?`;
-        const getSubDistrictsQuery = `SELECT * FROM subdistricts WHERE district_id = ?`;
+    findSubDistrictsByDistrict: async (provinceName, districtName) => {
+        const [provinces] = await db.query(`SELECT province_id FROM provinces WHERE province_name = ?`, [provinceName]);
+        if (!provinces.length) return [];
+        const provinceId = provinces[0].province_id;
 
-        db.query(getProvinceIdQuery, [provinceName], (err, [provinceRow]) => {
-            if (err) return callback(err);
-            if (!provinceRow) return callback(null, []);  // บรรทัดนี้ error ถ้า callback ไม่ได้ส่งเข้ามา
+        const [districts] = await db.query(
+            `SELECT district_id FROM districts WHERE province_id = ? AND district_name = ?`,
+            [provinceId, districtName]
+        );
+        if (!districts.length) return [];
+        const districtId = districts[0].district_id;
 
-            db.query(getDistrictIdQuery, [provinceRow.province_id, districtName], (err, [districtRow]) => {
-                if (err) return callback(err);
-                if (!districtRow) return callback(null, []);
-
-                db.query(getSubDistrictsQuery, [districtRow.district_id], callback);
-            });
-        });
-
+        const [subdistricts] = await db.query(
+            `SELECT * FROM subdistricts WHERE district_id = ?`,
+            [districtId]
+        );
+        return subdistricts;
     }
-
-}
+};
 
 module.exports = locationModel;

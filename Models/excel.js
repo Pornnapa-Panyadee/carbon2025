@@ -2,12 +2,10 @@
 const { spawn } = require('child_process');
 const path = require('path');
 
-exports.runPythonExcel = function (company_name, product_id) {
-    return new Promise((resolve, reject) => {
-
-        const scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel.py');
+exports.runPythonExcel = async function (company_name, product_id) {
+    const scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel.py');
+    return await new Promise((resolve, reject) => {
         const py = spawn('python', [scriptPath, company_name, product_id]);
-        // const py = spawn('python3', ['runExcel.py', company_name, product_id]);
 
         let outputPath = '';
         let errorOutput = '';

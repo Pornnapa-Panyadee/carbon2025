@@ -1,8 +1,7 @@
 const db = require('../Config/db.js');
 
 const Form1Model = {
-
-    findByCompanyProduct: (company_id, product_id, callback) => {
+    findByCompanyProduct: async (company_id, product_id) => {
         const productQuery = 'SELECT * FROM products WHERE product_id = ?';
         const companyQuery = 'SELECT * FROM companies WHERE company_id = ?';
         const processQuery = 'SELECT * FROM processes WHERE product_id = ? ORDER BY `processes`.`ordering` ASC';
@@ -28,89 +27,69 @@ const Form1Model = {
             WHERE op.process_id = ?
         `;
 
-        db.query(companyQuery, [company_id], (err, companyResults) => {
-            if (err) return callback(err);
-            if (!companyResults.length) return callback(new Error('Company not found'));
+        // 1. Company
+        const [companyResults] = await db.query(companyQuery, [company_id]);
+        if (!companyResults.length) throw new Error('Company not found');
 
-            db.query(productQuery, [product_id], (err, productResults) => {
-                if (err) return callback(err);
-                if (!productResults.length) return callback(new Error('Product not found'));
+        // 2. Product
+        const [productResults] = await db.query(productQuery, [product_id]);
+        if (!productResults.length) throw new Error('Product not found');
 
-                db.query(processQuery, [product_id], (err, processResults) => {
-                    if (err) return callback(err);
-                    if (!processResults.length) return callback(new Error('Process not found'));
+        // 3. Process
+        const [processResults] = await db.query(processQuery, [product_id]);
+        if (!processResults.length) throw new Error('Process not found');
 
-                    const processPromises = processResults.map(process => {
-                        return new Promise((resolve, reject) => {
-                            db.query(inputQuery, [process.process_id], (err, inputResults) => {
-                                if (err) return reject(err);
+        // 4. For each process, get inputs, outputs, wastes
+        const processesWithIO = await Promise.all(processResults.map(async (process) => {
+            // Inputs
+            const [inputResults] = await db.query(inputQuery, [process.process_id]);
+            const groupedInputs = inputResults.reduce((acc, row) => {
+                const catId = row.input_cat_id;
+                if (!acc[catId]) {
+                    acc[catId] = {
+                        input_cat_id: catId,
+                        input_cat_name: row.input_cat_name,
+                        items: []
+                    };
+                }
+                acc[catId].items.push(row);
+                return acc;
+            }, {});
+            const inputsGroupedArray = Object.values(groupedInputs);
 
-                                // ✅ Group inputs by input_cat_id
-                                const groupedInputs = inputResults.reduce((acc, row) => {
-                                    const catId = row.input_cat_id;
-                                    if (!acc[catId]) {
-                                        acc[catId] = {
-                                            input_cat_id: catId,
-                                            input_cat_name: row.input_cat_name,
-                                            items: []
-                                        };
-                                    }
-                                    acc[catId].items.push(row);
-                                    return acc;
-                                }, {});
+            // Outputs
+            const [outputResults] = await db.query(outputQuery, [process.process_id]);
 
-                                const inputsGroupedArray = Object.values(groupedInputs); // convert from object to array
+            // Wastes
+            const [wastetResults] = await db.query(wastetQuery, [process.process_id]);
+            const groupedWastes = wastetResults.reduce((acc, row) => {
+                const catId = row.waste_cat_id;
+                if (!acc[catId]) {
+                    acc[catId] = {
+                        waste_cat_id: catId,
+                        waste_cat_name: row.waste_cat_name,
+                        items: []
+                    };
+                }
+                acc[catId].items.push(row);
+                return acc;
+            }, {});
+            const wastesGroupedArray = Object.values(groupedWastes);
 
-                                db.query(outputQuery, [process.process_id], (err, outputResults) => {
-                                    if (err) return reject(err);
+            return {
+                ...process,
+                inputs: inputsGroupedArray,
+                outputs: outputResults,
+                wastes: wastesGroupedArray
+            };
+        }));
 
-                                    db.query(wastetQuery, [process.process_id], (err, wastetResults) => {
-                                        if (err) return reject(err);
-
-                                        const groupedWastes = wastetResults.reduce((acc, row) => {
-                                            const catId = row.waste_cat_id;
-                                            if (!acc[catId]) {
-                                                acc[catId] = {
-                                                    waste_cat_id: catId,
-                                                    waste_cat_name: row.waste_cat_name,
-                                                    items: []
-                                                };
-                                            }
-                                            acc[catId].items.push(row);
-                                            return acc;
-                                        }, {});
-                                        const wastesGroupedArray = Object.values(groupedWastes);
-
-
-                                        resolve({
-                                            ...process,
-                                            inputs: inputsGroupedArray,
-                                            outputs: outputResults,
-                                            wastes: wastesGroupedArray
-                                        });
-                                    });
-                                });
-                            });
-                        });
-                    });
-
-                    Promise.all(processPromises)
-                        .then(processesWithIO => {
-                            const result = {
-                                product: productResults[0],
-                                company: companyResults[0],
-                                process: processesWithIO
-                            };
-                            callback(null, [result]);
-                        })
-                        .catch(err => callback(err));
-                });
-            });
-        });
+        return [{
+            product: productResults[0],
+            company: companyResults[0],
+            process: processesWithIO
+        }];
     }
-
-
-
-}
+};
 
 module.exports = Form1Model;
