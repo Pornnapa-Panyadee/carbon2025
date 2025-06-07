@@ -18,15 +18,15 @@ const productModel = {
 
         const sql = `
             INSERT INTO products (
-                company_id, product_name_th, product_name_en, scope, FU_value,FU_th, FU_en, PU_value,PU_th, PU_en,
-                sale_ratio, product_techinfo, pcr_reference, collect_data_start, collect_data_end,
-                product_photo, auditor_id, verify_status, submitted_round, submitted_date
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                company_id, product_name_th, product_name_en, scope, FU_value, FU_th, FU_en,
+                PU_value, PU_th, PU_en, sale_ratio, product_techinfo, pcr_reference,
+                collect_data_start, collect_data_end, product_photo, auditor_id,
+                verify_status, submitted_round, submitted_date
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         const values = [
-            data.company_id, data.product_name_th,
-            data.product_name_en, data.scope,
+            data.company_id, data.product_name_th, data.product_name_en, data.scope,
             data.FU_value, data.FU_th, data.FU_en,
             data.PU_value, data.PU_th, data.PU_en,
             data.sale_ratio, data.product_techinfo, data.pcr_reference,
@@ -36,34 +36,23 @@ const productModel = {
             data.submitted_date
         ];
 
-        return new Promise((resolve, reject) => {
-            db.query(sql, values, (err, results) => {
-                if (err) return reject(err);
-                resolve(results);
-            });
-        });
+        const [results] = await db.query(sql, values);
+        return results;
     },
 
     findAll: async () => {
-        return new Promise((resolve, reject) => {
-            db.query('SELECT * FROM products', (err, results) => {
-                if (err) return reject(err);
-                resolve(results);
-            });
-        });
+        const [results] = await db.query('SELECT * FROM products');
+        return results;
     },
 
     findById: async (product_id) => {
-        return new Promise((resolve, reject) => {
-            db.query('SELECT * FROM products WHERE product_id = ?', [product_id], (err, results) => {
-                if (err) return reject(err);
-                resolve(results);
-            });
-        });
+        const [results] = await db.query('SELECT * FROM products WHERE product_id = ?', [product_id]);
+        return results;
     },
 
     updateById: async (product_id, data, file) => {
-        const [existingProduct] = await productModel.findById(product_id);
+        const [existingRows] = await db.query('SELECT * FROM products WHERE product_id = ?', [product_id]);
+        const existingProduct = existingRows[0];
         if (!existingProduct) throw new Error('Product not found');
 
         let photoPath = existingProduct.product_photo;
@@ -102,34 +91,28 @@ const productModel = {
 
         const sql = `
             UPDATE products SET
-                company_id = ?, product_name_th = ?, product_name_en = ?, scope = ?, FU_value = ?, FU_th = ?, FU_en = ?,PU_value= ?, PU_th = ?, PU_en = ?,
+                company_id = ?, product_name_th = ?, product_name_en = ?, scope = ?,
+                FU_value = ?, FU_th = ?, FU_en = ?, PU_value = ?, PU_th = ?, PU_en = ?,
                 product_techinfo = ?, sale_ratio = ?, pcr_reference = ?, collect_data_start = ?, collect_data_end = ?,
                 product_photo = ?, auditor_id = ?, verify_status = ?, submitted_round = ?, submitted_date = ?
             WHERE product_id = ?
         `;
 
         const values = [
-            company_id, product_name_th, product_name_en, scope, FU_th, FU_en,
-            sale_ratio, pcr_reference, collect_data_start, collect_data_end,
+            company_id, product_name_th, product_name_en, scope,
+            FU_value, FU_th, FU_en, PU_value, PU_th, PU_en,
+            product_techinfo, sale_ratio, pcr_reference, collect_data_start, collect_data_end,
             photoPath, auditor_id, verify_status, submitted_round, submitted_date,
             product_id
         ];
 
-        return new Promise((resolve, reject) => {
-            db.query(sql, values, (err, results) => {
-                if (err) return reject(err);
-                resolve({ message: 'Product updated successfully', results });
-            });
-        });
+        const [results] = await db.query(sql, values);
+        return { message: 'Product updated successfully', results };
     },
 
     deleteById: async (product_id) => {
-        return new Promise((resolve, reject) => {
-            db.query('DELETE FROM products WHERE product_id = ?', [product_id], (err, results) => {
-                if (err) return reject(err);
-                resolve(results);
-            });
-        });
+        const [results] = await db.query('DELETE FROM products WHERE product_id = ?', [product_id]);
+        return results;
     }
 };
 
