@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 11, 2025 at 06:34 PM
+-- Generation Time: Jun 02, 2025 at 07:56 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -111,11 +111,11 @@ CREATE TABLE `cfp_report41_items` (
 
 INSERT INTO `cfp_report41_items` (`report_41_id`, `company_id`, `product_id`, `process_id`, `life_cycle_phase`, `production_class`, `item_name`, `item_unit`, `item_quantity`, `lci_source_period`, `ef`, `ef_source`, `ef_source_ref`, `transport_type`, `ratio`, `ghg_emission`, `ghg_emission_proportion`, `cut_off`, `description`, `created_date`, `updated_date`) VALUES
 (6, 1004, 6, 2, 2, NULL, 'Electricity', '', 1500, '2022', 0.4, 'Supplier', 'Thailand', 'type1', 100, 68, 34, 0, 'Energy use in production process', NULL, NULL),
-(7, 1005, 7, 6, 1, 'input', 'ยางก้อนถ้วย (55% DRC) ', 'kg', 1133330.37, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.0863, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (ยางก้อนถ้วย (DRC 55%))', 'type2', 100, 0.09, 0.52, 0, NULL, '2025-05-30 16:40:36', '2025-05-30 16:40:36'),
-(8, 1005, 7, 7, 1, 'output', 'ยาง Re-process \r\n', 'kg', 66666.67, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, 'ไม่มี Emission Factor', NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 16:45:02', '2025-05-30 16:45:02'),
-(9, 1005, 7, 9, 1, 'input', 'พลาสติกห่อยาง (LLDPE) ', 'kg', 21000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 2.7107, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Linear Low Density Polyethylene (LLDPE)+Extrusion, plastic film)\r\n', NULL, 100, 0.05, 0.3, NULL, NULL, '2025-05-30 16:47:18', '2025-05-30 16:47:18'),
+(7, 1005, 7, 6, 1, NULL, 'ยางก้อนถ้วย (55% DRC) ', 'kg', 1133330.37, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.0863, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (ยางก้อนถ้วย (DRC 55%))', 'type2', 100, 0.09, 0.52, 0, NULL, '2025-05-30 16:40:36', '2025-05-30 16:40:36'),
+(8, 1005, 7, 7, 1, NULL, 'ยาง Re-process \r\n', 'kg', 66666.67, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, 'ไม่มี Emission Factor', NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 16:45:02', '2025-05-30 16:45:02'),
+(9, 1005, 7, 9, 1, NULL, 'พลาสติกห่อยาง (LLDPE) ', 'kg', 21000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 2.7107, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Linear Low Density Polyethylene (LLDPE)+Extrusion, plastic film)\r\n', NULL, 100, 0.05, 0.3, NULL, NULL, '2025-05-30 16:47:18', '2025-05-30 16:47:18'),
 (10, 1005, 7, 6, 2, 'input', 'ยางก้อนถ้วย (55% DRC) \r\n', 'kg', 1133333.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 16:52:08', '2025-05-30 16:52:08'),
-(11, 1005, 7, 9, 1, 'input', 'พลาสติกรอง/คลุมยาง (LDPE) ', 'kg', 10500, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 3.2009, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Low Density Polyethylene (LDPE)+ Extrusion, plastic film)', NULL, 100, 0.03, 0.18, NULL, NULL, '2025-05-30 17:00:45', '2025-05-30 17:00:45'),
+(11, 1005, 7, 9, 1, NULL, 'พลาสติกรอง/คลุมยาง (LDPE) ', 'kg', 10500, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 3.2009, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Low Density Polyethylene (LDPE)+ Extrusion, plastic film)', NULL, 100, 0.03, 0.18, NULL, NULL, '2025-05-30 17:00:45', '2025-05-30 17:00:45'),
 (12, 1005, 7, 6, 2, 'input', 'Diesel (ใช้กับรถตัก) - การได้มา', 'kg', 1133333.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.3522, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Diesel (น้ำมันดีเซล /น้ำมัน\r\nโซล่าร์))', NULL, 100, 0, NULL, NULL, NULL, '2025-05-30 19:52:00', '2025-05-30 19:52:00'),
 (13, 1005, 7, 6, 2, 'input', 'Diesel (ใช้กับรถตัก) - การเผาไหม้ ', 'L', 666.67, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 2.9793, 'TGO EF', 'EF_CFO_UPDATE_Apr 2565 (Mobile Combustion off-road/Diesel)', NULL, 100, 0, NULL, NULL, NULL, '2025-05-30 19:54:20', '2025-05-30 19:54:20'),
 (14, 1005, 7, 9, 2, 'output', 'ยางก้อนถ้วย (55% DRC) ', 'kg', 1133333.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 19:56:12', '2025-05-30 19:56:12'),
@@ -177,8 +177,7 @@ CREATE TABLE `cfp_report41_sums` (
 --
 
 INSERT INTO `cfp_report41_sums` (`report41_sum_id`, `product_id`, `sum_lc1_FU_qty`, `sum_lc1_emission`, `sum_lc1_emission_proportion`, `sum_lc2_FU_qty`, `sum_lc2_emission`, `sum_lc2_emission_proportion`, `sum_lc3_FU_qty`, `sum_lc3_emission`, `sum_lc3_emission_proportion`, `sum_lc4_FU_qty`, `sum_lc4_emission`, `sum_lc4_emission_proportion`, `sum_lc5_FU_qty`, `sum_lc5_emission`, `sum_lc5_emission_proportion`, `total_sum_emission`, `created_date`, `updated_date`) VALUES
-(4, 6, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, NULL, NULL),
-(5, 7, 1.17, 0.18, 1, 0, 0.35, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.53, '2025-06-02 20:20:47', '2025-06-02 20:20:47');
+(4, 6, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -187,47 +186,37 @@ INSERT INTO `cfp_report41_sums` (`report41_sum_id`, `product_id`, `sum_lc1_FU_qt
 --
 
 CREATE TABLE `cfp_report42_items` (
-  `report_42_id` int(11) NOT NULL,
+  `report42_id` int(11) NOT NULL,
   `company_id` int(11) DEFAULT NULL,
   `product_id` int(11) DEFAULT NULL,
   `process_id` int(11) DEFAULT NULL,
-  `production_class` enum('input','output','waste/co-producr','') DEFAULT NULL,
   `life_cycle_phase` int(11) DEFAULT NULL,
   `item_name` varchar(255) DEFAULT NULL,
-  `item_unit` enum('kg','L','kWh','m3') DEFAULT NULL,
-  `item_fu_qty` float DEFAULT NULL,
+  `item_unit` enum('unit1','unit2') DEFAULT NULL,
+  `item_fu_qty` decimal(10,0) DEFAULT NULL,
   `distance` int(11) DEFAULT NULL,
   `distance_source` varchar(255) DEFAULT NULL,
   `calculate_type` enum('ทราบปริมาณ','ทราบระยะทางและน้ำหนักบรรทุก') DEFAULT NULL,
   `type1_gas` varchar(255) DEFAULT NULL,
   `type1_gas_unit` enum('unit1','unit2') DEFAULT NULL,
-  `type1_gas_qty` float DEFAULT NULL,
-  `type1_ef` float DEFAULT NULL,
+  `type1_gas_qty` decimal(10,0) DEFAULT NULL,
+  `type1_ef` decimal(10,0) DEFAULT NULL,
   `type1_ef_source` enum('TG_ef','Int_DB') DEFAULT NULL,
-  `type2_outbound_load` float DEFAULT NULL,
-  `type2_return_load` float DEFAULT NULL,
+  `type2_outbound_load` decimal(10,0) DEFAULT NULL,
+  `type2_return_load` decimal(10,0) DEFAULT NULL,
   `type2_vehicle` varchar(255) DEFAULT NULL,
-  `type2_outbound_load_percent` float DEFAULT NULL,
-  `type2_return_load_percent` float DEFAULT NULL,
-  `type2_outbound_ef` float DEFAULT NULL,
-  `type2_return_ef` float DEFAULT NULL,
+  `type2_outbound_load_percent` decimal(10,0) DEFAULT NULL,
+  `type2_return_load_percent` decimal(10,0) DEFAULT NULL,
+  `type2_outbound_ef` decimal(10,0) DEFAULT NULL,
+  `type2_return_ef` decimal(10,0) DEFAULT NULL,
   `type2_ef_source` enum('TGO_ef','Int_DB') DEFAULT NULL,
-  `type2_ef_source_ref` text DEFAULT NULL,
   `ratio` int(11) DEFAULT NULL,
-  `transport_emission` float DEFAULT NULL,
+  `transport_emission` decimal(10,0) DEFAULT NULL,
   `cut_off` varchar(255) DEFAULT NULL,
   `add_on_detail` varchar(255) DEFAULT NULL,
   `created_date` datetime DEFAULT NULL,
   `updated_date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `cfp_report42_items`
---
-
-INSERT INTO `cfp_report42_items` (`report_42_id`, `company_id`, `product_id`, `process_id`, `production_class`, `life_cycle_phase`, `item_name`, `item_unit`, `item_fu_qty`, `distance`, `distance_source`, `calculate_type`, `type1_gas`, `type1_gas_unit`, `type1_gas_qty`, `type1_ef`, `type1_ef_source`, `type2_outbound_load`, `type2_return_load`, `type2_vehicle`, `type2_outbound_load_percent`, `type2_return_load_percent`, `type2_outbound_ef`, `type2_return_ef`, `type2_ef_source`, `type2_ef_source_ref`, `ratio`, `transport_emission`, `cut_off`, `add_on_detail`, `created_date`, `updated_date`) VALUES
-(1, 1005, 7, 6, 'input', 1, 'ยางก้อนถ้วย (55% DRC)', 'kg', 1.08, 420, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 'ทราบระยะทางและน้ำหนักบรรทุก', NULL, NULL, NULL, NULL, NULL, 0, 0, 'รถกระบะบรรทุก 10 ล้อ 16 ตัน', 100, 0, 0.0533, 0.59, 'TGO_ef', 'EF_CFP_UPDATE_Jul 2565 ', 100, 0, NULL, NULL, '2025-06-10 21:55:33', '2025-06-10 22:30:49'),
-(2, 1005, 7, 7, 'input', 1, ' ยาง Re-process', 'kg', 0.06, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-06-10 22:28:58', '2025-06-10 22:28:58');
 
 -- --------------------------------------------------------
 
@@ -238,22 +227,15 @@ INSERT INTO `cfp_report42_items` (`report_42_id`, `company_id`, `product_id`, `p
 CREATE TABLE `cfp_report42_sums` (
   `report42_sum_id` int(11) NOT NULL,
   `product_id` int(11) DEFAULT NULL,
-  `lc1_transport_emission` float DEFAULT NULL,
-  `lc2_transport_emission` float DEFAULT NULL,
-  `lc3_transport_emission` float DEFAULT NULL,
-  `lc4_transport_emission` float DEFAULT NULL,
-  `lc5_transport_emission` float DEFAULT NULL,
-  `total_transport_emission` float DEFAULT NULL,
+  `lc1_transport_emission` decimal(10,0) DEFAULT NULL,
+  `lc2_transport_emission` decimal(10,0) DEFAULT NULL,
+  `lc3_transport_emission` decimal(10,0) DEFAULT NULL,
+  `lc4_transport_emission` decimal(10,0) DEFAULT NULL,
+  `lc5_transport_emission` decimal(10,0) DEFAULT NULL,
+  `total_transport_emission` decimal(10,0) DEFAULT NULL,
   `created_date` datetime DEFAULT NULL,
   `updated_date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `cfp_report42_sums`
---
-
-INSERT INTO `cfp_report42_sums` (`report42_sum_id`, `product_id`, `lc1_transport_emission`, `lc2_transport_emission`, `lc3_transport_emission`, `lc4_transport_emission`, `lc5_transport_emission`, `total_transport_emission`, `created_date`, `updated_date`) VALUES
-(1, 7, 0.0415, 0.0177, 0, 0, 0, 0.06, '2025-06-10 22:31:49', '2025-06-10 22:31:49');
 
 -- --------------------------------------------------------
 
@@ -1411,22 +1393,19 @@ INSERT INTO `industrials` (`industrial_id`, `industrial_name`, `required_cbam`) 
 
 CREATE TABLE `input_categories` (
   `input_cat_id` int(11) NOT NULL,
-  `input_cat_name` varchar(255) DEFAULT NULL,
-  `input_cat_name_TH` text DEFAULT NULL,
-  `input_title` text DEFAULT NULL,
-  `input_title_id` int(11) DEFAULT NULL
+  `input_cat_name` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `input_categories`
 --
 
-INSERT INTO `input_categories` (`input_cat_id`, `input_cat_name`, `input_cat_name_TH`, `input_title`, `input_title_id`) VALUES
-(7, 'material ', 'ผลิตภัณฑ์', 'วัตถุดิบ', 1),
-(8, 'chemical ', 'เคมี', 'ทรัพยากร และวัสดุช่วยการผลิต', 3),
-(9, 'fuel', 'เชื้อเพลิง', 'พลังงานและเชื้อเพลิง', 2),
-(10, 'electricity', 'ไฟฟ้า', 'พลังงานและเชื้อเพลิง', 2),
-(11, 'other', 'อื่นๆ', 'ทรัพยากร และวัสดุช่วยการผลิต', 3);
+INSERT INTO `input_categories` (`input_cat_id`, `input_cat_name`) VALUES
+(2, 'test'),
+(3, 'assa'),
+(4, 'วัตถุดิบ'),
+(5, 'ทรัพยากร และวัสดุช่วยการผลิต'),
+(6, 'ผลิตภัณฑ์');
 
 -- --------------------------------------------------------
 
@@ -1441,31 +1420,30 @@ CREATE TABLE `input_processes` (
   `input_name` varchar(255) DEFAULT NULL,
   `input_unit` enum('kg','L','kWh','m3') DEFAULT NULL,
   `input_quantity` double DEFAULT NULL,
-  `chemical_reaction` int(2) DEFAULT NULL,
+  `life_cycle_phase` int(11) DEFAULT NULL,
   `created_date` datetime DEFAULT NULL,
-  `updated_date` datetime DEFAULT NULL,
-  `input_title_id` int(11) DEFAULT NULL
+  `updated_date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `input_processes`
 --
 
-INSERT INTO `input_processes` (`input_process_id`, `process_id`, `input_cat_id`, `input_name`, `input_unit`, `input_quantity`, `chemical_reaction`, `created_date`, `updated_date`, `input_title_id`) VALUES
-(3, 6, 7, 'ยางก้อนถ้วย (55%DRC)', 'kg', 1133333.33, 0, '2025-05-30 16:16:33', '2025-05-30 16:16:33', 1),
-(4, 6, 9, 'Diesel (ใช้กับรถตัก)', 'L', 666.67, 0, '2025-05-30 16:16:33', '2025-05-30 16:16:33', 2),
-(5, 7, 7, 'ยาง Re-process', 'kg', 66666.67, 0, '2025-05-30 16:16:33', '2025-05-30 16:16:33', 1),
-(6, 7, 10, 'ไฟฟ้าจากระบบสายส่งของประเทศ', 'kWh', 2100000, 0, '2025-05-30 16:20:42', '2025-05-30 16:20:42', 2),
-(7, 7, 10, 'ไฟฟ้า (Solar Cell)', 'kWh', 93333.33, 0, '2025-05-30 16:21:58', '2025-05-30 16:21:58', 2),
-(8, 7, 8, 'กรดซัลฟูริก (Sulfuric Acid)', 'kg', 58666.67, 0, '2025-05-30 16:20:42', '2025-05-30 16:20:42', 3),
-(9, 7, 8, 'โซดาไฟ (Sodium Hydroxide) ', 'kg', 46666.67, 0, '2025-05-30 16:22:46', '2025-05-30 16:22:46', 3),
-(10, 7, 11, 'น้ำ Recycle', 'm3', 11666.67, 0, '2025-05-30 16:23:12', '2025-05-30 16:23:12', 3),
-(11, 7, 11, 'น้ำดิบ', 'm3', 23333.3, 0, '2025-05-30 16:23:45', '2025-05-30 16:23:45', 3),
-(12, 8, 9, 'LPG ', 'kg', 31500, 0, '2025-05-30 16:27:13', '2025-05-30 16:27:13', 2),
-(13, 8, 11, 'Biogas', 'm3', 52500, 0, '2025-05-30 16:27:13', '2025-05-30 16:27:13', 3),
-(14, 9, 7, 'พลาสติกห่อยาง (LLDPE)', 'kg', 21000, 0, '2025-05-30 16:33:21', '2025-05-30 16:33:21', 3),
-(15, 9, 7, 'พลาสติกรอง/คลุมยาง (LDPE)', 'kg', 10500, 0, '2025-05-30 16:20:42', '2025-05-30 16:20:42', 3),
-(16, 9, 9, 'LPG', 'kg', 1050, 0, '2025-05-30 16:34:48', '2025-05-30 16:34:48', 2);
+INSERT INTO `input_processes` (`input_process_id`, `process_id`, `input_cat_id`, `input_name`, `input_unit`, `input_quantity`, `life_cycle_phase`, `created_date`, `updated_date`) VALUES
+(3, 6, 4, 'ยางก้อนถ้วย (55%DRC)', 'kg', 1133333.33, 1, '2025-05-30 16:16:33', '2025-05-30 16:16:33'),
+(4, 6, 5, 'Diesel (ใช้กับรถตัก)', 'L', 666.67, 1, '2025-05-30 16:16:33', '2025-05-30 16:16:33'),
+(5, 7, 4, 'ยาง Re-process', 'kg', 66666.67, 2, '2025-05-30 16:16:33', '2025-05-30 16:16:33'),
+(6, 7, 5, 'ไฟฟ้าจากระบบสายส่งของประเทศ', 'kWh', 2100000, 2, '2025-05-30 16:20:42', '2025-05-30 16:20:42'),
+(7, 7, 5, 'ไฟฟ้า (Solar Cell)', 'kWh', 93333.33, 2, '2025-05-30 16:21:58', '2025-05-30 16:21:58'),
+(8, 7, 5, 'กรดซัลฟูริก (Sulfuric Acid)', 'kg', 58666.67, 2, '2025-05-30 16:20:42', '2025-05-30 16:20:42'),
+(9, 7, 5, 'โซดาไฟ (Sodium Hydroxide) ', 'kg', 46666.67, 2, '2025-05-30 16:22:46', '2025-05-30 16:22:46'),
+(10, 7, 5, 'น้ำ Recycle', 'm3', 11666.67, 2, '2025-05-30 16:23:12', '2025-05-30 16:23:12'),
+(11, 7, 5, 'น้ำดิบ', 'm3', 23333.3, 2, '2025-05-30 16:23:45', '2025-05-30 16:23:45'),
+(12, 8, 5, 'LPG ', 'kg', 31500, 3, '2025-05-30 16:27:13', '2025-05-30 16:27:13'),
+(13, 8, 5, 'Biogas', 'm3', 52500, 3, '2025-05-30 16:27:13', '2025-05-30 16:27:13'),
+(14, 9, 4, 'พลาสติกห่อยาง (LLDPE)', 'kg', 21000, 4, '2025-05-30 16:33:21', '2025-05-30 16:33:21'),
+(15, 9, 4, 'พลาสติกรอง/คลุมยาง (LDPE)', 'kg', 10500, 4, '2025-05-30 16:20:42', '2025-05-30 16:20:42'),
+(16, 9, 5, 'LPG', 'kg', 1050, 4, '2025-05-30 16:34:48', '2025-05-30 16:34:48');
 
 -- --------------------------------------------------------
 
@@ -1540,12 +1518,11 @@ CREATE TABLE `processes` (
 INSERT INTO `processes` (`process_id`, `product_id`, `ordering`, `process_name`, `mass_balanced`, `created_date`, `updated_date`) VALUES
 (2, 4, NULL, 'ABS', 1, NULL, NULL),
 (4, 4, NULL, 'ABCD', 0, '2025-05-29 10:34:10', '2025-05-29 10:34:49'),
-(5, 6, 1, 'กระบวนการล้าง, รีด, ตาก, ตัดย่อย \r\n', 1, NULL, NULL),
-(6, 7, 1, 'กระบวนการรับและเตรียมวัตถุดิบ ', 1, '2025-05-30 15:59:24', '2025-06-05 11:52:25'),
-(7, 7, 2, 'กระบวนการล้าง, รีด, ตาก, ตัดย่อย ', 2, '2025-05-30 16:05:56', '2025-05-30 16:05:56'),
-(8, 7, 3, 'กระบวนการอบ บด เป่าเย็น \r\n', 3, '2025-05-30 16:07:04', '2025-05-30 16:07:04'),
-(9, 7, 4, 'กระบวนการ Packing ', 4, '2025-05-30 16:09:19', '2025-05-30 16:09:19'),
-(10, 8, 1, 'กระบวนการล้าง, รีด, ตาก, ตัดย่อย ', 1, '2025-06-11 18:35:24', '2025-06-11 18:35:24');
+(5, 6, NULL, 'กระบวนการล้าง, รีด, ตาก, ตัดย่อย \r\n', 1, NULL, NULL),
+(6, 7, NULL, 'กระบวนการรับและเตรียมวัตถุดิบ ', 1, '2025-05-30 15:59:24', '2025-05-30 15:59:24'),
+(7, 7, NULL, 'กระบวนการล้าง, รีด, ตาก, ตัดย่อย ', 2, '2025-05-30 16:05:56', '2025-05-30 16:05:56'),
+(8, 7, NULL, 'กระบวนการอบ บด เป่าเย็น \r\n', 3, '2025-05-30 16:07:04', '2025-05-30 16:07:04'),
+(9, 7, NULL, 'กระบวนการ Packing ', 4, '2025-05-30 16:09:19', '2025-05-30 16:09:19');
 
 -- --------------------------------------------------------
 
@@ -1587,8 +1564,7 @@ INSERT INTO `products` (`product_id`, `company_id`, `product_name_th`, `product_
 (4, 1004, 'test', 'test', 'B2B', NULL, 'test', 'test', 0, '', '', 'test', NULL, 'test', '2025-05-27', '2025-05-30', NULL, 1, 'unverified', 'test', '2025-05-27 12:00:52', NULL, NULL),
 (5, 1004, 'test', 'test', '', NULL, 'test', 'test0001', 0, '', '', 'test', NULL, 'test', '2025-05-27', '2025-05-27', '', NULL, 'unverified', 'test', '2025-05-27 12:00:52', NULL, NULL),
 (6, 1004, 'test', 'test', '', NULL, 'test', 'test', 0, '', '', 'test', NULL, 'test', '2025-05-27', '2025-05-27', 'public/product/1.jpg', NULL, 'unverified', 'test', '2025-05-27 12:00:52', NULL, NULL),
-(7, 1005, 'ยางแท่งเกรด A', 'STR Rubber A', 'B2B', 1, 'กิโลกรัม', 'kg', 1, 'กิโลกรัม', 'kg', '65%', '[\"Dirt (Max,% wt) = 0.08\", \"Ash (Max,%wt) =0.60\",\"Volatile Matter (Max,%wt)=0.80\"]', 'ข้อกำหนดเฉพาะกลุ่มผลิตภัณฑ์ยางพาราและผลิตภัณฑ์จากยางพารา', '2025-03-01', '2025-05-31', 'public/product/1.jpg', 1, 'verified', NULL, '2025-05-22 15:54:32', '2025-06-02 00:26:13', '2025-06-02 00:26:13'),
-(8, 1005, 'test', 'test', '', NULL, 'test', 'test0001', 0, '', '', 'test', NULL, 'test', '2025-05-26', '2025-05-26', NULL, NULL, 'unverified', 'test', '2025-05-27 05:00:52', NULL, NULL);
+(7, 1005, 'ยางแท่งเกรด A', 'STR Rubber A', 'B2B', 1, 'กิโลกรัม', 'kg', 1, 'กิโลกรัม', 'kg', '65%', '[\"Dirt (Max,% wt) = 0.08\", \"Ash (Max,%wt) =0.60\",\"Volatile Matter (Max,%wt)=0.80\"]', 'ข้อกำหนดเฉพาะกลุ่มผลิตภัณฑ์ยางพาราและผลิตภัณฑ์จากยางพารา', '2025-03-01', '2025-05-31', 'public/product/1.jpg', 1, 'verified', NULL, '2025-05-22 15:54:32', '2025-06-02 00:26:13', '2025-06-02 00:26:13');
 
 -- --------------------------------------------------------
 
@@ -10195,8 +10171,7 @@ CREATE TABLE `waste_categories` (
 
 INSERT INTO `waste_categories` (`waste_cat_id`, `waste_cat_name`) VALUES
 (1, 'ผลิตภัณฑ์ร่วม'),
-(2, 'ของเสีย'),
-(4, 'ทดสอบ');
+(2, 'ของเสีย');
 
 -- --------------------------------------------------------
 
@@ -10265,7 +10240,7 @@ ALTER TABLE `cfp_report41_sums`
 -- Indexes for table `cfp_report42_items`
 --
 ALTER TABLE `cfp_report42_items`
-  ADD PRIMARY KEY (`report_42_id`),
+  ADD PRIMARY KEY (`report42_id`),
   ADD KEY `company_id` (`company_id`),
   ADD KEY `product_id` (`product_id`),
   ADD KEY `process_id` (`process_id`);
@@ -10486,19 +10461,19 @@ ALTER TABLE `cfp_report41_items`
 -- AUTO_INCREMENT for table `cfp_report41_sums`
 --
 ALTER TABLE `cfp_report41_sums`
-  MODIFY `report41_sum_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `report41_sum_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `cfp_report42_items`
 --
 ALTER TABLE `cfp_report42_items`
-  MODIFY `report_42_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `report42_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `cfp_report42_sums`
 --
 ALTER TABLE `cfp_report42_sums`
-  MODIFY `report42_sum_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `report42_sum_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `cfp_report43_items`
@@ -10552,7 +10527,7 @@ ALTER TABLE `industrials`
 -- AUTO_INCREMENT for table `input_categories`
 --
 ALTER TABLE `input_categories`
-  MODIFY `input_cat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `input_cat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `input_processes`
@@ -10576,13 +10551,13 @@ ALTER TABLE `output_processes`
 -- AUTO_INCREMENT for table `processes`
 --
 ALTER TABLE `processes`
-  MODIFY `process_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `process_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `product_verify_status`
@@ -10648,7 +10623,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `waste_categories`
 --
 ALTER TABLE `waste_categories`
-  MODIFY `waste_cat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `waste_cat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `waste_processes`
