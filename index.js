@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 readdirSync('./Routes').map((r) => app.use('/api/v1', require('./Routes/' + r)));
 
 // เสิร์ฟ static file Excel
-app.use('/download', express.static(path.join(__dirname, 'ExcelReport/excel')));
+app.use('/download', express.static(path.join(__dirname, 'ExcelReport/output')));
 
 // Start the server
 app.listen(port, () => {

@@ -23,8 +23,9 @@ if len(sys.argv) < 3:
 company_name = sys.argv[1]
 product_1 = sys.argv[2]
 
-form1 = "http://localhost:3000/api/v1/f1/"+company_name + "/" + product_1
-form4_1= "http://localhost:3000/api/v1/f4-1/form/"+product_1
+form1 = "http://localhost:5000/api/v1/f1/"+company_name + "/" + product_1
+form4_1= "http://localhost:5000/api/v1/f4-1/form/"+product_1
+form4_2= "http://localhost:5000/api/v1/f4-2/form/"+product_1
 
 def thai_date_format(iso_date_str):
     # แปลง string เป็น datetime object
@@ -58,6 +59,27 @@ def check_source_form4_1(ef_source, row, ws_name='ws41'):
         return f'{ws_name}["{cell}"] = "●"'
     else:
         return f'# ef_source \"{ef_source}\" not recognized'
+
+
+def check_source_form4_2_T1(type1_ef_source, row, ws_name='ws42'):
+    ef_map = { 'TGO EF': 'K','Int. DB': 'L'}
+
+    if type1_ef_source in ef_map:
+        col = ef_map[type1_ef_source]
+        cell = f'{col}{row}'
+        return f'{ws_name}["{cell}"] = "●"'
+    else:
+        return f'# type1_ef_source \"{type1_ef_source}\" not recognized'
+
+def check_source_form4_2_T2(type2_ef_source, row, ws_name='ws42'):
+    ef_map = { 'TGO EF': 'T','Int. DB': 'U'}
+
+    if type2_ef_source in ef_map:
+        col = ef_map[type2_ef_source]
+        cell = f'{col}{row}'
+        return f'{ws_name}["{cell}"] = "●"'
+    else:
+        return f'# type2_ef_source \"{type2_ef_source}\" not recognized'
 
 
 # กำหนดเส้นกรอบแต่ละด้าน (เส้นบางและเส้นปะ)
@@ -137,8 +159,7 @@ def set_border(ws, cell_range):
 
 
 
-
-# Fr-01, Fr.03, Fr.03
+# Fr-01, Fr.02, Fr.03
 form1 = requests.get(form1)
 if form1.status_code == 200:
     data = form1.json()
@@ -154,9 +175,6 @@ submitted_date_thai = thai_date_format(product.get("submitted_date"))
 techinfo_list = json.loads(product["product_techinfo"])
 product_techinfo_array = [item.strip() for item in techinfo_list]
 
-
-
-
 form4_1 = requests.get(form4_1)
 if form4_1.status_code == 200:
     data41 = form4_1.json()
@@ -168,12 +186,26 @@ if form4_1.status_code == 200:
 else:
     print("เกิดข้อผิดพลาดในการเรียก API:", form4_1.status_code)
 
+form4_2 = requests.get(form4_2)
+if form4_2.status_code == 200:
+    data42 = form4_2.json()
+    form42 = data42["form42"]
+    company = data42["company"]
+    product = data42["product"]
+    process = data42["process"]
+    report42Sum = data42["report42Sum"]
+else:
+    print("เกิดข้อผิดพลาดในการเรียก API:", form4_2.status_code)
+
 
 file_path = "ExcelReport/excel/form_CFP.xlsx"
-output_path = "ExcelReport/excel/"+company["name"]+"_"+product["product_name_en"]+".xlsx"
+output_path = "ExcelReport/output/"+company["name"]+"_"+product["product_name_en"]+".xlsx"
 shutil.copy(file_path, output_path)
 process = data["process"]
 wb = load_workbook(file_path)
+
+
+######## ------------------Fr-01---------------------------------------------------
 ws01 = wb["Fr-01"] # หรือระบุชื่อ sheet: wb["Sheet1"]
 
 ws01["J2"] = date_range
@@ -203,6 +235,7 @@ img = Image(image_url)
 img.width = 300 
 img.height = 300  
 ws01.add_image(img, "B12")  
+
 ######## ---------------------------------------------------------------------
 ws02 = wb["Fr-02"]
 for i in range(len(process)):
@@ -269,27 +302,47 @@ for i in range(len(process)):
     max_input_rows = 0 
 
     # ===== Input Section =====
-    for j in range(len(process[i]['inputs'])):
-        category = process[i]['inputs'][j]
-        num_items = len(category['items'])
+    input_categories = process[i]['inputs']
+    num_categories = len(input_categories)
+
+    for j in range(max(1, num_categories)):
+        if num_categories > 0:
+            category = input_categories[j]
+            items = category['items']
+            num_items = len(items)
+            input_title = category['input_title']
+        else:
+            items = []
+            num_items = 0
+            input_title = "ไม่มีข้อมูล"  # หรือจะเป็น "" ตามที่คุณต้องการ
+
         current_row = row_input + row_input_offset
         ws03.merge_cells(f"B{current_row}:D{current_row}")
-        ws03[f"B{current_row}"] = category['input_cat_name']
-        ws03[f"B{current_row}"].fill = fill_intput_head 
+        ws03[f"B{current_row}"] = input_title
+        ws03[f"B{current_row}"].fill = fill_intput_head
 
-        # เขียนรายการ input
-        for k in range(num_items):
-            ws03[f"B{current_row + k + 1}"] = category['items'][k]['input_name']
-            ws03[f"C{current_row + k + 1}"] = category['items'][k]['input_quantity']
-            ws03[f"D{current_row + k + 1}"] = category['items'][k]['input_unit']
+        # ถ้ามี item จริง
+        if num_items > 0:
+            for k in range(num_items):
+                ws03[f"B{current_row + k + 1}"] = items[k]['input_name']
+                ws03[f"C{current_row + k + 1}"] = items[k]['input_quantity']
+                ws03[f"D{current_row + k + 1}"] = items[k]['input_unit']
 
-            ws03[f"B{current_row + k + 1}"].fill = fill_intput
-            ws03[f"C{current_row + k + 1}"].fill = fill_intput
-            ws03[f"D{current_row + k + 1}"].fill = fill_intput
+                ws03[f"B{current_row + k + 1}"].fill = fill_intput
+                ws03[f"C{current_row + k + 1}"].fill = fill_intput
+                ws03[f"D{current_row + k + 1}"].fill = fill_intput
+        else:
+            # ใส่ช่องว่างแถวล่างไว้ 1 แถวพร้อมสี
+            ws03[f"B{current_row + 1}"] = ""
+            ws03[f"C{current_row + 1}"] = ""
+            ws03[f"D{current_row + 1}"] = ""
 
-        row_input_offset += 1 + num_items 
-        max_input_rows += 1 + num_items
+            ws03[f"B{current_row + 1}"].fill = fill_intput
+            ws03[f"C{current_row + 1}"].fill = fill_intput
+            ws03[f"D{current_row + 1}"].fill = fill_intput
 
+        row_input_offset += 1 + max(1, num_items)
+        max_input_rows += 1 + max(1, num_items)
     # ===== Process Block ด้านขวา =====
     process_row = row
     ws03.merge_cells(f"F{process_row}:I{process_row}")
@@ -305,6 +358,7 @@ for i in range(len(process)):
     # ===== output =====
     ws03[f"I{process_row + 7}"] = "ผลิตภัณฑ์"
     ws03[f"I{process_row + 7}"].fill = fill_intput_head 
+
     for j in range(len(process[i]['outputs'])):
         output = process[i]['outputs'][j]
         ws03[f"I{process_row + 8 + j}"] = output['output_name']
@@ -434,57 +488,128 @@ fill_sum = PatternFill(start_color='FF808080', end_color='FF808080', fill_type='
 r_start = 11
 row = 11
 # phase=["การได้มาของวัตถุดิบ","การผลิต","การกระจายสินค้า","การใช้งาน","การจัดการซาก"]
-phase=["การได้มาของวัตถุดิบ","การผลิต","การกระจายสินค้า","การใช้งาน","การจัดการซาก"]
+phase = ["การได้มาของวัตถุดิบ", "การผลิต", "การกระจายสินค้า", "การใช้งาน", "การจัดการซาก"]
 for i in range(len(phase)):
+    phase_start_row = row  # เก็บแถวเริ่มต้นของ phase นี้
 
     for j in range(len(form41[i]["process"])):
-        ws41[f"B{row}"] = form41[i]["process"][j]["process_name"]
-        ws41[f"B{row}"].font = Font(name="Tahoma", size=10, bold=True, color="FF0070C0", italic=True,)
-        
-        # Loop ทุก product
-        for k in range(len(form41[i]["process"][j]["product"])):
-            # Loop ทุก item ใน product นั้น
-            for l in range(len(form41[i]["process"][j]["product"][k]["items"])):
+        process = form41[i]["process"][j]
+        process_start_row = row  # เก็บแถวเริ่มต้นของ process นี้
 
-                items = item_name = form41[i]["process"][j]["product"][k]["items"][l]
-                
+        if i < 2:
+            ws41[f"B{row}"] = process["process_name"]
+            ws41[f"B{row}"].font = Font(name="Tahoma", size=10, bold=True, color="FF0070C0", italic=True)
+            row += 1
 
-                ws41[f"B{row+1}"] = items["item_name"]
-                ws41[f"C{row+1}"] = items["item_unit"]
-                ws41[f"D{row+1}"] = items["item_quantity"]       
-                # ws41[f"E{row+1}"] = items[l]["lci_source_period"]
-                ws41[f"F{row+1}"] = items["lci_source_period"]
-                ws41[f"G{row+1}"] = items["ef"]
-                exec(check_source_form4_1(items["ef_source"], row + 1))
-                ws41[f"O{row+1}"] = items["ef_source_ref"]
-                ws41[f"P{row+1}"] = items["ratio"]
-                ws41[f"Q{row+1}"] = items["ghg_emission"]
-                ws41[f"R{row+1}"] = items["ghg_emission_proportion"]
-                ws41[f"S{row+1}"] = items["cut_off"]
-                ws41[f"Q{row+1}"] = items["description"]
-                
+        for k in range(len(process["product"])):
+            product = process["product"][k]
 
+            if i == 1:
+                ws41[f"B{row}"] = product["production_class"]
+                ws41[f"B{row}"].font = Font(name="Tahoma", size=10, bold=True, color="FF99004c", italic=True)
+                row += 1
 
+            for l in range(len(product["items"])):
+                items = product["items"][l]
+                ws41[f"B{row}"] = items["item_name"]
+                ws41[f"C{row}"] = items["item_unit"]
+                ws41[f"D{row}"] = items["item_quantity"]
+                ws41[f"F{row}"] = items["lci_source_period"]
+                ws41[f"G{row}"] = items["ef"]
+                exec(check_source_form4_1(items["ef_source"], row))
+                ws41[f"O{row}"] = items["ef_source_ref"]
+                ws41[f"P{row}"] = items["ratio"]
+                ws41[f"Q{row}"] = items["ghg_emission"]
+                ws41[f"R{row}"] = items["ghg_emission_proportion"]
+                ws41[f"S{row}"] = items["cut_off"]
+                ws41[f"T{row}"] = items["description"]
+                row += 1  # ขยับแถวสำหรับ item ถัดไป
 
-                row += 1  # เพิ่มบรรทัดใหม่สำหรับแต่ละ item_name
+        # หลังจบแต่ละ process ให้เว้น 1 แถว
+        row += 1
 
-        row += 2  # ข้ามแถวสำหรับ process ถัดไป
-
-   
+    # เติมสีสรุป process
     for row_cells in ws41[f"B{row}:T{row}"]:
         for cell in row_cells:
             cell.fill = fill_sum
-    row = row +1
-    ws41.merge_cells(f"A{r_start}:A{row-1}")
-    ws41[f"A{r_start}"] = phase[i]
-    # อัปเดต r_start สำหรับ phase ถัดไป
-    
-    r_start = row 
+    row += 1
 
+    # Merge phase column และใส่ชื่อ phase
+    ws41.merge_cells(f"A{phase_start_row}:A{row-1}")
+    ws41[f"A{phase_start_row}"] = phase[i]
 
-
+    r_start = row  # อัปเดต r_start สำหรับ phase ถัดไป
 
 
 ######## ---------------------------------------------------------------------
+
+ws42 = wb["Fr-04.2 (2)"]
+fill_sum = PatternFill(start_color='FF808080', end_color='FF808080', fill_type='solid') 
+r_start = 12
+row = 12
+phase = ["การได้มาของวัตถุดิบ", "การผลิต", "การกระจายสินค้า", "การใช้งาน", "การจัดการซาก"]
+for i in range(len(phase)):
+    phase_start_row = row  # เก็บแถวเริ่มต้นของ phase นี้
+
+    for j in range(len(form42[i]["process"])):
+        process = form42[i]["process"][j]
+        process_start_row = row  # เก็บแถวเริ่มต้นของ process นี้
+
+        if i < 2:
+            ws42[f"B{row}"] = process["process_name"]
+            ws42[f"B{row}"].font = Font(name="Tahoma", size=10, bold=True, color="FF0070C0", italic=True)
+            row += 1
+
+        for k in range(len(process["product"])):
+            product = process["product"][k]
+
+            if i == 1:
+                ws42[f"B{row}"] = product["production_class"]
+                ws42[f"B{row}"].font = Font(name="Tahoma", size=10, bold=True, color="FF99004c", italic=True)
+                row += 1
+
+            for l in range(len(product["items"])):
+                items = product["items"][l]
+                ws42[f"B{row}"] = items["item_name"]
+                ws42[f"C{row}"] = items["item_unit"]
+                ws42[f"D{row}"] = items["item_fu_qty"]
+                ws42[f"E{row}"] = items["distance"]
+                ws42[f"F{row}"] = items["distance_source"]
+                ws42[f"G{row}"] = items["type1_gas"]
+                ws42[f"H{row}"] = items["type1_gas_unit"]
+                ws42[f"I{row}"] = items["type1_gas_qty"]
+                ws42[f"J{row}"] = items["type1_ef"]
+                exec(check_source_form4_2_T1(items["type1_ef_source"], row, ws_name='ws42'))
+                ws42[f"M{row}"] = items["type2_outbound_load"]
+                ws42[f"N{row}"] = items["type2_return_load"]
+                ws42[f"O{row}"] = items["type2_vehicle"]
+                ws42[f"P{row}"] = items["type2_outbound_load_percent"]
+                ws42[f"Q{row}"] = items["type2_return_load_percent"]
+                ws42[f"R{row}"] = items["type2_outbound_ef"]
+                ws42[f"S{row}"] = items["type2_return_ef"]
+                exec(check_source_form4_2_T2(items["type2_ef_source"], row, ws_name='ws42'))
+                ws42[f"V{row}"] = items["type2_ef_source_ref"]
+                ws42[f"W{row}"] = items["ratio"]
+                ws42[f"X{row}"] = items["transport_emission"]
+                ws42[f"Y{row}"] = items["cut_off"]
+                ws42[f"Z{row}"] = items["add_on_detail"]
+                row += 1  # ขยับแถวสำหรับ item ถัดไป
+
+        # หลังจบแต่ละ process ให้เว้น 1 แถว
+        row += 1
+
+    # เติมสีสรุป process
+    for row_cells in ws42[f"B{row}:T{row}"]:
+        for cell in row_cells:
+            cell.fill = fill_sum
+    row += 1
+
+    # Merge phase column และใส่ชื่อ phase
+    ws42.merge_cells(f"A{phase_start_row}:A{row-1}")
+    ws42[f"A{phase_start_row}"] = phase[i]
+
+    r_start = row  # อัปเดต r_start สำหรับ phase ถัดไป
+
+######## -----------save----------------------------------------------------------
 wb.save(output_path)
 print(output_path)

@@ -5,13 +5,12 @@ const processModel = {
     create: async (data) => {
         const sql = `
             INSERT INTO processes (
-                product_id, pre_process_id, post_process_id, process_name, mass_balanced, created_date, updated_date
-            ) VALUES (?, ?, ?, ?, ?, NOW(), NOW())
+                product_id, ordering, process_name, mass_balanced, created_date, updated_date
+            ) VALUES (?, ?, ?,  ?, NOW(), NOW())
         `;
         const [results] = await db.query(sql, [
             data.product_id,
-            data.pre_process_id,
-            data.post_process_id,
+            data.ordering,
             data.process_name,
             data.mass_balanced
         ]);
@@ -27,6 +26,12 @@ const processModel = {
         const [rows] = await db.query('SELECT * FROM processes WHERE process_id = ?', [id]);
         return rows[0] || null;
     },
+
+    findByProduct: async (id) => {
+        const [rows] = await db.query('SELECT * FROM processes WHERE product_id = ?', [id]);
+        return rows || null;
+    },
+
 
     updateById: async (id, data) => {
         const [rows] = await db.query('SELECT * FROM processes WHERE process_id = ?', [id]);

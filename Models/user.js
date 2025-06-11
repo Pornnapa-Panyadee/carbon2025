@@ -60,6 +60,11 @@ const userModel = {
     deleteById: async (user_id) => {
         const [result] = await db.query('DELETE FROM users WHERE user_id = ?', [user_id]);
         return result;
+    },
+
+    findByEmail: async (email) => {
+        const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+        return rows[0] || null;
     }
 };
 

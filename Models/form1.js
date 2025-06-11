@@ -7,21 +7,21 @@ const Form1Model = {
         const processQuery = 'SELECT * FROM processes WHERE product_id = ? ORDER BY `processes`.`ordering` ASC';
 
         const inputQuery = `
-            SELECT ip.*, ic.input_cat_name
+            SELECT DISTINCT  ip.*, ic.input_title_id, ic.input_title
             FROM input_processes ip
-            LEFT JOIN input_categories ic ON ip.input_cat_id = ic.input_cat_id
+            LEFT JOIN input_categories ic ON ip.input_title_id = ic.input_title_id
             WHERE ip.process_id = ?
         `;
 
         const outputQuery = `
-            SELECT op.*, oc.output_cat_name
+            SELECT DISTINCT  op.*, oc.output_cat_name
             FROM output_processes op
             LEFT JOIN output_categories oc ON op.output_cat_id = oc.output_cat_id
             WHERE op.process_id = ?
         `;
 
         const wastetQuery = `
-            SELECT op.*, oc.waste_cat_name
+            SELECT DISTINCT  op.*, oc.waste_cat_name
             FROM waste_processes op
             LEFT JOIN waste_categories oc ON op.waste_cat_id = oc.waste_cat_id
             WHERE op.process_id = ?
@@ -44,17 +44,32 @@ const Form1Model = {
             // Inputs
             const [inputResults] = await db.query(inputQuery, [process.process_id]);
             const groupedInputs = inputResults.reduce((acc, row) => {
-                const catId = row.input_cat_id;
+                const catId = row.input_title_id;
                 if (!acc[catId]) {
                     acc[catId] = {
-                        input_cat_id: catId,
-                        input_cat_name: row.input_cat_name,
+                        input_title_id: catId,
+                        input_title: row.input_title,
                         items: []
                     };
                 }
                 acc[catId].items.push(row);
                 return acc;
             }, {});
+            // Default categories
+            const defaultInputCategories = [
+                { input_title_id: 1, input_title: "วัตถุดิบ" },
+                { input_title_id: 2, input_title: "พลังงานและเชื้อเพลิง" },
+                { input_title_id: 3, input_title: "ทรัพยากร และวัสดุช่วยการผลิต" }
+            ];
+            defaultInputCategories.forEach(cat => {
+                if (!groupedInputs[cat.input_title_id]) {
+                    groupedInputs[cat.input_title_id] = {
+                        input_title_id: cat.input_title_id,
+                        input_title: cat.input_title,
+                        items: []
+                    };
+                }
+            });
             const inputsGroupedArray = Object.values(groupedInputs);
 
             // Outputs
@@ -76,18 +91,42 @@ const Form1Model = {
             }, {});
             const wastesGroupedArray = Object.values(groupedWastes);
 
+            // Return process with IO
             return {
                 ...process,
-                inputs: inputsGroupedArray,
-                outputs: outputResults,
-                wastes: wastesGroupedArray
+                inputsGroupedArray,
+                outputResults,
+                wastesGroupedArray
             };
+        }));
+
+        // Group processes by phase
+        const phase1Processes = processesWithIO.map(proc => ({
+            ...proc,
+            inputs: proc.inputsGroupedArray.filter(i => i.input_title_id === 1),
+            outputs: [],
+            wastes: []
+        }));
+        const phase2Processes = processesWithIO.map(proc => ({
+            ...proc,
+            inputs: proc.inputsGroupedArray,
+            outputs: proc.outputResults,
+            wastes: proc.wastesGroupedArray
         }));
 
         return [{
             product: productResults[0],
             company: companyResults[0],
-            process: processesWithIO
+            life_cycle_phase: [
+                {
+                    phase: 1,
+                    process: phase1Processes
+                },
+                {
+                    phase: 2,
+                    process: phase2Processes
+                }
+            ]
         }];
     }
 };

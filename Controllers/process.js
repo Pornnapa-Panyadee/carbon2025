@@ -12,6 +12,18 @@ exports.read = async (req, res) => {
     }
 };
 
+exports.readbyproduct = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await Process.findByProduct(id);
+        if (!result) return res.status(404).json({ message: 'Process not found' });
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+
 exports.list = async (req, res) => {
     try {
         const results = await Process.findAll();
