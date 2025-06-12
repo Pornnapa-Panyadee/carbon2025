@@ -23,7 +23,7 @@ if len(sys.argv) < 3:
 company_name = sys.argv[1]
 product_1 = sys.argv[2]
 
-form1 = "http://localhost:5000/api/v1/f1/"+company_name + "/" + product_1
+form1 = "http://localhost:5000/api/v1/f1/excel/"+company_name + "/" + product_1
 form4_1= "http://localhost:5000/api/v1/f4-1/form/"+product_1
 form4_2= "http://localhost:5000/api/v1/f4-2/form/"+product_1
 
@@ -287,7 +287,7 @@ set_borderTop(ws02, f"L{row_end}:P{row_end}",'bottom')
 set_borderCenter(ws02, f"J8:J{row_end+3}",'right')
     
 ######## ---------------------------------------------------------------------
-ws03 = wb["Fr-03 (2)"]   
+ws03 = wb["Fr-03"]   
 fill = PatternFill(start_color='FFFFFF99', end_color='FFFFFF99', fill_type='solid') 
 fill_intput_head = PatternFill(start_color='FF92D050', end_color='FF92D050', fill_type='solid')
 fill_intput = PatternFill(start_color='FFCCFFCC', end_color='FFCCFFCC', fill_type='solid')
@@ -483,7 +483,7 @@ for i in range(len(process)):
 
 ######## ---------------------------------------------------------------------
 
-ws41 = wb["Fr-04.1 (2)"]
+ws41 = wb["Fr-04.1 "]
 fill_sum = PatternFill(start_color='FF808080', end_color='FF808080', fill_type='solid') 
 r_start = 11
 row = 11
@@ -543,7 +543,7 @@ for i in range(len(phase)):
 
 ######## ---------------------------------------------------------------------
 
-ws42 = wb["Fr-04.2 (2)"]
+ws42 = wb["Fr-04.2 "]
 fill_sum = PatternFill(start_color='FF808080', end_color='FF808080', fill_type='solid') 
 r_start = 12
 row = 12
