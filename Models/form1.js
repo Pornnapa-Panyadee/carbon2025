@@ -68,21 +68,21 @@ const Form1Model = {
         const processQuery = 'SELECT * FROM processes WHERE product_id = ? ORDER BY `processes`.`ordering` ASC';
 
         const inputQuery = `
-            SELECT DISTINCT  ip.*, ic.input_title_id, ic.input_title
+            SELECT DISTINCT  ip.*, ic.input_title_id, ic.input_title,ic.input_cat_name_TH, ic.input_cat_name
             FROM input_processes ip
             LEFT JOIN input_categories ic ON ip.input_title_id = ic.input_title_id
             WHERE ip.process_id = ?
         `;
 
         const outputQuery = `
-            SELECT DISTINCT  op.*, oc.output_cat_name
+            SELECT DISTINCT  op.*, oc.output_cat_name, oc.output_cat_name
             FROM output_processes op
             LEFT JOIN output_categories oc ON op.output_cat_id = oc.output_cat_id
             WHERE op.process_id = ?
         `;
 
         const wastetQuery = `
-            SELECT DISTINCT  op.*, oc.waste_cat_name
+            SELECT DISTINCT  op.*, oc.waste_cat_name, oc.waste_cat_name
             FROM waste_processes op
             LEFT JOIN waste_categories oc ON op.waste_cat_id = oc.waste_cat_id
             WHERE op.process_id = ?
