@@ -230,7 +230,7 @@ ws01["J24"] = product.get("pcr_reference", "")
 ws01["J25"] = submitted_date_thai
 
 # image 
-image_url = ""+product.get("product_photo")
+image_url = product.get("product_photo", "").replace("public/", "Public/")
 img = Image(image_url)  
 img.width = 300 
 img.height = 300  
