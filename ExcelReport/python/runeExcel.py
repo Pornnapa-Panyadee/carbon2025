@@ -26,6 +26,7 @@ product_1 = sys.argv[2]
 form1 = "http://localhost:5000/api/v1/f1/excel/"+company_name + "/" + product_1
 form4_1= "http://localhost:5000/api/v1/f4-1/form/"+product_1
 form4_2= "http://localhost:5000/api/v1/f4-2/form/"+product_1
+form4_3= "http://localhost:5000/api/v1/selfcollect/product/"+company_name + "/" + product_1
 
 def thai_date_format(iso_date_str):
     # แปลง string เป็น datetime object
@@ -81,7 +82,44 @@ def check_source_form4_2_T2(type2_ef_source, row, ws_name='ws42'):
     else:
         return f'# type2_ef_source \"{type2_ef_source}\" not recognized'
 
+def check_source_form4_1(ef_source, row, ws_name='ws43'):
+    ef_map = {
+        'Self collect': 'I',
+        'Supplier': 'J',
+        'PCR Gen.': 'K',
+        'TGO EF': 'L',
+        'Int. DB': 'M',
+        'Others': 'N'
+    }
 
+    if ef_source in ef_map:
+        col = ef_map[ef_source]
+        cell = f'{col}{row}'
+        return f'{ws_name}["{cell}"] = "●"'
+    else:
+        return f'# ef_source \"{ef_source}\" not recognized'
+
+def check_source_form4_3_T1(type1_ef_source, row, ws_name='ws43'):
+    ef_map = { 'TGO EF': 'U','Int. DB': 'V'}
+
+    if type1_ef_source in ef_map:
+        col = ef_map[type1_ef_source]
+        cell = f'{col}{row}'
+        return f'{ws_name}["{cell}"] = "●"'
+    else:
+        return f'# type1_ef_source \"{type1_ef_source}\" not recognized'
+
+
+def check_source_form4_3_T2(type2_ef_source, row, ws_name='ws42'):
+    ef_map = { 'TGO EF': 'AE','Int. DB': 'AF'}
+
+    if type2_ef_source in ef_map:
+        col = ef_map[type2_ef_source]
+        cell = f'{col}{row}'
+        return f'{ws_name}["{cell}"] = "●"'
+    else:
+        return f'# type2_ef_source \"{type2_ef_source}\" not recognized'
+        
 # กำหนดเส้นกรอบแต่ละด้าน (เส้นบางและเส้นปะ)
 thin_border = Border(
     left=Side(border_style="thin", color="000000"),
@@ -196,6 +234,16 @@ if form4_2.status_code == 200:
     report42Sum = data42["report42Sum"]
 else:
     print("เกิดข้อผิดพลาดในการเรียก API:", form4_2.status_code)
+
+
+response_form4_3 = requests.get(form4_3)
+if response_form4_3.status_code == 200:
+    data43 = response_form4_3.json()
+    form43 = data43["processes"]
+else:
+    print("เกิดข้อผิดพลาดในการเรียก API:", response_form4_3.status_code)
+
+    
 
 
 file_path = "ExcelReport/excel/form_CFP.xlsx"
@@ -516,7 +564,7 @@ for i in range(len(phase)):
                 ws41[f"D{row}"] = items["item_quantity"]
                 ws41[f"F{row}"] = items["lci_source_period"]
                 ws41[f"G{row}"] = items["ef"]
-                exec(check_source_form4_1(items["ef_source"], row))
+                exec(check_source_form4_1(items["ef_source"], row, ws_name='ws41'))
                 ws41[f"O{row}"] = items["ef_source_ref"]
                 ws41[f"P{row}"] = items["ratio"]
                 ws41[f"Q{row}"] = items["ghg_emission"]
@@ -610,6 +658,99 @@ for i in range(len(phase)):
 
     r_start = row  # อัปเดต r_start สำหรับ phase ถัดไป
 
-######## -----------save----------------------------------------------------------
+######## ----Fr-04.-----------------------------------------------------------
+
+ws43 = wb["Fr-04.3"]
+fill_sum = PatternFill(start_color='FF808080', end_color='FF808080', fill_type='solid') 
+row=11
+r_start = 11
+
+ws43[f"B{r_start }"] = "Input"
+ws43[f"B{r_start }"].font = Font(name="Tahoma", size=10, bold=True, color="FF0070C0", italic=True)
+
+for i in range(len(form43[0]["input"])):
+    input_item = form43[0]["input"][i]
+    ws43[f"B{r_start + i+1}"] = input_item["item_name"]
+    ws43[f"C{r_start + i+1}"] = input_item["item_unit"]
+    ws43[f"D{r_start + i+1}"] = input_item["item_qty"]
+    ws43[f"E{r_start + i+1}"] = input_item["item_fu_qty"]
+    ws43[f"F{r_start + i+1}"] = input_item["item_source"]  
+    ws43[f"G{r_start + i+1}"] = input_item["item_ef"]  
+    exec(check_source_form4_1(input_item["item_ef_source"], r_start + i + 1, ws_name='ws43')) 
+    ws43[f"O{r_start + i+1}"] = input_item["item_ef_source_ref"]
+    ws43[f"P{r_start + i+1}"] = input_item["item_emission"]
+
+    ws43[f"Q{r_start + i+1}"] = input_item["type1_gas"]
+    ws43[f"R{r_start + i+1}"] = input_item["type1_gas_unit"]
+    ws43[f"S{r_start + i+1}"] = input_item["type1_gas_qty"] 
+    ws43[f"T{r_start + i+1}"] = input_item["type1_ef"]
+    exec(check_source_form4_3_T1(input_item["type1_ef_source"], r_start + i + 1, ws_name='ws43'))   
+
+    ws43[f"W{r_start + i+1}"] = input_item["type2_distance"]
+    ws43[f"X{r_start + i+1}"] = input_item["type2_outbound_load"]
+    ws43[f"Y{r_start + i+1}"] = input_item["type2_return_load"]
+    ws43[f"Z{r_start + i+1}"] = input_item["type2_vehicle"] 
+    ws43[f"AA{r_start + i+1}"] = input_item["type2_outbound_load_percent"]
+    ws43[f"AB{r_start + i+1}"] = input_item["type2_return_load_percent"]
+    ws43[f"AC{r_start + i+1}"] = input_item["type2_outbound_ef"]
+    ws43[f"AD{r_start + i+1}"] = input_item["type2_return_ef"]  
+    exec(check_source_form4_3_T2(input_item["type2_ef_source"], r_start + i + 1, ws_name='ws43'))
+    ws43[f"AG{r_start + i+1}"] = input_item["type2_ef_source_ref"]  
+    ws43[f"AH{r_start + i+1}"] = input_item["transport_emission"]
+    ws43[f"AI{r_start + i+1}"] = input_item["total_emission"]
+    ws43[f"AJ{r_start + i+1}"] = input_item["ratio"]  
+    ws43[f"AK{r_start + i+2}"] = input_item["cut_off"]  
+    ws43[f"AL{r_start + i+2}"] = input_item["add_on_detail"]
+
+r_start= r_start + i+2
+
+ws43[f"B{r_start + 1}"] = "Output"
+ws43[f"B{r_start + 1}"].font = Font(name="Tahoma", size=10, bold=True, color="FF0070C0", italic=True)
+
+for i in range(len(form43[0]["output"])):
+    output_item = form43[0]["output"][i]
+    ws43[f"B{r_start + i+2}"] = output_item["item_name"]
+    ws43[f"C{r_start + i+2}"] = output_item["item_unit"]
+    ws43[f"D{r_start + i+2}"] = output_item["item_qty"]
+    ws43[f"E{r_start + i+2}"] = output_item["item_fu_qty"]
+    ws43[f"F{r_start + i+2}"] = output_item["item_source"]  
+    ws43[f"G{r_start + i+2}"] = output_item["item_ef"]  
+    exec(check_source_form4_1(output_item["item_ef_source"], r_start + i + 2, ws_name='ws43')) 
+    ws43[f"O{r_start + i+2}"] = output_item["item_ef_source_ref"]
+    ws43[f"P{r_start + i+2}"] = output_item["item_emission"]
+
+    ws43[f"Q{r_start + i+2}"] = output_item["type1_gas"]
+    ws43[f"R{r_start + i+2}"] = output_item["type1_gas_unit"]
+    ws43[f"S{r_start + i+2}"] = output_item["type1_gas_qty"] 
+    ws43[f"T{r_start + i+2}"] = output_item["type1_ef"]
+    exec(check_source_form4_3_T1(output_item["type1_ef_source"], r_start + i + 2, ws_name='ws43'))   
+
+    ws43[f"W{r_start + i+2}"] = output_item["type2_distance"]
+    ws43[f"X{r_start + i+2}"] = output_item["type2_outbound_load"]
+    ws43[f"Y{r_start + i+2}"] = output_item["type2_return_load"]
+    ws43[f"Z{r_start + i+2}"] = output_item["type2_vehicle"] 
+    ws43[f"AA{r_start + i+2}"] = output_item["type2_outbound_load_percent"]
+    ws43[f"AB{r_start + i+2}"] = output_item["type2_return_load_percent"]
+    ws43[f"AC{r_start + i+2}"] = output_item["type2_outbound_ef"]
+    ws43[f"AD{r_start + i+2}"] = output_item["type2_return_ef"]  
+    exec(check_source_form4_3_T2(output_item["type2_ef_source"], r_start + i + 2, ws_name='ws43'))
+    ws43[f"AG{r_start + i+2}"] = output_item["type2_ef_source_ref"]  
+    ws43[f"AH{r_start + i+2}"] = output_item["transport_emission"]
+    ws43[f"AI{r_start + i+2}"] = output_item["total_emission"]
+    ws43[f"AJ{r_start + i+2}"] = output_item["ratio"]  
+    ws43[f"AK{r_start + i+2}"] = output_item["cut_off"]  
+    ws43[f"AL{r_start + i+2}"] = output_item["add_on_detail"]
+
+ws43.merge_cells(f"A{row}:A{r_start + i+4}")
+name = form43[0]["self_collect_name"]
+clean_name = name.replace("Fr04.3 ", "", 1)
+ws43[f"A{row}"] = clean_name
+
+# เติมสีสรุป process
+for row_cells in ws43[f"B{r_start + i+3}:AL{r_start + i+4}"]:
+    for cell in row_cells:
+        cell.fill = fill_sum
+
+
 wb.save(output_path)
 print(output_path)

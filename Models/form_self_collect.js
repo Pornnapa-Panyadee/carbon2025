@@ -71,15 +71,19 @@ const selfCollectModel = {
         const [companyResults] = await db.query(selfQuery, [product_id, company_id]);
         if (!companyResults.length) throw new Error('Company not found');
 
-
         // 4. For each process, get inputs, outputs, wastes
         const processes = await Promise.all(companyResults.map(async (process) => {
-            // Inputs
+            // Inputs & Outputs
             const [inputResults] = await db.query(inputQuery, [process.self_collect_id]);
+
+            // แยก input และ output ตาม item_type
+            const inputs = inputResults.filter(item => item.item_type === 'input');
+            const outputs = inputResults.filter(item => item.item_type === 'output');
 
             return {
                 ...process,
-                input: inputResults,
+                input: inputs,
+                output: outputs,
             };
         }));
 
