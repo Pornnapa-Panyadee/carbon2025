@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 13, 2025 at 04:30 PM
+-- Generation Time: Jun 11, 2025 at 06:34 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -298,60 +298,6 @@ CREATE TABLE `cfp_report43_items` (
   `created_date` datetime DEFAULT NULL,
   `updated_date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `cfp_report43_selfcollect_efs`
---
-
-CREATE TABLE `cfp_report43_selfcollect_efs` (
-  `cfp_report43_selfcollect_efs_id` int(11) NOT NULL,
-  `self_collect_id` int(11) DEFAULT NULL,
-  `item_name` varchar(255) DEFAULT NULL,
-  `item_type` enum('input','output') DEFAULT NULL,
-  `item_unit` enum('kg','ton','m3','kWh','GJ') DEFAULT NULL,
-  `item_qty` decimal(18,6) DEFAULT NULL,
-  `item_fu_qty` decimal(18,6) DEFAULT NULL,
-  `item_source` varchar(255) DEFAULT NULL,
-  `item_ef` decimal(18,6) DEFAULT NULL,
-  `item_ef_source` enum('Self collect','Supplier','PCR Gen.','TGO EF','Int. DB','Others') DEFAULT NULL,
-  `item_ef_source_ref` varchar(255) DEFAULT NULL,
-  `item_emission` decimal(18,6) DEFAULT NULL,
-  `transport_type` enum('road','rail','sea','air') DEFAULT NULL,
-  `type1_gas` varchar(255) DEFAULT NULL,
-  `type1_gas_unit` enum('kg','ton','m3') DEFAULT NULL,
-  `type1_gas_qty` decimal(18,6) DEFAULT NULL,
-  `type1_ef` decimal(18,6) DEFAULT NULL,
-  `type1_ef_source` enum('external','internal') DEFAULT NULL,
-  `type2_distance` decimal(18,6) DEFAULT NULL,
-  `type2_outbound_load` decimal(18,6) DEFAULT NULL,
-  `type2_return_load` decimal(18,6) DEFAULT NULL,
-  `type2_vehicle` varchar(255) DEFAULT NULL,
-  `type2_outbound_load_percent` int(11) DEFAULT NULL,
-  `type2_return_load_percent` int(11) DEFAULT NULL,
-  `type2_outbound_ef` decimal(18,6) DEFAULT NULL,
-  `type2_return_ef` decimal(18,6) DEFAULT NULL,
-  `type2_ef_source` enum('external','internal') DEFAULT NULL,
-  `type2_ef_source_ref` varchar(255) DEFAULT NULL,
-  `transport_emission` decimal(18,6) DEFAULT NULL,
-  `total_emission` decimal(18,6) DEFAULT NULL,
-  `proportion` int(11) DEFAULT NULL,
-  `ratio` int(11) DEFAULT NULL,
-  `cut_off` varchar(255) DEFAULT NULL,
-  `add_on_detail` varchar(255) DEFAULT NULL,
-  `created_date` datetime DEFAULT NULL,
-  `updated_date` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `cfp_report43_selfcollect_efs`
---
-
-INSERT INTO `cfp_report43_selfcollect_efs` (`cfp_report43_selfcollect_efs_id`, `self_collect_id`, `item_name`, `item_type`, `item_unit`, `item_qty`, `item_fu_qty`, `item_source`, `item_ef`, `item_ef_source`, `item_ef_source_ref`, `item_emission`, `transport_type`, `type1_gas`, `type1_gas_unit`, `type1_gas_qty`, `type1_ef`, `type1_ef_source`, `type2_distance`, `type2_outbound_load`, `type2_return_load`, `type2_vehicle`, `type2_outbound_load_percent`, `type2_return_load_percent`, `type2_outbound_ef`, `type2_return_ef`, `type2_ef_source`, `type2_ef_source_ref`, `transport_emission`, `total_emission`, `proportion`, `ratio`, `cut_off`, `add_on_detail`, `created_date`, `updated_date`) VALUES
-(1, 1, 'น้ำเสีย', 'input', 'm3', 60000.000000, 1.200000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.\r\n', 0.000000, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-06-12 22:54:22', '2025-06-12 22:54:22'),
-(2, 1, 'ไฟฟ้าจากระบบสายส่งของประเทศ', 'input', 'kWh', 40000.000000, 0.800000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.598600, 'PCR Gen.', 'EF_CFO_UPDATE_Apr 2565 (Electricity, grid mix (ไฟฟ้า))', 0.478900, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.478900, 1, NULL, NULL, NULL, '2025-06-12 23:30:06', '2025-06-12 23:30:06'),
-(3, 1, 'น้ำ Recycle ', 'output', 'm3', 50000.000000, 1.000000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1626,7 +1572,7 @@ CREATE TABLE `products` (
   `collect_data_end` date DEFAULT NULL,
   `product_photo` varchar(255) DEFAULT NULL,
   `auditor_id` int(11) DEFAULT NULL,
-  `verify_status` enum('unverified','verified','draft') DEFAULT NULL,
+  `verify_status` enum('unverified','verified') DEFAULT NULL,
   `submitted_round` varchar(255) DEFAULT NULL,
   `submitted_date` datetime DEFAULT NULL,
   `created_date` datetime DEFAULT NULL,
@@ -1641,7 +1587,7 @@ INSERT INTO `products` (`product_id`, `company_id`, `product_name_th`, `product_
 (4, 1004, 'test', 'test', 'B2B', NULL, 'test', 'test', 0, '', '', 'test', NULL, 'test', '2025-05-27', '2025-05-30', NULL, 1, 'unverified', 'test', '2025-05-27 12:00:52', NULL, NULL),
 (5, 1004, 'test', 'test', '', NULL, 'test', 'test0001', 0, '', '', 'test', NULL, 'test', '2025-05-27', '2025-05-27', '', NULL, 'unverified', 'test', '2025-05-27 12:00:52', NULL, NULL),
 (6, 1004, 'test', 'test', '', NULL, 'test', 'test', 0, '', '', 'test', NULL, 'test', '2025-05-27', '2025-05-27', 'public/product/1.jpg', NULL, 'unverified', 'test', '2025-05-27 12:00:52', NULL, NULL),
-(7, 1005, 'ยางแท่งเกรด A', 'STR Rubber A', 'B2B', 1, 'กิโลกรัม', 'kg', 1, 'กิโลกรัม', 'kg', '65%', '[\"Dirt (Max,% wt) = 0.08\", \"Ash (Max,%wt) =0.60\",\"Volatile Matter (Max,%wt)=0.80\"]', 'ข้อกำหนดเฉพาะกลุ่มผลิตภัณฑ์ยางพาราและผลิตภัณฑ์จากยางพารา', '2025-03-01', '2025-05-31', 'public/product/1.jpg', 1, 'draft', NULL, '2025-05-22 15:54:32', '2025-06-02 00:26:13', '2025-06-02 00:26:13'),
+(7, 1005, 'ยางแท่งเกรด A', 'STR Rubber A', 'B2B', 1, 'กิโลกรัม', 'kg', 1, 'กิโลกรัม', 'kg', '65%', '[\"Dirt (Max,% wt) = 0.08\", \"Ash (Max,%wt) =0.60\",\"Volatile Matter (Max,%wt)=0.80\"]', 'ข้อกำหนดเฉพาะกลุ่มผลิตภัณฑ์ยางพาราและผลิตภัณฑ์จากยางพารา', '2025-03-01', '2025-05-31', 'public/product/1.jpg', 1, 'verified', NULL, '2025-05-22 15:54:32', '2025-06-02 00:26:13', '2025-06-02 00:26:13'),
 (8, 1005, 'test', 'test', '', NULL, 'test', 'test0001', 0, '', '', 'test', NULL, 'test', '2025-05-26', '2025-05-26', NULL, NULL, 'unverified', 'test', '2025-05-27 05:00:52', NULL, NULL);
 
 -- --------------------------------------------------------
@@ -1784,17 +1730,9 @@ CREATE TABLE `self_collect_efs` (
   `product_id` int(11) DEFAULT NULL,
   `self_collect_name` varchar(255) DEFAULT NULL,
   `self_collect_ef` decimal(18,6) DEFAULT NULL,
-  `ratio` float DEFAULT NULL,
   `created_date` datetime DEFAULT NULL,
   `updated_date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `self_collect_efs`
---
-
-INSERT INTO `self_collect_efs` (`self_collect_id`, `company_id`, `product_id`, `self_collect_name`, `self_collect_ef`, `ratio`, `created_date`, `updated_date`) VALUES
-(1, 1005, 7, 'การบำบัดน้ำเสีย', 0.478900, 1, '2025-06-12 23:35:12', '2025-06-12 23:35:12');
 
 -- --------------------------------------------------------
 
@@ -10346,13 +10284,6 @@ ALTER TABLE `cfp_report43_items`
   ADD PRIMARY KEY (`report43_item_id`);
 
 --
--- Indexes for table `cfp_report43_selfcollect_efs`
---
-ALTER TABLE `cfp_report43_selfcollect_efs`
-  ADD PRIMARY KEY (`cfp_report43_selfcollect_efs_id`),
-  ADD KEY `self_collect_id` (`self_collect_id`) USING BTREE;
-
---
 -- Indexes for table `cfp_report44_items`
 --
 ALTER TABLE `cfp_report44_items`
@@ -10446,8 +10377,8 @@ ALTER TABLE `processes`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`product_id`),
-  ADD KEY `auditor_id` (`auditor_id`),
-  ADD KEY `company_id` (`company_id`) USING BTREE;
+  ADD KEY `company_id` (`company_id`),
+  ADD KEY `auditor_id` (`auditor_id`);
 
 --
 -- Indexes for table `product_verify_status`
@@ -10576,12 +10507,6 @@ ALTER TABLE `cfp_report43_items`
   MODIFY `report43_item_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `cfp_report43_selfcollect_efs`
---
-ALTER TABLE `cfp_report43_selfcollect_efs`
-  MODIFY `cfp_report43_selfcollect_efs_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
 -- AUTO_INCREMENT for table `cfp_report44_items`
 --
 ALTER TABLE `cfp_report44_items`
@@ -10681,7 +10606,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `self_collect_efs`
 --
 ALTER TABLE `self_collect_efs`
-  MODIFY `self_collect_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `self_collect_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `subdistricts`
