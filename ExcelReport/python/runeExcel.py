@@ -747,7 +747,7 @@ clean_name = name.replace("Fr04.3 ", "", 1)
 ws43[f"A{row}"] = clean_name
 
 # เติมสีสรุป process
-for row_cells in ws43[f"B{r_start + i+3}:AL{r_start + i+4}"]:
+for row_cells in ws43[f"B{r_start + i+4}:AL{r_start + i+4}"]:
     for cell in row_cells:
         cell.fill = fill_sum
 
