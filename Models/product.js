@@ -8,7 +8,7 @@ const productModel = {
 
         if (file && file.originalname && file.buffer) {
             const filename = `${Date.now()}_${file.originalname}`;
-            const relativePath = path.join('public', 'product', filename);
+            const relativePath = path.join('Public', 'product', filename);
             const uploadPath = path.join(__dirname, '..', relativePath);
 
             await fs.mkdir(path.dirname(uploadPath), { recursive: true });
@@ -46,8 +46,20 @@ const productModel = {
     },
 
     findById: async (product_id) => {
-        const [results] = await db.query('SELECT * FROM products WHERE product_id = ?', [product_id]);
-        return results;
+        const [results] = await db.query(`
+            SELECT p.*, a.name AS editor_name
+            FROM products p
+            LEFT JOIN auditors a ON p.auditor_id = a.auditor_id
+            WHERE p.product_id = ?
+        `, [product_id]);
+        if (results[0] && typeof results[0].product_techinfo === 'string') {
+            try {
+                results[0].product_techinfo_array = JSON.parse(results[0].product_techinfo);
+            } catch {
+                results[0].product_techinfo_array = [];
+            }
+        }
+        return results[0];
     },
 
     updateById: async (product_id, data, file) => {
