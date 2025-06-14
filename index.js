@@ -23,7 +23,11 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use(bodyParser.json());
 
+app.use('/product/image/', express.static(path.join(__dirname, 'Public/product')));
+
 readdirSync('./Routes').map((r) => app.use('/api/v1', require('./Routes/' + r)));
+
+
 
 // เสิร์ฟ static file Excel
 app.use('/download', express.static(path.join(__dirname, 'ExcelReport/output')));

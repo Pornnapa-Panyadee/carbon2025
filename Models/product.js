@@ -42,6 +42,24 @@ const productModel = {
 
     findAll: async () => {
         const [results] = await db.query('SELECT * FROM products');
+        // Add photo_name by extracting the filename from product_photo
+        results.forEach(product => {
+            if (product.product_photo) {
+                product.photo_name = path.basename(product.product_photo);
+            } else {
+                product.photo_name = null;
+            }
+        });
+        // Add photo_name and photo_path by extracting the filename from product_photo
+        results.forEach(product => {
+            if (product.product_photo) {
+                product.photo_name = path.basename(product.product_photo);
+                product.photo_path = `/product/image/${product.photo_name}`;
+            } else {
+                product.photo_name = null;
+                product.photo_path = null;
+            }
+        });
         return results;
     },
 
@@ -58,6 +76,14 @@ const productModel = {
             } catch {
                 results[0].product_techinfo_array = [];
             }
+        }
+        // Add photo_name and photo_path for findById as well
+        if (results[0] && results[0].product_photo) {
+            results[0].photo_name = path.basename(results[0].product_photo);
+            results[0].photo_path = `/product/image/${results[0].photo_name}`;
+        } else if (results[0]) {
+            results[0].photo_name = null;
+            results[0].photo_path = null;
         }
         return results[0];
     },
