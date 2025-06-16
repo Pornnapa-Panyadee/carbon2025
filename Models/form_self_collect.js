@@ -2,7 +2,7 @@ const mysql = require('mysql2');
 const db = require('../Config/db.js');
 
 const selfCollectModel = {
-    create: async (data) => {
+    create: async (selfCollectId, items) => {
         const sql = `
         INSERT INTO cfp_report43_selfcollect_efs (
             self_collect_id, item_name, item_type, item_unit, item_qty, item_fu_qty, item_source, item_ef, item_ef_source, item_ef_source_ref, item_emission,
@@ -11,14 +11,23 @@ const selfCollectModel = {
             transport_emission, total_emission, proportion, ratio, cut_off, add_on_detail, created_date, updated_date
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
         `;
-        const values = [
-            data.self_collect_id, data.item_name, data.item_type, data.item_unit, data.item_qty, data.item_fu_qty, data.item_source, data.item_ef, data.item_ef_source, data.item_ef_source_ref, data.item_emission,
-            data.transport_type, data.type1_gas, data.type1_gas_unit, data.type1_gas_qty, data.type1_ef, data.type1_ef_source, data.type2_distance, data.type2_outbound_load, data.type2_return_load,
-            data.type2_vehicle, data.type2_outbound_load_percent, data.type2_return_load_percent, data.type2_outbound_ef, data.type2_return_ef, data.type2_ef_source, data.type2_ef_source_ref,
-            data.transport_emission, data.total_emission, data.proportion, data.ratio, data.cut_off, data.add_on_detail
-        ];
-        const [result] = await db.query(sql, values);
-        return result;
+
+        for (const item of items) {
+            const values = [
+                selfCollectId,
+                item.item_name, item.item_type, item.item_unit, item.item_qty, item.item_fu_qty,
+                item.item_source, item.item_ef, item.item_ef_source, item.item_ef_source_ref, item.item_emission,
+                item.transport_type, item.type1_gas, item.type1_gas_unit, item.type1_gas_qty, item.type1_ef,
+                item.type1_ef_source, item.type2_distance, item.type2_outbound_load, item.type2_return_load,
+                item.type2_vehicle, item.type2_outbound_load_percent, item.type2_return_load_percent,
+                item.type2_outbound_ef, item.type2_return_ef, item.type2_ef_source, item.type2_ef_source_ref,
+                item.transport_emission, item.total_emission, item.proportion, item.ratio, item.cut_off, item.add_on_detail
+            ];
+
+            await db.query(sql, values);
+        }
+
+        return true;
     },
 
     findById: async (id) => {

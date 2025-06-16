@@ -1,13 +1,29 @@
 const selfcollect = require('../Models/form_self_collect');
+const SelfCollectEf = require('../Models/self_collect');
 
 // Item
+// exports.create = async (req, res) => {
+//     try {
+//         const data = req.body;
+//         const result = await selfcollect.create(data);
+//         res.status(201).json({ message: 'Created successfully', id: result.insertId });
+//     } catch (err) {
+//         res.status(500).json({ error: err.message });
+//     }
+// };
+
 exports.create = async (req, res) => {
     try {
-        const data = req.body;
-        const result = await selfcollect.create(data);
-        res.status(201).json({ message: 'Created successfully', id: result.insertId });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+        const { input = [], output = [], ...mainData } = req.body;
+
+        const result = await SelfCollectEf.create(mainData);
+        const selfCollectId = result.insertId;
+        await selfcollect.create(selfCollectId, [...input, ...output]);
+
+        res.status(201).json({ message: 'Data inserted successfully', self_collect_id: selfCollectId });
+    } catch (error) {
+        console.error('Insert error:', error);
+        res.status(500).json({ message: 'Server error', error });
     }
 };
 
