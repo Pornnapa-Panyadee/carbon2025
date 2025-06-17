@@ -4,7 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const db = require('./Config/db.js');
 const path = require('path');
-const { readdirSync } = require('fs');
+const fs = require('fs');
 
 const app = express();
 const port = 5000;
@@ -12,9 +12,9 @@ const port = 5000;
 (async () => {
     try {
         await db.query('SELECT 1');
-        console.log('Database connection is working.');
+        console.log('✅ Database connection is working.');
     } catch (error) {
-        console.error('Database connection failed:', error);
+        console.error('❌ Database connection failed:', error);
     }
 })();
 
@@ -23,16 +23,30 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use(bodyParser.json());
 
+// Static path for product images
 app.use('/product/image/', express.static(path.join(__dirname, 'Public/product')));
 
-readdirSync('./Routes').map((r) => app.use('/api/v1', require('./Routes/' + r)));
+// Load routes from /Routes (เฉพาะ .js เท่านั้น)
+fs.readdirSync('./Routes')
+    .filter((file) => file.endsWith('.js'))
+    .forEach((file) => {
+        app.use('/api/v1', require(path.join(__dirname, 'Routes', file)));
+    });
 
+// Load routes from /Routes/cbam (เฉพาะ .js เท่านั้น)
+const cbamPath = path.join(__dirname, 'Routes', 'cbam');
+if (fs.existsSync(cbamPath)) {
+    fs.readdirSync(cbamPath)
+        .filter((file) => file.endsWith('.js'))
+        .forEach((file) => {
+            app.use('/api/cbam', require(path.join(cbamPath, file)));
+        });
+}
 
-
-// เสิร์ฟ static file Excel
+// Serve static Excel files
 app.use('/download', express.static(path.join(__dirname, 'ExcelReport/output')));
 
 // Start the server
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+    console.log(`🚀 Server is running on http://localhost:${port}`);
 });
