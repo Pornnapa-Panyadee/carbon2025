@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 13, 2025 at 06:37 PM
+-- Generation Time: Jun 18, 2025 at 03:41 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -42,7 +42,8 @@ CREATE TABLE `auditors` (
 --
 
 INSERT INTO `auditors` (`auditor_id`, `user_id`, `name`, `register_id`, `description`, `created_date`, `updated_date`) VALUES
-(1, 2, 'Test', '123445', 'New', NULL, NULL);
+(1, 2, 'Test', '123445', 'New', NULL, NULL),
+(3, 2, 'นายทดสอบ ระบบ', '123445', 'ขึ้นทะเบียนผู้ตรวจสอบเมื่อวันที่ 10 มิถุนายน 2568', '2025-06-14 09:26:45', '2025-06-14 09:26:45');
 
 -- --------------------------------------------------------
 
@@ -351,7 +352,11 @@ CREATE TABLE `cfp_report43_selfcollect_efs` (
 INSERT INTO `cfp_report43_selfcollect_efs` (`cfp_report43_selfcollect_efs_id`, `self_collect_id`, `item_name`, `item_type`, `item_unit`, `item_qty`, `item_fu_qty`, `item_source`, `item_ef`, `item_ef_source`, `item_ef_source_ref`, `item_emission`, `transport_type`, `type1_gas`, `type1_gas_unit`, `type1_gas_qty`, `type1_ef`, `type1_ef_source`, `type2_distance`, `type2_outbound_load`, `type2_return_load`, `type2_vehicle`, `type2_outbound_load_percent`, `type2_return_load_percent`, `type2_outbound_ef`, `type2_return_ef`, `type2_ef_source`, `type2_ef_source_ref`, `transport_emission`, `total_emission`, `proportion`, `ratio`, `cut_off`, `add_on_detail`, `created_date`, `updated_date`) VALUES
 (1, 1, 'น้ำเสีย', 'input', 'm3', 60000.000000, 1.200000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.\r\n', 0.000000, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-06-12 22:54:22', '2025-06-12 22:54:22'),
 (2, 1, 'ไฟฟ้าจากระบบสายส่งของประเทศ', 'input', 'kWh', 40000.000000, 0.800000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.598600, 'PCR Gen.', 'EF_CFO_UPDATE_Apr 2565 (Electricity, grid mix (ไฟฟ้า))', 0.478900, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.478900, 1, NULL, NULL, NULL, '2025-06-12 23:30:06', '2025-06-12 23:30:06'),
-(3, 1, 'น้ำ Recycle ', 'output', 'm3', 50000.000000, 1.000000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+(3, 1, 'น้ำ Recycle ', 'output', 'm3', 50000.000000, 1.000000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-06-16 21:36:22', '2025-06-16 21:36:22'),
+(5, 5, 'น้ำเสีย', 'input', 'm3', 60000.000000, 1.200000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.\r\n', 0.000000, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-06-16 21:46:12', '2025-06-16 21:46:12'),
+(6, 5, 'ไฟฟ้าจากระบบสายส่งของประเทศ', 'input', 'kWh', 40000.000000, 0.800000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.598600, 'PCR Gen.', 'EF_CFO_UPDATE_Apr 2565 (Electricity, grid mix (ไฟฟ้า))', 0.478900, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.478900, 1, NULL, NULL, NULL, '2025-06-16 21:46:12', '2025-06-16 21:46:12'),
+(7, 5, 'น้ำ Recycle ', 'output', 'm3', 50000.000000, 1.000000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-06-16 21:46:12', '2025-06-16 21:46:12');
 
 -- --------------------------------------------------------
 
@@ -1794,7 +1799,11 @@ CREATE TABLE `self_collect_efs` (
 --
 
 INSERT INTO `self_collect_efs` (`self_collect_id`, `company_id`, `product_id`, `self_collect_name`, `self_collect_ef`, `ratio`, `created_date`, `updated_date`) VALUES
-(1, 1005, 7, 'Fr04.3 กระบวนการบำบัดน้ำเสีย', 0.478900, 1, '2025-06-12 23:35:12', '2025-06-12 23:35:12');
+(1, 1005, 7, 'Fr04.3 กระบวนการบำบัดน้ำเสีย', 0.478900, 1, '2025-06-12 23:35:12', '2025-06-12 23:35:12'),
+(2, 1005, 7, 'Fr04.3 กระบวนการบำบัดน้ำเสีย', 0.478900, 1, '2025-06-16 21:35:54', '2025-06-16 21:35:54'),
+(3, 1005, 7, 'Fr04.3 กระบวนการบำบัดน้ำเสีย', 0.478900, 1, '2025-06-16 21:36:22', '2025-06-16 21:36:22'),
+(4, 1005, 7, 'Fr04.3 กระบวนการบำบัดน้ำเสียtest', 0.478900, 1, '2025-06-16 21:44:16', '2025-06-16 21:44:16'),
+(5, 1005, 7, 'Fr04.3 กระบวนการบำบัดน้ำเสียtest', 0.478900, 1, '2025-06-16 21:46:12', '2025-06-16 21:46:12');
 
 -- --------------------------------------------------------
 
@@ -10211,8 +10220,27 @@ CREATE TABLE `units` (
   `product_unit_id` int(11) NOT NULL,
   `product_unit_name_th` varchar(255) DEFAULT NULL,
   `product_unit_name_en` varchar(255) DEFAULT NULL,
-  `product_unit_abbr` varchar(255) DEFAULT NULL
+  `product_unit_abbr_th` varchar(255) DEFAULT NULL,
+  `product_unit_abbr_eng` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `units`
+--
+
+INSERT INTO `units` (`product_unit_id`, `product_unit_name_th`, `product_unit_name_en`, `product_unit_abbr_th`, `product_unit_abbr_eng`) VALUES
+(1, 'มิลลิกรัม', 'milligram', 'มก.', 'mg'),
+(2, 'กรัม', 'gram', 'ก.', 'g'),
+(3, 'กิโลกรัม', 'kilogram', 'กก.', 'kg'),
+(4, 'ตัน', 'ton', 'ตัน', 't'),
+(5, 'ปอนด์', 'pound', 'ปอนด์', 'lb'),
+(6, 'กิโลวัตต์ชั่วโมง', 'kilowatt-hour', 'กวช.', 'kWh'),
+(7, 'วัตต์', 'watt', 'วัตต์', 'W'),
+(8, 'กิโลวัตต์', 'kilowatt', 'กว.', 'kW'),
+(9, 'ลิตร', 'liter', 'ล.', 'L'),
+(10, 'บาร์เรล', 'barrel', 'บาร์เรล', 'bbl'),
+(11, 'ลูกบาศก์เมตร', 'cubic meter', 'ลบ.ม.', 'm³'),
+(12, 'โมลต่อลิตร', 'mole per liter', 'มล./ล.', 'mol/L');
 
 -- --------------------------------------------------------
 
@@ -10537,7 +10565,7 @@ ALTER TABLE `waste_processes`
 -- AUTO_INCREMENT for table `auditors`
 --
 ALTER TABLE `auditors`
-  MODIFY `auditor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `auditor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `cfp_report5_sums`
@@ -10579,7 +10607,7 @@ ALTER TABLE `cfp_report43_items`
 -- AUTO_INCREMENT for table `cfp_report43_selfcollect_efs`
 --
 ALTER TABLE `cfp_report43_selfcollect_efs`
-  MODIFY `cfp_report43_selfcollect_efs_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `cfp_report43_selfcollect_efs_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `cfp_report44_items`
@@ -10681,7 +10709,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `self_collect_efs`
 --
 ALTER TABLE `self_collect_efs`
-  MODIFY `self_collect_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `self_collect_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `subdistricts`
@@ -10711,7 +10739,7 @@ ALTER TABLE `tgo_ef_subcategories`
 -- AUTO_INCREMENT for table `units`
 --
 ALTER TABLE `units`
-  MODIFY `product_unit_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `product_unit_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `users`
