@@ -6,7 +6,7 @@ const { list, listcat, listsub, listEachsub } = require('../Controllers/tgo');
 
 router.get('/tgo', list);
 router.get('/tgo/categories', listcat);
-router.get('/tgo/categories/:categories', listsub);
-router.get('/tgo/categories/:categories/:subCategory', listEachsub);
+router.get('/tgo/categories/:tgo_ef_cat_id', listsub);
+router.get('/tgo/categories/:tgo_ef_cat_id/:tgo_ef_subcat_id', listEachsub);
 
 module.exports = router; // Export the router

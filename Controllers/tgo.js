@@ -23,7 +23,7 @@ exports.listcat = async (req, res) => {
 
 exports.listsub = async (req, res) => {
     try {
-        const categories = req.params.categories;
+        const categories = req.params.tgo_ef_cat_id;
         const results = await Tgo.findsubcat(categories);
         res.json(results);
     } catch (err) {
@@ -33,8 +33,8 @@ exports.listsub = async (req, res) => {
 
 exports.listEachsub = async (req, res) => {
     try {
-        const categories = req.params.categories;
-        const subCategory = req.params.subCategory;
+        const categories = req.params.tgo_ef_cat_id;
+        const subCategory = req.params.tgo_ef_subcat_id;
         const results = await Tgo.findEachcat(categories, subCategory);
         res.json(results);
     } catch (err) {
