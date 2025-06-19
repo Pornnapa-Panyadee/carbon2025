@@ -45,13 +45,21 @@ const goodsModel = {
         return names;
     },
     findByRoutes: async (name) => {
-        const [rows] = await db.query(`SELECT routes FROM goods_categories WHERE name = ?`, [name]);
+        const [rows] = await db.query(
+            `SELECT routes FROM goods_categories WHERE name = ?`,
+            [name]
+        );
 
-        // แปลงทุก record ให้ field routes เป็น array
-        const transformed = rows.map(item => ({
-            ...item,
-            routes: item.routes ? item.routes.split(',') : []
-        }));
+        // แปลงทุก record ให้ field routes เป็น array พร้อมเพิ่ม count
+        const transformed = rows.map(item => {
+            const routeArray = item.routes ? item.routes.split(',') : [];
+            return {
+                ...item,
+                count: routeArray.length,
+                routes: routeArray
+
+            };
+        });
 
         return transformed;
     },
