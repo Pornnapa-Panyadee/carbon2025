@@ -9,6 +9,16 @@ exports.listcncodes = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.listcncodesbygoodsid = async (req, res) => {
+    try {
+        const results = await Country.findByGoods(req.params.goods_id);
+        res.json(results);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 exports.listcncodesById = async (req, res) => {
     try {
         const results = await Country.findCNcodeById(req.params.id);

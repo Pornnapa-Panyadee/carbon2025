@@ -37,17 +37,15 @@ const goodsModel = {
         return result;
     },
 
-    findByName: async (name) => {
-        const [rows] = await db.query(`SELECT id FROM industry_types WHERE name = ?`, [name]);
-        if (!rows.length) return [];
-        const industryId = rows[0].id;
-        const [names] = await db.query(`SELECT name FROM goods_categories WHERE industry_type_id  = ?`, [industryId]);
+    findByName: async (id) => {
+
+        const [names] = await db.query(`SELECT * FROM goods_categories WHERE industry_type_id  = ?`, [id]);
         return names;
     },
-    findByRoutes: async (name) => {
+    findByRoutes: async (id) => {
         const [rows] = await db.query(
-            `SELECT routes FROM goods_categories WHERE name = ?`,
-            [name]
+            `SELECT routes FROM goods_categories WHERE industry_type_id = ?`,
+            [id]
         );
 
         // แปลงทุก record ให้ field routes เป็น array พร้อมเพิ่ม count
@@ -63,8 +61,8 @@ const goodsModel = {
 
         return transformed;
     },
-    findByRelevantPrecursors: async (name) => {
-        const [rows] = await db.query(`SELECT relevant_precursors  FROM goods_categories WHERE name = ?`, [name]);
+    findByRelevantPrecursors: async (id) => {
+        const [rows] = await db.query(`SELECT relevant_precursors  FROM goods_categories WHERE industry_type_id = ?`, [id]);
         const transformed = rows.map(item => ({
             ...item,
             relevant_precursors: item.relevant_precursors ? item.relevant_precursors.split(',') : []

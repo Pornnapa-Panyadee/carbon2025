@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router(); // Use router instead of app
 
 const { listcncodes,
+    listcncodesbygoodsid,
     listsrcelectconsumptions,
     listsrcefelectricitys,
     listjustification,
@@ -14,6 +15,7 @@ const { listcncodes,
 
 // Province
 router.get('/cncodes', listcncodes);
+router.get('/cncodes/:goods_id', listcncodesbygoodsid);
 router.get('/srcelectconsumptions', listsrcelectconsumptions);
 router.get('/srcefelectricitys', listsrcefelectricitys);
 router.get('/justification', listjustification);

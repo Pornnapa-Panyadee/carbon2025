@@ -5,6 +5,10 @@ const dropDownModel = {
         const [rows] = await db.query(`SELECT * FROM cn_codes`);
         return rows;
     },
+    findByGoods: async (goodsId) => {
+        const [rows] = await db.query(`SELECT * FROM cn_codes WHERE goods_category_id = ?`, [goodsId]);
+        return rows;
+    },
     findAllSrcelectconsumptions: async () => {
         const [rows] = await db.query(`SELECT * FROM src_electricity_comsuptions`);
         return rows;

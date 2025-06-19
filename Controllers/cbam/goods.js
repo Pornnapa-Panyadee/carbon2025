@@ -21,7 +21,7 @@ exports.listAll = async (req, res) => {
 
 exports.listByName = async (req, res) => {
     try {
-        const results = await Goods.findByName(req.params.name);
+        const results = await Goods.findByName(req.params.id);
         res.json(results);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -30,7 +30,7 @@ exports.listByName = async (req, res) => {
 
 exports.listByRoutes = async (req, res) => {
     try {
-        const results = await Goods.findByRoutes(req.params.name);
+        const results = await Goods.findByRoutes(req.params.id);
         res.json(results);
     } catch (err) {
         res.status(500).json({ error: err.message });

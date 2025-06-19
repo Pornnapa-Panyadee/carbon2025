@@ -6,9 +6,9 @@ const { list, listAll, listByName, listByRoutes, listByRelevantPrecursors } = re
 // Province
 router.get('/industry_types', list);
 router.get('/goods', listAll);
-router.get('/goods/name/:name', listByName);
-router.get('/goods/routes/:name', listByRoutes);
-router.get('/goods/relevant/:name', listByRelevantPrecursors);
+router.get('/goods/:id', listByName);
+router.get('/goods/routes/:id', listByRoutes);
+router.get('/goods/relevant/:id', listByRelevantPrecursors);
 
 
 
