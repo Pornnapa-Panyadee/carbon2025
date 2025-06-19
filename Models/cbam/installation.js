@@ -16,6 +16,11 @@ const Report = {
         const [result] = await db.query(query, [id]);
         return result;
     },
+    readAll: async () => {
+        const query = 'SELECT * FROM installations ';
+        const [result] = await db.query(query);
+        return result;
+    },
     deleteById: async (id) => {
         const query = 'DELETE FROM installations WHERE id = ?';
         const [result] = await db.query(query, [id]);

@@ -33,6 +33,16 @@ exports.readperId = async (req, res) => {
     }
 };
 
+exports.readAll = async (req, res) => {
+    try {
+        const results = await Installation.readAll();
+        res.json(results);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+
 exports.deleteById = async (req, res) => {
     try {
         const id = req.params.id;
