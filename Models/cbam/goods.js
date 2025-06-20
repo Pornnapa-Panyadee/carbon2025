@@ -2,7 +2,7 @@ const db = require('../../Config/dbCbam.js');
 
 const goodsModel = {
     findAll: async () => {
-        const [rows] = await db.query(`SELECT name FROM industry_types`);
+        const [rows] = await db.query(`SELECT * FROM industry_types`);
         return rows;
     },
 
