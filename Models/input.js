@@ -10,7 +10,11 @@ const inputModel = {
     },
 
     findAll: async () => {
-        const [rows] = await db.query(`SELECT * FROM input_categories`);
+        const [rows] = await db.query(`
+            SELECT input_cat_id , input_title As category_names , GROUP_CONCAT(input_cat_name_TH ORDER BY input_cat_id) AS Notes
+            FROM input_categories
+            GROUP BY input_title
+        `);
         return rows;
     },
 
