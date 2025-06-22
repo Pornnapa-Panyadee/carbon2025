@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router(); // Use router instead of app
 
-const { list } = require('../Controllers/dropdown'); // Import the list function from Controllers/dropdown.js
+const { list, listIndustrials } = require('../Controllers/dropdown'); // Import the list function from Controllers/dropdown.js
 
 // Unit
 router.get('/units', list);
+router.get('/industrials', listIndustrials);
 
 router.get('/rounded', (req, res) => {
     const data = [
@@ -31,6 +32,8 @@ router.get('/rounded', (req, res) => {
     ];
     res.json(data);
 });
+
+
 
 
 module.exports = router; // Export the router

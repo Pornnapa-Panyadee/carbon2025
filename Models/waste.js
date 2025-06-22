@@ -36,16 +36,9 @@ const wasteModel = {
 
     // waste Process
     createProcess: async (data) => {
-        const sql = `INSERT INTO waste_processes (process_id, waste_cat_id, waste_name, waste_unit, waste_qty, life_cycle_phase, created_date, updated_date) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())`;
-        const [results] = await db.query(sql, [
-            data.process_id,
-            data.waste_cat_id,
-            data.waste_name,
-            data.waste_unit,
-            data.waste_qty,
-            data.life_cycle_phase
-        ]);
-        return results;
+        const query = 'INSERT INTO waste_processes SET ?, created_date = NOW(), updated_date = NOW() ';
+        const [result] = await db.query(query, data);
+        return result;
     },
 
     findAllProcess: async () => {

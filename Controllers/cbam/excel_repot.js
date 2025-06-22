@@ -12,3 +12,30 @@ exports.readperIdreport = async (req, res) => {
     }
 };
 
+exports.getExcelReportWithValues = async (req, res) => {
+    const { report_id } = req.params;
+
+    try {
+        const metadata = await Excelreport.getAllExcelReportMeta();
+        const enriched = [];
+
+        for (const item of metadata) {
+            const value = await Excelreport.getValueFromTable(
+                item.table_db,
+                item.variable,
+                report_id
+            );
+
+            enriched.push({
+                ...item,
+                value
+            });
+        }
+
+        res.json(enriched);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+

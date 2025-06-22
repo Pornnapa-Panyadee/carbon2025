@@ -36,16 +36,9 @@ const outputModel = {
 
     // Output Process
     createProcess: async (data) => {
-        const sql = `INSERT INTO output_processes (process_id, output_cat_id, output_name, output_unit, output_quantity, life_cycle_phase, created_date, updated_date) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())`;
-        const [results] = await db.query(sql, [
-            data.process_id,
-            data.output_cat_id,
-            data.output_name,
-            data.output_unit,
-            data.output_quantity,
-            data.life_cycle_phase
-        ]);
-        return results;
+        const query = 'INSERT INTO output_processes SET ?, created_date = NOW(), updated_date = NOW() ';
+        const [result] = await db.query(query, data);
+        return result;
     },
 
     findAllProcess: async () => {

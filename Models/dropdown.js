@@ -8,6 +8,10 @@ const dropDownModel = {
         return rows;
     },
 
+    listIndustrials: async () => {
+        const [rows] = await db.query(`SELECT * FROM industrials`);
+        return rows;
+    },
 }
 
 module.exports = dropDownModel;
