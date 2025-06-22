@@ -24,7 +24,6 @@ CREATE DATABASE IF NOT EXISTS cbamdb;
 USE cbamdb;
 
 -- --------------------------------------------------------
-
 --
 -- Table structure for table `ad_units`
 --
