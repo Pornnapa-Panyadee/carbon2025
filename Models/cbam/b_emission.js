@@ -2,7 +2,7 @@ const db = require('../../Config/dbCbam.js');
 
 const Report = {
     create: async (data) => {
-        const query = 'INSERT INTO b_emission_installations SET ?';
+        const query = 'INSERT INTO b_emission_installations SET ?, created_at = NOW(), updated_at = NOW() ';
         const [result] = await db.query(query, data);
         return result;
     },

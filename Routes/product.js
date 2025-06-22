@@ -12,6 +12,8 @@ router.get('/product/:product_id', read);
 router.put('/product/:product_id', upload.single('product_photo'), update);
 router.delete('/product/:product_id', remove);
 
+// router.use('/product', express.static(path.join(__dirname, 'Public/product')));
+
 // router.put('/product/photo/:product_id', updatePhoto);
 
 

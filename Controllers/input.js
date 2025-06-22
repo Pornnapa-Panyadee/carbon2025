@@ -25,7 +25,7 @@ exports.create = async (req, res) => {
     try {
         const data = req.body;
         const result = await Input.create(data);
-        res.status(201).json({ message: 'Input category created', InputId: result.insertId });
+        res.status(201).json({ message: 'Input  created', InputId: result.insertId });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

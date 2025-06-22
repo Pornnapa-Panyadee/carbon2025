@@ -2,19 +2,11 @@ const db = require('../Config/db.js');
 
 
 const processModel = {
+
     create: async (data) => {
-        const sql = `
-            INSERT INTO processes (
-                product_id, ordering, process_name, mass_balanced, created_date, updated_date
-            ) VALUES (?, ?, ?,  ?, NOW(), NOW())
-        `;
-        const [results] = await db.query(sql, [
-            data.product_id,
-            data.ordering,
-            data.process_name,
-            data.mass_balanced
-        ]);
-        return results;
+        const query = 'INSERT INTO processes SET ?, created_date = NOW(), updated_date = NOW() ';
+        const [result] = await db.query(query, data);
+        return result;
     },
 
     findAll: async () => {
@@ -31,6 +23,12 @@ const processModel = {
         const [rows] = await db.query('SELECT * FROM processes WHERE product_id = ?', [id]);
         return rows || null;
     },
+
+    // updateById: async (data) => {
+    //     const query = 'UPDATE processes SET ? WHERE id = ?';
+    //     const [result] = await db.query(query, [data, data.id]);
+    //     return result;
+    // },
 
 
     updateById: async (id, data) => {

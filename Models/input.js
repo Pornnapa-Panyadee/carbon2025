@@ -35,18 +35,24 @@ const inputModel = {
     },
 
     // Input Process
+    // createProcess: async (data) => {
+    //     const sql = `INSERT INTO input_processes (process_id, input_cat_id, input_name, input_unit, input_quantity, life_cycle_phase, created_date, updated_date) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())`;
+    //     const [results] = await db.query(sql, [
+    //         data.process_id,
+    //         data.input_cat_id,
+    //         data.input_name,
+    //         data.input_unit,
+    //         data.input_quantity,
+    //         data.life_cycle_phase
+    //     ]);
+    //     return results;
+    // },
     createProcess: async (data) => {
-        const sql = `INSERT INTO input_processes (process_id, input_cat_id, input_name, input_unit, input_quantity, life_cycle_phase, created_date, updated_date) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())`;
-        const [results] = await db.query(sql, [
-            data.process_id,
-            data.input_cat_id,
-            data.input_name,
-            data.input_unit,
-            data.input_quantity,
-            data.life_cycle_phase
-        ]);
-        return results;
+        const query = 'INSERT INTO input_processes SET ?, created_date = NOW(), updated_date = NOW() ';
+        const [result] = await db.query(query, data);
+        return result;
     },
+
 
     findAllProcess: async () => {
         const [rows] = await db.query(`SELECT * FROM input_processes`);
