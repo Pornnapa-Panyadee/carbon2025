@@ -61,10 +61,12 @@ const outputModel = {
             output_name = process.output_name,
             output_unit = process.output_unit,
             output_quantity = process.output_quantity,
-            life_cycle_phase = process.life_cycle_phase
+            finish_output = process.finish_output,
+            packaging_output = process.packaging_output
+
         } = data;
         const sql = `UPDATE output_processes SET process_id = ?, output_cat_id = ?, output_name = ?, output_unit = ?, output_quantity = ?, life_cycle_phase = ? WHERE output_process_id = ?`;
-        const [result] = await db.query(sql, [process_id, output_cat_id, output_name, output_unit, output_quantity, life_cycle_phase, id]);
+        const [result] = await db.query(sql, [process_id, output_cat_id, output_name, output_unit, output_quantity, finish_output, packaging_output, id]);
         return result;
     },
 
