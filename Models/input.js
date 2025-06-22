@@ -11,13 +11,14 @@ const inputModel = {
 
     findAll: async () => {
         const [rows] = await db.query(`
-            SELECT input_cat_id , input_title As category_names , GROUP_CONCAT(input_cat_name_TH ORDER BY input_cat_id) AS Notes
+            SELECT MIN(input_cat_id) AS input_cat_id,
+                   input_title AS category_names,
+                   GROUP_CONCAT(input_cat_name_TH ORDER BY input_cat_id) AS Notes
             FROM input_categories
             GROUP BY input_title
         `);
         return rows;
     },
-
     findById: async (id) => {
         const [rows] = await db.query('SELECT * FROM input_categories WHERE input_cat_id = ?', [id]);
         return rows[0] || null;
