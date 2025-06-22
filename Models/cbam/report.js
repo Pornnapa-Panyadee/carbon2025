@@ -37,7 +37,6 @@ const Report = {
         return result;
     },
 
-
     readperIDuser: async (id) => {
 
         const query = `
@@ -47,7 +46,9 @@ const Report = {
                 v.name AS verifier_name,
                 it.name AS industry_type_name,
                 gc.name AS goods_category_name,
-                cn.name AS name
+                cn.name AS name,
+                cn.cn_code AS cncode
+
             FROM reports r
             LEFT JOIN installations i ON r.installation_id = i.id
             LEFT JOIN verifiers v ON r.verifier_id = v.id
@@ -60,6 +61,7 @@ const Report = {
         const [result] = await db.query(query, [id]);
         return result;
     },
+
     deleteById: async (id) => {
         const query = 'DELETE FROM reports WHERE id = ?';
         const [result] = await db.query(query, [id]);
