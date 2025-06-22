@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `cbamdb`
 --
+CREATE DATABASE IF NOT EXISTS cbamdb;
+USE cbamdb;
 
 -- --------------------------------------------------------
 
