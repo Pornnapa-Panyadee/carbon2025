@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 18, 2025 at 04:34 PM
+-- Generation Time: Jun 22, 2025 at 07:46 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.1.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -1524,7 +1524,8 @@ INSERT INTO `input_processes` (`input_process_id`, `process_id`, `input_cat_id`,
 (13, 8, 11, 'Biogas', 'm3', 52500, 0, '2025-05-30 16:27:13', '2025-05-30 16:27:13', 3),
 (14, 9, 7, 'พลาสติกห่อยาง (LLDPE)', 'kg', 21000, 0, '2025-05-30 16:33:21', '2025-05-30 16:33:21', 3),
 (15, 9, 7, 'พลาสติกรอง/คลุมยาง (LDPE)', 'kg', 10500, 0, '2025-05-30 16:20:42', '2025-05-30 16:20:42', 3),
-(16, 9, 9, 'LPG', 'kg', 1050, 0, '2025-05-30 16:34:48', '2025-05-30 16:34:48', 2);
+(16, 9, 9, 'LPG', 'kg', 1050, 0, '2025-05-30 16:34:48', '2025-05-30 16:34:48', 2),
+(23, 6, 7, 'ยางก้อนถ้วย (55%DRC)', 'kg', 1133333.33, 0, '2025-06-22 12:27:28', '2025-06-22 12:27:28', NULL);
 
 -- --------------------------------------------------------
 
@@ -1892,7 +1893,7 @@ INSERT INTO `processes` (`process_id`, `product_id`, `ordering`, `process_name`,
 (2, 4, NULL, 'ABS', 1, NULL, NULL),
 (4, 4, NULL, 'ABCD', 0, '2025-05-29 10:34:10', '2025-05-29 10:34:49'),
 (5, 6, 1, 'กระบวนการล้าง, รีด, ตาก, ตัดย่อย \r\n', 1, NULL, NULL),
-(6, 7, 1, 'กระบวนการรับและเตรียมวัตถุดิบ ', 1, '2025-05-30 15:59:24', '2025-06-05 11:52:25'),
+(6, 7, 2, 'กระบวนการรับและเตรียมวัตถุดิบ ', 1, '2025-05-30 15:59:24', '2025-06-22 12:35:35'),
 (7, 7, 2, 'กระบวนการล้าง, รีด, ตาก, ตัดย่อย ', 2, '2025-05-30 16:05:56', '2025-05-30 16:05:56'),
 (8, 7, 3, 'กระบวนการอบ บด เป่าเย็น \r\n', 3, '2025-05-30 16:07:04', '2025-05-30 16:07:04'),
 (9, 7, 4, 'กระบวนการ Packing ', 4, '2025-05-30 16:09:19', '2025-05-30 16:09:19'),
@@ -10959,7 +10960,7 @@ ALTER TABLE `input_categories`
 -- AUTO_INCREMENT for table `input_processes`
 --
 ALTER TABLE `input_processes`
-  MODIFY `input_process_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `input_process_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `output_categories`
