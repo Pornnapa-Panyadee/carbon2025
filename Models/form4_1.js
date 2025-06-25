@@ -194,6 +194,89 @@ const form41Model = {
             process: processResults,
             report41Sum: report41SumResults
         };
+    },
+
+    setInputFr04: async (company_id, product_id) => {
+        const productQuery = 'SELECT * FROM products WHERE product_id = ?';
+        const companyQuery = 'SELECT * FROM companies WHERE company_id = ?';
+        const processQuery = 'SELECT * FROM processes WHERE product_id = ? ORDER BY `processes`.`ordering` ASC';
+
+        const inputQuery = `
+                    SELECT DISTINCT  ip.*, ic.input_title_id, ic.input_title,ic.input_cat_name_TH, ic.input_cat_name
+                    FROM input_processes ip
+                    LEFT JOIN input_categories ic ON ip.input_title_id = ic.input_title_id
+                    WHERE ip.process_id = ?
+                `;
+
+        const outputQuery = `
+                    SELECT DISTINCT  op.*, oc.output_cat_name, oc.output_cat_name
+                    FROM output_processes op
+                    LEFT JOIN output_categories oc ON op.output_cat_id = oc.output_cat_id
+                    WHERE op.process_id = ?
+                `;
+
+        const wastetQuery = `
+                    SELECT DISTINCT  op.*, oc.waste_cat_name, oc.waste_cat_name
+                    FROM waste_processes op
+                    LEFT JOIN waste_categories oc ON op.waste_cat_id = oc.waste_cat_id
+                    WHERE op.process_id = ?
+                `;
+
+        // 1. Company
+        const [companyResults] = await db.query(companyQuery, [company_id]);
+        if (!companyResults.length) throw new Error('Company not found');
+
+        // 2. Product
+        const [productResults] = await db.query(productQuery, [product_id]);
+        if (!productResults.length) throw new Error('Product not found');
+
+        // 3. Process
+        const [processResults] = await db.query(processQuery, [product_id]);
+        if (!processResults.length) throw new Error('Process not found');
+
+        // 4. For each process, get inputs, outputs, wastes
+        const phases = [1, 2];
+        const form41Input = await Promise.all(phases.map(async (phase) => {
+            const processes = await Promise.all(processResults.map(async (process) => {
+                // Inputs
+                const [inputResults] = await db.query(inputQuery, [process.process_id]);
+                // Outputs
+                const [outputResults] = await db.query(outputQuery, [process.process_id]);
+                // Wastes
+                const [wastetResults] = await db.query(wastetQuery, [process.process_id]);
+
+                const rawInputs = inputResults.filter(item => item.input_title === "วัตถุดิบ");
+
+                if (phase === 1) {
+                    // phase 1: input เฉพาะ "วัตถุดิบ"
+                    const rawInputs = inputResults.filter(item => item.input_title === "วัตถุดิบ");
+                    return {
+                        ...process,
+                        life_cycle_phase: 1,
+                        input: rawInputs
+                        // output, waste ไม่ต้องใส่หรือใส่เป็น [] ก็ได้
+                    };
+                } else if (phase === 2) {
+                    // phase 2: input, output, waste ครบ
+                    return {
+                        ...process,
+                        life_cycle_phase: 2,
+                        input: inputResults,
+                        output: outputResults,
+                        waste: wastetResults
+                    };
+                }
+            }
+            ));
+
+            return {
+                life_cycle_phase: phase,
+                processes
+            };
+        }));
+
+        return [form41Input];
+
     }
 };
 

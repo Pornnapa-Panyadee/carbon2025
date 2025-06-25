@@ -108,3 +108,17 @@ exports.read_form = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.read_f03 = async (req, res) => {
+    try {
+        const company_id = parseInt(req.params.company_id, 10);
+        const product_id = parseInt(req.params.product_id, 10);
+        const results = await Form41.setInputFr04(company_id, product_id);
+        if (!results || !results.length) {
+            return res.status(404).json({ message: 'Product and Company not found' });
+        }
+        res.json(results[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
