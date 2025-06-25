@@ -19,6 +19,4 @@ router.delete('/f4-1/sum/:id', remove_sum);
 router.get('/f4-1/report/:id', read_form);
 router.get('/f4-1/form/:company_id/:product_id', read_f03);
 
-
-
 module.exports = router; // Export the router

@@ -238,13 +238,9 @@ const form41Model = {
         const phases = [1, 2];
         const form41Input = await Promise.all(phases.map(async (phase) => {
             const processes = await Promise.all(processResults.map(async (process) => {
-                // Inputs
                 const [inputResults] = await db.query(inputQuery, [process.process_id]);
-                // Outputs
                 const [outputResults] = await db.query(outputQuery, [process.process_id]);
-                // Wastes
                 const [wastetResults] = await db.query(wastetQuery, [process.process_id]);
-
                 const rawInputs = inputResults.filter(item => item.input_title === "วัตถุดิบ");
 
                 if (phase === 1) {
