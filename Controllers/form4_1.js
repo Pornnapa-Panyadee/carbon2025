@@ -109,6 +109,18 @@ exports.read_form = async (req, res) => {
     }
 };
 
+exports.read_formweb = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id, 10);
+        if (isNaN(id)) return res.status(400).json({ error: 'Invalid ID' });
+        const result = await Form41.getFormByIdweb(id);
+        if (!result) return res.status(404).json({ error: 'Not found' });
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 exports.read_f03 = async (req, res) => {
     try {
         const company_id = parseInt(req.params.company_id, 10);
