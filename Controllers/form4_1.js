@@ -134,3 +134,22 @@ exports.read_f03 = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+
+exports.readByItem = async (req, res) => {
+    const { life_cycle_phase, company_id, product_id, class: className, item_id } = req.params;
+
+    try {
+        const result = await Form41.readByItem({
+            life_cycle_phase,
+            company_id,
+            product_id,
+            className,
+            item_id
+        });
+
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};

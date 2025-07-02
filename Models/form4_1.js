@@ -400,7 +400,45 @@ const form41Model = {
         // return [groupedResult];
     },
 
+    readByItem: async ({ life_cycle_phase, company_id, product_id, className, item_id }) => {
+        const classLower = className.toLowerCase();
 
+        let processRowQuery = '';
+        let processItem = null;
+        let process_id = null;
+
+        // Step 1: หาจาก process table
+        if (classLower === 'input') {
+            [[processItem]] = await db.query(`SELECT * FROM input_processes WHERE input_process_id = ?`, [item_id]);
+        } else if (classLower === 'output') {
+            [[processItem]] = await db.query(`SELECT * FROM output_processes WHERE output_process_id = ?`, [item_id]);
+        } else if (classLower === 'waste') {
+            [[processItem]] = await db.query(`SELECT * FROM waste_processes WHERE waste_process_id = ?`, [item_id]);
+        } else {
+            throw new Error('Invalid class');
+        }
+
+        if (!processItem) {
+            throw new Error(`No process found with ID ${item_id}`);
+        }
+
+        process_id = processItem.process_id;
+
+        // Step 2: หาจาก cfp_report41_items
+        const [items] = await db.query(`
+          SELECT * FROM cfp_report41_items
+          WHERE life_cycle_phase = ? AND company_id = ? AND product_id = ? AND process_id = ? AND production_class = ?
+        `, [life_cycle_phase, company_id, product_id, process_id, classLower]);
+
+        if (!items || items.length === 0) {
+            throw new Error('Item from cfp_report41_items not found');
+        }
+
+        return {
+            itemInfo: items[0],
+            processDetails: processItem
+        };
+    },
 
 
 };
