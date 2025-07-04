@@ -54,21 +54,29 @@ const outputModel = {
     updateByIdProcess: async (id, data) => {
         const [rows] = await db.query('SELECT * FROM output_processes WHERE output_process_id = ?', [id]);
         if (!rows || rows.length === 0) throw new Error('Output process not found');
-        const process = rows[0];
-        const {
-            process_id = process.process_id,
-            output_cat_id = process.output_cat_id,
-            output_name = process.output_name,
-            output_unit = process.output_unit,
-            output_quantity = process.output_quantity,
-            finish_output = process.finish_output,
-            packaging_output = process.packaging_output
 
-        } = data;
-        const sql = `UPDATE output_processes SET process_id = ?, output_cat_id = ?, output_name = ?, output_unit = ?, output_quantity = ?, life_cycle_phase = ? WHERE output_process_id = ?`;
-        const [result] = await db.query(sql, [process_id, output_cat_id, output_name, output_unit, output_quantity, finish_output, packaging_output, id]);
+        // ตรวจสอบว่า data มีข้อมูลให้ update หรือไม่
+        if (!data || Object.keys(data).length === 0) {
+            throw new Error('No fields to update');
+        }
+
+        // สร้าง SQL fields และ values จาก data
+        const fields = [];
+        const values = [];
+
+        for (const [key, value] of Object.entries(data)) {
+            fields.push(`${key} = ?`);
+            values.push(value);
+        }
+
+        // ต่อท้าย WHERE
+        const sql = `UPDATE output_processes SET ${fields.join(', ')} WHERE output_process_id = ?`;
+        values.push(id); // id เป็นเงื่อนไขสุดท้าย
+
+        const [result] = await db.query(sql, values);
         return result;
     },
+
 
     deleteByIdProcess: async (id) => {
         const [result] = await db.query('DELETE FROM output_processes WHERE output_process_id = ?', [id]);

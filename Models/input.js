@@ -72,17 +72,24 @@ const inputModel = {
     updateByIdProcess: async (id, data) => {
         const [rows] = await db.query('SELECT * FROM input_processes WHERE input_process_id = ?', [id]);
         if (!rows || rows.length === 0) throw new Error('Input process not found');
-        const process = rows[0];
-        const {
-            process_id = process.process_id,
-            input_cat_id = process.input_cat_id,
-            input_name = process.input_name,
-            input_unit = process.input_unit,
-            input_quantity = process.input_quantity,
-            life_cycle_phase = process.life_cycle_phase
-        } = data;
-        const sql = `UPDATE input_processes SET process_id = ?, input_cat_id = ?, input_name = ?, input_unit = ?, input_quantity = ?, life_cycle_phase = ? WHERE input_process_id = ?`;
-        const [result] = await db.query(sql, [process_id, input_cat_id, input_name, input_unit, input_quantity, life_cycle_phase, id]);
+
+        // สร้าง SQL และ parameters แบบไดนามิก
+        const fields = [];
+        const values = [];
+
+        for (const [key, value] of Object.entries(data)) {
+            fields.push(`${key} = ?`);
+            values.push(value);
+        }
+
+        if (fields.length === 0) {
+            throw new Error('No fields to update');
+        }
+
+        const sql = `UPDATE input_processes SET ${fields.join(', ')} WHERE input_process_id = ?`;
+        values.push(id); // id ใส่ไว้ตัวสุดท้ายใน values ตามตำแหน่ง `?`
+
+        const [result] = await db.query(sql, values);
         return result;
     },
 

@@ -264,7 +264,7 @@ const form41Model = {
                     // phase 2: input, output, waste ครบ
                     return {
                         ...process,
-                        tem: [...inputResults, ...outputResults, ...wastetResults]
+                        item: [...inputResults, ...outputResults, ...wastetResults]
                     };
                 } else if (phase === 3) {
                     return {

@@ -101,6 +101,14 @@ const selfCollectModel = {
         }];
     },
 
+    listselfcollect: async (id) => {
+        const sql = 'SELECT * FROM self_collect_efs WHERE company_id = ?';
+        const [rows] = await db.query(sql, [id]);
+        return [rows];
+    },
+
+
+
 };
 
 module.exports = selfCollectModel;

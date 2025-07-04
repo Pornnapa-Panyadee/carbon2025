@@ -1,16 +1,6 @@
 const selfcollect = require('../Models/form_self_collect');
 const SelfCollectEf = require('../Models/self_collect');
 
-// Item
-// exports.create = async (req, res) => {
-//     try {
-//         const data = req.body;
-//         const result = await selfcollect.create(data);
-//         res.status(201).json({ message: 'Created successfully', id: result.insertId });
-//     } catch (err) {
-//         res.status(500).json({ error: err.message });
-//     }
-// };
 
 exports.create = async (req, res) => {
     try {
@@ -71,6 +61,19 @@ exports.list = async (req, res) => {
         const results = await selfcollect.findByProductIdSelf(company_id, product_id);
         if (!results || !results.length) {
             return res.status(404).json({ message: 'Product and Company not found' });
+        }
+        res.json(results[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.listselfcollect = async (req, res) => {
+    try {
+        const company_id = req.params.company_id;
+        const results = await selfcollect.listselfcollect(company_id);
+        if (!results || !results.length) {
+            return res.status(404).json({ message: 'Company not found' });
         }
         res.json(results[0]);
     } catch (err) {
