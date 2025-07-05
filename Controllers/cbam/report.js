@@ -54,3 +54,23 @@ exports.deleteById = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+
+exports.deleteByReportId = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).json({ message: 'Missing report ID' });
+        }
+
+        const result = await Report.deleteByAllReportId(id);
+
+        res.json({
+            message: result.message || 'Deleted report and related data successfully'
+        });
+    } catch (err) {
+        console.error('Delete Report Error:', err);
+        res.status(500).json({ error: err.message || 'Internal server error' });
+    }
+};

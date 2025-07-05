@@ -108,6 +108,64 @@ const selfCollectModel = {
     },
 
 
+    listSelfCollectId: async (company_id, self_collect_id) => {
+        const selfQuery = 'SELECT * FROM self_collect_efs WHERE self_collect_id = ? AND company_id = ?';
+
+        const inputQuery = `
+                SELECT DISTINCT  *
+                FROM cfp_report43_selfcollect_efs 
+                WHERE self_collect_id = ?
+            `;
+
+        // 1. Company
+        const [companyResults] = await db.query(selfQuery, [self_collect_id, company_id]);
+        if (!companyResults.length) throw new Error('Company not found');
+
+        // 4. For each process, get inputs, outputs, wastes
+        const processes = await Promise.all(companyResults.map(async (process) => {
+            // Inputs & Outputs
+            const [inputResults] = await db.query(inputQuery, [process.self_collect_id]);
+
+            // แยก input และ output ตาม item_type
+            const inputs = inputResults.filter(item => item.item_type === 'input');
+            const outputs = inputResults.filter(item => item.item_type === 'output');
+
+            return {
+                ...process,
+                input: inputs,
+                output: outputs,
+            };
+        }));
+
+        return [{
+            processes
+        }];
+    },
+
+    updateSelfCollectItem: async (data) => {
+        const { cfp_report43_selfcollect_efs_id, ...updateFields } = data;
+
+        const query = `
+            UPDATE cfp_report43_selfcollect_efs
+            SET ?, updated_date = NOW()
+            WHERE cfp_report43_selfcollect_efs_id = ?
+        `;
+
+        const [result] = await db.query(query, [updateFields, cfp_report43_selfcollect_efs_id]);
+
+        return result;
+    },
+
+    deleteSelfCollect: async (self_collect_id) => {
+        await db.query('DELETE FROM cfp_report43_selfcollect_efs WHERE self_collect_id = ?', [self_collect_id]);
+        await db.query('DELETE FROM self_collect_efs WHERE self_collect_id = ?', [self_collect_id]);
+    },
+
+
+
+
+
+
 
 };
 

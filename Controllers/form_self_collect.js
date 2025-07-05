@@ -80,3 +80,55 @@ exports.listselfcollect = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.listSelfCollectId = async (req, res) => {
+    try {
+        const company_id = req.params.company_id;
+        const self_collect_id = req.params.self_collect_id;
+        const results = await selfcollect.listSelfCollectId(company_id, self_collect_id);
+        if (!results || !results.length) {
+            return res.status(404).json({ message: 'Product and Company not found' });
+        }
+        res.json(results[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.updateSelfCollectItem = async (req, res) => {
+    try {
+        const item = req.body;
+
+        // ตรวจสอบว่า id มีส่งมาหรือไม่
+        if (!item.cfp_report43_selfcollect_efs_id) {
+            return res.status(400).json({ message: 'Missing cfp_report43_selfcollect_efs_id' });
+        }
+
+        const result = await selfcollect.updateSelfCollectItem(item);
+
+        // ตรวจสอบว่าแถวถูกอัปเดตหรือไม่
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Item not found' });
+        }
+
+        res.json({ message: 'Item updated successfully', result });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.deleteSelfCollect = async (req, res) => {
+    try {
+        const { self_collect_id } = req.params;
+
+        if (!self_collect_id) {
+            return res.status(400).json({ message: 'Missing self_collect_id' });
+        }
+
+        await selfcollect.deleteSelfCollect(self_collect_id);
+
+        res.json({ message: 'Deleted self_collect_efs items successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
