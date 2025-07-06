@@ -132,3 +132,117 @@ exports.deleteSelfCollect = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+
+exports.createProcessSC = async (req, res) => {
+    try {
+        const data = req.body;
+        const result = await SelfCollectEf.createProcessSC(data);
+        res.status(201).json({ message: 'Created successfully SelfCollect Process', id: result.insertId });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.readProcessSCByID = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await SelfCollectEf.readProcessSCByID(id);
+        if (!result) return res.status(404).json({ message: 'SelfCollect Process not found' });
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.updateProcessSCByID = async (req, res) => {
+    try {
+        const data = req.body;
+        const id = req.params.id;
+        const result = await SelfCollectEf.updateProcessSCByID({ ...data, id });
+        res.status(200).json({ message: 'Updated successfully', id: id });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.deleteProcessSCByID = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await SelfCollectEf.deleteProcessSCByID(id);
+
+        if (!result || result.affectedRows === 0) {
+            return res.status(404).json({ message: 'SelfCollect Process not found' });
+        }
+        res.json({ message: 'Deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+
+exports.createItemSC = async (req, res) => {
+    try {
+        const data = req.body;
+        const result = await selfcollect.createItemSC(data);
+        res.status(201).json({ message: 'Created successfully SelfCollect Item', id: result.insertId });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.readItemSCByID = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await selfcollect.readItemSCByID(id);
+        if (!result) return res.status(404).json({ message: 'SelfCollect Item not found' });
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.updateItemSCByID = async (req, res) => {
+    try {
+        const data = req.body;
+        const id = req.params.id;
+        const result = await selfcollect.updateItemSCByID({ ...data, id });
+        res.status(200).json({ message: 'Updated successfully', id: id });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.deleteItemSCByID = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await selfcollect.deleteItemSCByID(id);
+
+        if (!result || result.affectedRows === 0) {
+            return res.status(404).json({ message: 'SelfCollect Item not found' });
+        }
+        res.json({ message: 'Deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.ListItemSCByProcess = async (req, res) => {
+    try {
+        const { company_id, id } = req.params;
+
+        const selfCollect = await SelfCollectEf.getSelfCollectById(company_id, id);
+        if (!selfCollect) {
+            return res.status(404).json({ message: 'self_collect_efs not found' });
+        }
+
+        const items = await SelfCollectEf.getItemsBySelfCollectId(id);
+
+        res.json({
+            self_collect: selfCollect,
+            items: items
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};

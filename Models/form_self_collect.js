@@ -161,7 +161,57 @@ const selfCollectModel = {
         await db.query('DELETE FROM self_collect_efs WHERE self_collect_id = ?', [self_collect_id]);
     },
 
+    // Follow Process and input output data
 
+    createItemSC: async (data) => {
+        // 1. Insert item ใหม่
+        const insertQuery = `
+            INSERT INTO cfp_report43_selfcollect_efs SET ?, created_date = NOW(), updated_date = NOW()
+        `;
+        const [insertResult] = await db.query(insertQuery, [data]);
+
+        // 2. บวกค่า total_emission ไปยัง self_collect_efs.self_collect_ef
+        const updateQuery = `
+            UPDATE self_collect_efs
+            SET self_collect_ef = IFNULL(self_collect_ef, 0) + ?, updated_date = NOW()
+            WHERE self_collect_id = ?
+        `;
+        const [updateResult] = await db.query(updateQuery, [
+            data.total_emission,     // ค่าที่เพิ่ง insert ไป
+            data.self_collect_id     // อ้างอิง self_collect_id เดียวกัน
+        ]);
+
+        return {
+            insert: insertResult,
+            update: updateResult
+        };
+    },
+
+
+    readItemSCByID: async (id) => {
+        const query = 'SELECT * FROM cfp_report43_selfcollect_efs WHERE cfp_report43_selfcollect_efs_id  = ?';
+        const [rows] = await db.query(query, [id]);
+        return rows[0];
+    },
+
+    updateItemSCByID: async (data) => {
+        const { id, ...updateFields } = data;
+        const query = `
+            UPDATE cfp_report43_selfcollect_efs
+            SET ?, updated_date = NOW()
+            WHERE cfp_report43_selfcollect_efs_id  = ?
+        `;
+        const [result] = await db.query(query, [updateFields, id]);
+        return result;
+    },
+
+    deleteItemSCByID: async (id) => {
+
+        const [result] = await db.query('DELETE FROM cfp_report43_selfcollect_efs WHERE cfp_report43_selfcollect_efs_id = ?', [id]);
+        return result;
+
+
+    },
 
 
 
@@ -170,4 +220,6 @@ const selfCollectModel = {
 };
 
 module.exports = selfCollectModel;
+
+
 
