@@ -2,10 +2,10 @@ const db = require('../../Config/dbCbam.js');
 
 async function getTableColumns(tableName) {
     const [columns] = await db.query(`
-    SELECT COLUMN_NAME 
-    FROM INFORMATION_SCHEMA.COLUMNS 
-    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?
-  `, [tableName]);
+        SELECT COLUMN_NAME 
+        FROM INFORMATION_SCHEMA.COLUMNS 
+        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?
+    `, [tableName]);
 
     const template = {};
     for (const col of columns) {
@@ -35,23 +35,19 @@ const Report = {
     },
 
     getAllDataByReportId: async (reportId) => {
-        // ตารางที่ใช้ id จาก reports
         const mapTableToIdColumn = {
-            installations: 'id',          // id ใน installations = installation_id ใน reports
-            verifiers: 'id',              // id ใน verifiers = verifier_id ใน reports
-            authorised_representatives: 'id' // id ใน authorised_representatives = authorized_rep_id ใน verifiers
+            installations: 'id',
+            verifiers: 'id',
+            authorised_representatives: 'id'
         };
 
-        // ตารางที่ใช้ report_id โดยตรง
         const reportIdTables = ['d_processes', 'e_precursors', 'b_emission_installations', 'c_emission_energies'];
 
-        // ดึงข้อมูล reports
         const report = await Report.getReportById(reportId);
         if (!report) return null;
 
         const tableData = {};
 
-        // ดึงข้อมูลตารางที่ map กับ reports (ใช้ id ใน reports ไปหาในตารางอื่น)
         for (const [table, col] of Object.entries(mapTableToIdColumn)) {
             let queryId;
 
@@ -60,7 +56,6 @@ const Report = {
             } else if (table === 'verifiers') {
                 queryId = report.verifier_id;
             } else if (table === 'authorised_representatives') {
-                // ต้องดึง authorized_rep_id จาก verifiers ก่อน
                 if (!tableData.verifiers) {
                     tableData.verifiers = await Report.getTableDataOrDefault('verifiers', 'id', report.verifier_id);
                 }
@@ -74,17 +69,31 @@ const Report = {
             }
         }
 
-        // ดึงข้อมูลตารางที่ใช้ report_id ตรง ๆ
         for (const table of reportIdTables) {
             const [rows] = await db.query(`SELECT * FROM ?? WHERE report_id = ?`, [table, reportId]);
+
             if (rows.length === 0) {
                 tableData[table] = await getTableColumns(table);
             } else {
+                // แปลง JSON string เป็น array สำหรับ 'routes' และ 'amounts' ใน d_processes
+                if (table === 'd_processes') {
+                    rows.forEach(row => {
+                        ['routes', 'amounts'].forEach(field => {
+                            if (typeof row[field] === 'string') {
+                                try {
+                                    row[field] = JSON.parse(row[field]);
+                                } catch {
+                                    row[field] = [];
+                                }
+                            }
+                        });
+                    });
+                }
+
                 tableData[table] = rows;
             }
         }
 
-        // คืน report data ด้วย
         return { report, tableData };
     }
 };
