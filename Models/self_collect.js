@@ -63,7 +63,44 @@ const selfColModel = {
             [self_collect_id]
         );
         return rows;
-    }
+    },
+    getSelfCollectById: async (company_id, id) => {
+        const [rows] = await db.query(
+            `SELECT * FROM self_collect_efs WHERE company_id = ? AND self_collect_id = ?`,
+            [company_id, id]
+        );
+        return rows[0]; // สมมติว่า id เป็น unique
+    },
+
+    deleteItemSCByProcessItem: async (self_collect_id) => {
+        // เริ่ม transaction
+        const conn = await db.getConnection();
+        try {
+            await conn.beginTransaction();
+
+            // ลบจากตารางย่อยก่อน
+            await conn.query(
+                `DELETE FROM cfp_report43_selfcollect_efs WHERE self_collect_id = ?`,
+                [self_collect_id]
+            );
+
+            // ลบจาก self_collect_efs
+            const [result] = await conn.query(
+                `DELETE FROM self_collect_efs WHERE self_collect_id = ?`,
+                [self_collect_id]
+            );
+
+            await conn.commit();
+            return result;
+        } catch (err) {
+            await conn.rollback();
+            throw err;
+        } finally {
+            conn.release();
+        }
+    },
+
+
 
 
 };

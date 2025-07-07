@@ -246,3 +246,25 @@ exports.ListItemSCByProcess = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+
+exports.deleteItemSCByProcess = async (req, res) => {
+    try {
+        const { company_id, id } = req.params;
+
+        const selfCollect = await SelfCollectEf.getSelfCollectById(company_id, id);
+        if (!selfCollect) {
+            return res.status(404).json({ message: 'self_collect_efs not found' });
+        }
+
+        const result = await SelfCollectEf.deleteItemSCByProcessItem(id);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'No items found to delete' });
+        }
+
+        res.json({ message: 'Deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+

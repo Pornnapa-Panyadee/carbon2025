@@ -6,7 +6,7 @@ const { read, create, update, remove, list,
     listselfcollect, listSelfCollectId, deleteSelfCollect,
     createProcessSC, readProcessSCByID, updateProcessSCByID, deleteProcessSCByID,
     createItemSC, readItemSCByID, updateItemSCByID, deleteItemSCByID,
-    ListItemSCByProcess
+    ListItemSCByProcess, deleteItemSCByProcess
 } = require('../Controllers/form_self_collect');
 
 
@@ -35,5 +35,7 @@ router.put('/selfcollect/process/item/:id', updateItemSCByID);
 router.delete('/selfcollect/process/item/:id', deleteItemSCByID);
 
 router.get('/selfcollect/process/list/:company_id/:id', ListItemSCByProcess);
+
+router.delete('/selfcollect/process/list/:company_id/:id', deleteItemSCByProcess);
 
 module.exports = router; // Export the router
