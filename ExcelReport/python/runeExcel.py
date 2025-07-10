@@ -11,8 +11,9 @@ import requests
 import shutil
 import json
 import sys
-
+from datetime import datetime
 import io
+import re
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
@@ -24,9 +25,11 @@ company_name = sys.argv[1]
 product_1 = sys.argv[2]
 
 form1 = "http://localhost:5000/api/v1/f1/excel/"+company_name + "/" + product_1
-form4_1= "http://localhost:5000/api/v1/f4-1/form/"+product_1
+form4_1= "http://localhost:5000/api/v1/f4-1/report/"+product_1
 form4_2= "http://localhost:5000/api/v1/f4-2/form/"+product_1
 form4_3= "http://localhost:5000/api/v1/selfcollect/product/"+company_name + "/" + product_1
+form6_1= "http://localhost:5000/api/v1/f6-1/sum/" + product_1
+form6_2= "http://localhost:5000/api/v1/f6-2/sum/" + product_1
 
 def thai_date_format(iso_date_str):
     # แปลง string เป็น datetime object
@@ -46,12 +49,12 @@ def thai_date_format(iso_date_str):
 # ///check Source Form4-1
 def check_source_form4_1(ef_source, row, ws_name='ws41'):
     ef_map = {
-        'Self collect': 'I',
-        'Supplier': 'J',
-        'PCR Gen.': 'K',
-        'TGO EF': 'L',
-        'Int. DB': 'M',
-        'Others': 'N'
+        'Self collect': 'H',
+        'Supplier': 'I',
+        'PCR Gen.': 'J',
+        'TGO EF': 'K',
+        'Int. DB': 'L',
+        'Others': 'M'
     }
 
     if ef_source in ef_map:
@@ -82,7 +85,7 @@ def check_source_form4_2_T2(type2_ef_source, row, ws_name='ws42'):
     else:
         return f'# type2_ef_source \"{type2_ef_source}\" not recognized'
 
-def check_source_form4_1(ef_source, row, ws_name='ws43'):
+def check_source_form4_3(ef_source, row, ws_name='ws43'):
     ef_map = {
         'Self collect': 'I',
         'Supplier': 'J',
@@ -205,7 +208,7 @@ if form1.status_code == 200:
     company = data["company"]
     process = data["process"]
 else:
-    print("เกิดข้อผิดพลาดในการเรียก API:", response.status_code)
+    print("เกิดข้อผิดพลาดในการเรียก API:", form1.status_code)
 start = thai_date_format(product["collect_data_start"])
 end = thai_date_format(product["collect_data_end"])
 date_range = f"{start} - {end}"
@@ -221,6 +224,7 @@ if form4_1.status_code == 200:
     product = data41["product"]
     process = data41["process"]
     report41Sum = data41["report41Sum"]
+    finalproduct = data41["finalproduct"][0]
 else:
     print("เกิดข้อผิดพลาดในการเรียก API:", form4_1.status_code)
 
@@ -243,11 +247,24 @@ if response_form4_3.status_code == 200:
 else:
     print("เกิดข้อผิดพลาดในการเรียก API:", response_form4_3.status_code)
 
-    
+response_form6_1 = requests.get(form6_1)
+if response_form6_1.status_code == 200:
+    data61 = response_form6_1.json()
+    form61 = data61[0]
+else:
+    print("เกิดข้อผิดพลาดในการเรียก API:", response_form6_1.status_code)
+
+response_form6_2 = requests.get(form6_2)
+if response_form6_2.status_code == 200:
+    data62 = response_form6_2.json()
+    form62 = data62[0]
+else:
+    print("เกิดข้อผิดพลาดในการเรียก API:", response_form6_2.status_code)
 
 
 file_path = "ExcelReport/excel/form_CFP.xlsx"
-output_path = "ExcelReport/output/"+company["name"]+"_"+product["product_name_en"]+".xlsx"
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+output_path = "ExcelReport/output/"+timestamp+"_"+company["name"]+"_"+product["product_name_en"]+".xlsx"
 shutil.copy(file_path, output_path)
 process = data["process"]
 wb = load_workbook(file_path)
@@ -527,8 +544,6 @@ for i in range(len(process)):
 
     row += max(max_input_rows + 2, 10) 
 
-
-
 ######## ---------------------------------------------------------------------
 
 ws41 = wb["Fr-04.1 "]
@@ -539,6 +554,8 @@ row = 11
 phase = ["การได้มาของวัตถุดิบ", "การผลิต", "การกระจายสินค้า", "การใช้งาน", "การจัดการซาก"]
 for i in range(len(phase)):
     phase_start_row = row  # เก็บแถวเริ่มต้นของ phase นี้
+    FU = 0  # กำหนดค่าเริ่มต้นของ FU
+    Qemission = 0  # กำหนดค่าเริ่มต้นของ GHG Emission
 
     for j in range(len(form41[i]["process"])):
         process = form41[i]["process"][j]
@@ -548,7 +565,7 @@ for i in range(len(phase)):
             ws41[f"B{row}"] = process["process_name"]
             ws41[f"B{row}"].font = Font(name="Tahoma", size=10, bold=True, color="FF0070C0", italic=True)
             row += 1
-
+        
         for k in range(len(process["product"])):
             product = process["product"][k]
 
@@ -556,30 +573,55 @@ for i in range(len(phase)):
                 ws41[f"B{row}"] = product["production_class"]
                 ws41[f"B{row}"].font = Font(name="Tahoma", size=10, bold=True, color="FF99004c", italic=True)
                 row += 1
-
+            
             for l in range(len(product["items"])):
                 items = product["items"][l]
+                FU1 = round(float(items["item_quantity"]/finalproduct["output_quantity"]), 2) 
+
                 ws41[f"B{row}"] = items["item_name"]
                 ws41[f"C{row}"] = items["item_unit"]
                 ws41[f"D{row}"] = items["item_quantity"]
+                ws41[f"E{row}"] = FU1
                 ws41[f"F{row}"] = items["lci_source_period"]
                 ws41[f"G{row}"] = items["ef"]
                 exec(check_source_form4_1(items["ef_source"], row, ws_name='ws41'))
                 ws41[f"O{row}"] = items["ef_source_ref"]
                 ws41[f"P{row}"] = items["ratio"]
-                ws41[f"Q{row}"] = items["ghg_emission"]
-                ws41[f"R{row}"] = items["ghg_emission_proportion"]
+                ef = round(float(items["ef"] if items["ef"] is not None else 0), 2)
+                ws41[f"Q{row}"] = FU1 * ef
                 ws41[f"S{row}"] = items["cut_off"]
                 ws41[f"T{row}"] = items["description"]
                 row += 1  # ขยับแถวสำหรับ item ถัดไป
+                FU = FU + FU1
+                Qemission= Qemission + (FU1 * ef)
+
 
         # หลังจบแต่ละ process ให้เว้น 1 แถว
         row += 1
+   
 
     # เติมสีสรุป process
+    highlight_font = Font(name="Tahoma", size=10, bold=True, color="000000", italic=True)
+    white_fill = PatternFill(fill_type="solid", fgColor="FFFFFF")  # พื้นหลังสีขาว
+    thin_black = Side(style='thin', color='000000')  # เส้นดำบาง
+    top_bottom_border = Border(top=thin_black, bottom=thin_black)
     for row_cells in ws41[f"B{row}:T{row}"]:
         for cell in row_cells:
             cell.fill = fill_sum
+            cell.border = top_bottom_border
+    ws41[f"C{row}"] = "รวม"
+    ws41[f"E{row}"] = round(float(FU),2)
+    ws41[f"Q{row}"] = round(float(Qemission),2)
+
+    for r in range(row, row + 1):
+        for col in ["C", "D", "E", "Q", "R"]:
+            cell = ws41[f"{col}{r}"]
+            cell.font = highlight_font
+            cell.fill = white_fill
+            cell.border = top_bottom_border
+    
+    
+
     row += 1
 
     # Merge phase column และใส่ชื่อ phase
@@ -598,6 +640,7 @@ row = 12
 phase = ["การได้มาของวัตถุดิบ", "การผลิต", "การกระจายสินค้า", "การใช้งาน", "การจัดการซาก"]
 for i in range(len(phase)):
     phase_start_row = row  # เก็บแถวเริ่มต้นของ phase นี้
+    sum_proportion = 0  # กำหนดค่าเริ่มต้นของ sum_proportion
 
     for j in range(len(form42[i]["process"])):
         process = form42[i]["process"][j]
@@ -618,6 +661,16 @@ for i in range(len(phase)):
 
             for l in range(len(product["items"])):
                 items = product["items"][l]
+                text_out = items.get("type2_vehicle_outbound") or ""
+                text_ret = items.get("type2_vehicle_return") or ""
+
+                match_out = re.search(r'(\d+)%', text_out)
+                match_ret = re.search(r'(\d+)%', text_ret)
+
+                items["percent_vehicle_outbound"] = int(match_out.group(1)) if match_out else None
+                items["percent_vehicle_return"] = int(match_ret.group(1)) if match_ret else None
+                items["vehicle"] = re.split(r'\s+\d+%.*', text_out)[0].strip() if text_out else None
+
                 ws42[f"B{row}"] = items["item_name"]
                 ws42[f"C{row}"] = items["item_unit"]
                 ws42[f"D{row}"] = items["item_fu_qty"]
@@ -630,126 +683,184 @@ for i in range(len(phase)):
                 exec(check_source_form4_2_T1(items["type1_ef_source"], row, ws_name='ws42'))
                 ws42[f"M{row}"] = items["type2_outbound_load"]
                 ws42[f"N{row}"] = items["type2_return_load"]
-                ws42[f"O{row}"] = items["type2_vehicle"]
-                ws42[f"P{row}"] = items["type2_outbound_load_percent"]
-                ws42[f"Q{row}"] = items["type2_return_load_percent"]
+                ws42[f"O{row}"] = items["vehicle"]
+                ws42[f"P{row}"] = items["percent_vehicle_outbound"]
+                ws42[f"Q{row}"] = items["percent_vehicle_return"]
                 ws42[f"R{row}"] = items["type2_outbound_ef"]
                 ws42[f"S{row}"] = items["type2_return_ef"]
                 exec(check_source_form4_2_T2(items["type2_ef_source"], row, ws_name='ws42'))
                 ws42[f"V{row}"] = items["type2_ef_source_ref"]
                 ws42[f"W{row}"] = items["ratio"]
-                ws42[f"X{row}"] = items["transport_emission"]
+                proportion = (
+                    (items.get("type2_outbound_load") or 0) * (items.get("type2_outbound_ef") or 0) +
+                    (items.get("type2_return_load") or 0) * (items.get("type2_return_ef") or 0)
+                )
+                ws42[f"X{row}"] = round(float(proportion), 2)
                 ws42[f"Y{row}"] = items["cut_off"]
                 ws42[f"Z{row}"] = items["add_on_detail"]
+
+                sum_proportion = sum_proportion + proportion
                 row += 1  # ขยับแถวสำหรับ item ถัดไป
 
         # หลังจบแต่ละ process ให้เว้น 1 แถว
         row += 1
 
     # เติมสีสรุป process
-    for row_cells in ws42[f"B{row}:T{row}"]:
+    highlight_font = Font(name="Tahoma", size=10, bold=True, color="000000", italic=True)
+    white_fill = PatternFill(fill_type="solid", fgColor="FFFFFF")  # พื้นหลังสีขาว
+    thin_black = Side(style='thin', color='000000')  # เส้นดำบาง
+    top_bottom_border = Border(top=thin_black, bottom=thin_black)
+
+    for row_cells in ws42[f"B{row}:Z{row}"]:
         for cell in row_cells:
             cell.fill = fill_sum
+    
+    ws42[f"V{row}"] = "รวม"
+    ws42[f"X{row}"] = sum_proportion
+    for r in range(row, row + 1):
+        for col in ["U", "V", "W", "X"]:
+            cell = ws42[f"{col}{r}"]
+            cell.font = highlight_font
+            cell.fill = white_fill
+            cell.border = top_bottom_border
+    
     row += 1
-
     # Merge phase column และใส่ชื่อ phase
     ws42.merge_cells(f"A{phase_start_row}:A{row-1}")
     ws42[f"A{phase_start_row}"] = phase[i]
 
     r_start = row  # อัปเดต r_start สำหรับ phase ถัดไป
 
-######## ----Fr-04.-----------------------------------------------------------
+######## ----Fr-04.3-----------------------------------------------------------
 
 ws43 = wb["Fr-04.3"]
 fill_sum = PatternFill(start_color='FF808080', end_color='FF808080', fill_type='solid') 
 row=11
 r_start = 11
 
-ws43[f"B{r_start }"] = "Input"
-ws43[f"B{r_start }"].font = Font(name="Tahoma", size=10, bold=True, color="FF0070C0", italic=True)
 
-for i in range(len(form43[0]["input"])):
-    input_item = form43[0]["input"][i]
-    ws43[f"B{r_start + i+1}"] = input_item["item_name"]
-    ws43[f"C{r_start + i+1}"] = input_item["item_unit"]
-    ws43[f"D{r_start + i+1}"] = input_item["item_qty"]
-    ws43[f"E{r_start + i+1}"] = input_item["item_fu_qty"]
-    ws43[f"F{r_start + i+1}"] = input_item["item_source"]  
-    ws43[f"G{r_start + i+1}"] = input_item["item_ef"]  
-    exec(check_source_form4_1(input_item["item_ef_source"], r_start + i + 1, ws_name='ws43')) 
-    ws43[f"O{r_start + i+1}"] = input_item["item_ef_source_ref"]
-    ws43[f"P{r_start + i+1}"] = input_item["item_emission"]
 
-    ws43[f"Q{r_start + i+1}"] = input_item["type1_gas"]
-    ws43[f"R{r_start + i+1}"] = input_item["type1_gas_unit"]
-    ws43[f"S{r_start + i+1}"] = input_item["type1_gas_qty"] 
-    ws43[f"T{r_start + i+1}"] = input_item["type1_ef"]
-    exec(check_source_form4_3_T1(input_item["type1_ef_source"], r_start + i + 1, ws_name='ws43'))   
+for k in range(len(form43)):
+    process = form43[k]
+    input_items = process["input"]
+    output_items = process["output"]
+    name = process["self_collect_name"]
 
-    ws43[f"W{r_start + i+1}"] = input_item["type2_distance"]
-    ws43[f"X{r_start + i+1}"] = input_item["type2_outbound_load"]
-    ws43[f"Y{r_start + i+1}"] = input_item["type2_return_load"]
-    ws43[f"Z{r_start + i+1}"] = input_item["type2_vehicle"] 
-    ws43[f"AA{r_start + i+1}"] = input_item["type2_outbound_load_percent"]
-    ws43[f"AB{r_start + i+1}"] = input_item["type2_return_load_percent"]
-    ws43[f"AC{r_start + i+1}"] = input_item["type2_outbound_ef"]
-    ws43[f"AD{r_start + i+1}"] = input_item["type2_return_ef"]  
-    exec(check_source_form4_3_T2(input_item["type2_ef_source"], r_start + i + 1, ws_name='ws43'))
-    ws43[f"AG{r_start + i+1}"] = input_item["type2_ef_source_ref"]  
-    ws43[f"AH{r_start + i+1}"] = input_item["transport_emission"]
-    ws43[f"AI{r_start + i+1}"] = input_item["total_emission"]
-    ws43[f"AJ{r_start + i+1}"] = input_item["ratio"]  
-    ws43[f"AK{r_start + i+2}"] = input_item["cut_off"]  
-    ws43[f"AL{r_start + i+2}"] = input_item["add_on_detail"]
+    row = r_start  # เก็บตำแหน่งเริ่มต้นสำหรับ merge cell
+    clean_name = name.replace("Fr04.3 ", "", 1)
 
-r_start= r_start + i+2
+    ws43[f"B{r_start }"] = "Input"
+    ws43[f"B{r_start }"].font = Font(name="Tahoma", size=10, bold=True, color="FF0070C0", italic=True)
 
-ws43[f"B{r_start + 1}"] = "Output"
-ws43[f"B{r_start + 1}"].font = Font(name="Tahoma", size=10, bold=True, color="FF0070C0", italic=True)
+    # ----- INPUT -----
+    for i, input_item in enumerate(input_items):
+        row_num = r_start + i + 1
+        ws43[f"B{row_num}"] = input_item.get("item_name", "")
+        ws43[f"C{row_num}"] = input_item.get("item_unit", "")
+        ws43[f"D{row_num}"] = input_item.get("item_qty", "")
+        ws43[f"E{row_num}"] = input_item.get("item_fu_qty", "")
+        ws43[f"F{row_num}"] = input_item.get("item_source", "") 
+        ws43[f"G{row_num}"] = input_item.get("item_ef", "") 
+        exec(check_source_form4_1(input_item.get("item_ef_source", ""), row_num, ws_name='ws43'))
+        ws43[f"O{row_num}"] = input_item.get("item_ef_source_ref", "")
+        ws43[f"P{row_num}"] = input_item.get("item_emission", "")
 
-for i in range(len(form43[0]["output"])):
-    output_item = form43[0]["output"][i]
-    ws43[f"B{r_start + i+2}"] = output_item["item_name"]
-    ws43[f"C{r_start + i+2}"] = output_item["item_unit"]
-    ws43[f"D{r_start + i+2}"] = output_item["item_qty"]
-    ws43[f"E{r_start + i+2}"] = output_item["item_fu_qty"]
-    ws43[f"F{r_start + i+2}"] = output_item["item_source"]  
-    ws43[f"G{r_start + i+2}"] = output_item["item_ef"]  
-    exec(check_source_form4_1(output_item["item_ef_source"], r_start + i + 2, ws_name='ws43')) 
-    ws43[f"O{r_start + i+2}"] = output_item["item_ef_source_ref"]
-    ws43[f"P{r_start + i+2}"] = output_item["item_emission"]
+        ws43[f"Q{row_num}"] = input_item.get("type1_gas", "")
+        ws43[f"R{row_num}"] = input_item.get("type1_gas_unit", "")
+        ws43[f"S{row_num}"] = input_item.get("type1_gas_qty", "")
+        ws43[f"T{row_num}"] = input_item.get("type1_ef", "")
+        exec(check_source_form4_3_T1(input_item.get("type1_ef_source", ""), row_num, ws_name='ws43'))
 
-    ws43[f"Q{r_start + i+2}"] = output_item["type1_gas"]
-    ws43[f"R{r_start + i+2}"] = output_item["type1_gas_unit"]
-    ws43[f"S{r_start + i+2}"] = output_item["type1_gas_qty"] 
-    ws43[f"T{r_start + i+2}"] = output_item["type1_ef"]
-    exec(check_source_form4_3_T1(output_item["type1_ef_source"], r_start + i + 2, ws_name='ws43'))   
+        ws43[f"W{row_num}"] = input_item.get("type2_distance", "")
+        ws43[f"X{row_num}"] = input_item.get("type2_outbound_load", "")
+        ws43[f"Y{row_num}"] = input_item.get("type2_return_load", "")
+        ws43[f"Z{row_num}"] = input_item.get("type2_vehicle", "")
+        ws43[f"AA{row_num}"] = input_item.get("type2_outbound_load_percent", "")
+        ws43[f"AB{row_num}"] = input_item.get("type2_return_load_percent", "")
+        ws43[f"AC{row_num}"] = input_item.get("type2_outbound_ef", "")
+        ws43[f"AD{row_num}"] = input_item.get("type2_return_ef", "")
+        exec(check_source_form4_3_T2(input_item.get("type2_ef_source", ""), row_num, ws_name='ws43'))
+        ws43[f"AG{row_num}"] = input_item.get("type2_ef_source_ref", "")
+        ws43[f"AH{row_num}"] = input_item.get("transport_emission", "")
+        ws43[f"AI{row_num}"] = input_item.get("total_emission", "")
+        ws43[f"AJ{row_num}"] = input_item.get("ratio", "")
+        ws43[f"AK{row_num}"] = input_item.get("cut_off", "")
+        ws43[f"AL{row_num}"] = input_item.get("add_on_detail", "")
 
-    ws43[f"W{r_start + i+2}"] = output_item["type2_distance"]
-    ws43[f"X{r_start + i+2}"] = output_item["type2_outbound_load"]
-    ws43[f"Y{r_start + i+2}"] = output_item["type2_return_load"]
-    ws43[f"Z{r_start + i+2}"] = output_item["type2_vehicle"] 
-    ws43[f"AA{r_start + i+2}"] = output_item["type2_outbound_load_percent"]
-    ws43[f"AB{r_start + i+2}"] = output_item["type2_return_load_percent"]
-    ws43[f"AC{r_start + i+2}"] = output_item["type2_outbound_ef"]
-    ws43[f"AD{r_start + i+2}"] = output_item["type2_return_ef"]  
-    exec(check_source_form4_3_T2(output_item["type2_ef_source"], r_start + i + 2, ws_name='ws43'))
-    ws43[f"AG{r_start + i+2}"] = output_item["type2_ef_source_ref"]  
-    ws43[f"AH{r_start + i+2}"] = output_item["transport_emission"]
-    ws43[f"AI{r_start + i+2}"] = output_item["total_emission"]
-    ws43[f"AJ{r_start + i+2}"] = output_item["ratio"]  
-    ws43[f"AK{r_start + i+2}"] = output_item["cut_off"]  
-    ws43[f"AL{r_start + i+2}"] = output_item["add_on_detail"]
+    r_start += len(input_items) + 1
 
-ws43.merge_cells(f"A{row}:A{r_start + i+4}")
-name = form43[0]["self_collect_name"]
-clean_name = name.replace("Fr04.3 ", "", 1)
-ws43[f"A{row}"] = clean_name
+    # ----- OUTPUT -----
+    ws43[f"B{r_start}"] = "Output"
+    ws43[f"B{r_start}"].font = Font(name="Tahoma", size=10, bold=True, color="FF0070C0", italic=True)
 
-# เติมสีสรุป process
-for row_cells in ws43[f"B{r_start + i+4}:AL{r_start + i+4}"]:
-    for cell in row_cells:
-        cell.fill = fill_sum
+    for i, output_item in enumerate(output_items):
+        row_num = r_start + i + 1
+        ws43[f"B{row_num}"] = output_item.get("item_name", "")
+        ws43[f"C{row_num}"] = output_item.get("item_unit", "")
+        ws43[f"D{row_num}"] = round(float(output_item.get("item_qty", "")), 2)
+        ws43[f"E{row_num}"] = round(float(output_item.get("item_fu_qty", "")), 2)
+        ws43[f"F{row_num}"] = output_item.get("item_source", "")
+        ws43[f"G{row_num}"] = output_item.get("item_ef", "")
+        exec(check_source_form4_1(output_item.get("item_ef_source", ""), row_num, ws_name='ws43'))
+        ws43[f"O{row_num}"] = output_item.get("item_ef_source_ref", "")
+        ws43[f"P{row_num}"] = output_item.get("item_emission", "")
+
+        ws43[f"Q{row_num}"] = output_item.get("type1_gas", "")
+        ws43[f"R{row_num}"] = output_item.get("type1_gas_unit", "")
+        ws43[f"S{row_num}"] = output_item.get("type1_gas_qty", "")
+        ws43[f"T{row_num}"] = output_item.get("type1_ef", "")
+        exec(check_source_form4_3_T1(output_item.get("type1_ef_source", ""), row_num, ws_name='ws43'))
+
+        ws43[f"W{row_num}"] = output_item.get("type2_distance", "")
+        ws43[f"X{row_num}"] = output_item.get("type2_outbound_load", "")
+        ws43[f"Y{row_num}"] = output_item.get("type2_return_load", "")
+        ws43[f"Z{row_num}"] = output_item.get("type2_vehicle", "")
+        ws43[f"AA{row_num}"] = output_item.get("type2_outbound_load_percent", "")
+        ws43[f"AB{row_num}"] = output_item.get("type2_return_load_percent", "")
+        ws43[f"AC{row_num}"] = output_item.get("type2_outbound_ef", "")
+        ws43[f"AD{row_num}"] = output_item.get("type2_return_ef", "")
+        exec(check_source_form4_3_T2(output_item.get("type2_ef_source", ""), row_num, ws_name='ws43'))
+        ws43[f"AG{row_num}"] = output_item.get("type2_ef_source_ref", "")
+        ws43[f"AH{row_num}"] = output_item.get("transport_emission", "")
+        ws43[f"AI{row_num}"] = output_item.get("total_emission", "")
+        ws43[f"AJ{row_num}"] = output_item.get("ratio", "")
+        ws43[f"AK{row_num}"] = output_item.get("cut_off", "")
+        ws43[f"AL{row_num}"] = output_item.get("add_on_detail", "")
+
+    last_row = r_start + len(output_items) + 2
+    ws43.merge_cells(f"A{row}:A{last_row}")
+    ws43[f"A{row}"] = clean_name
+
+    # เติมสีให้ summary row
+    for row_cells in ws43[f"B{last_row}:AL{last_row}"]:
+        for cell in row_cells:
+            cell.fill = fill_sum
+
+    r_start = last_row + 1  # เตรียมรอบถัดไป
+
+######## ----Fr-06.1-----------------------------------------------------------
+
+ws61 = wb["Fr-06.1"]
+ws61[f"C13"] =  round(float(form61["lc1_based_emission"]), 2)
+ws61[f"C14"] =  round(float(form61["lc2_based_emission"]), 2)
+ws61[f"C15"] =  round(float(form61["lc3_based_emission"]), 2)
+ws61[f"C16"] =  round(float(form61["lc4_based_emission"]), 2)
+ws61[f"C17"] =  round(float(form61["lc5_based_emission"]), 2)
+ws61[f"C18"] =  round(float(form61["land_used_based_emission"]), 2)
+
+ws61[f"D13"] = ""
+ws61[f"D14"] = ""
+ws61[f"D15"] = ""
+ws61[f"D16"] = ""
+ws61[f"D17"] = ""
+ws61[f"D18"] = ""
+
+######## ----Fr-06.2-----------------------------------------------------------
+
+ws62 = wb["Fr-06.2"]
+ws62[f"B11"] = round(float(form62["std_emission"]), 2) 
+ws62[f"C11"] = round(float(form62["product_emission"]), 2)
+
 
 
 wb.save(output_path)
