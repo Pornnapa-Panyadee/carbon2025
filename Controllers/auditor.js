@@ -117,3 +117,23 @@ exports.readAuditorProductDetails = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+exports.updateStatusProduct = async (req, res) => {
+    try {
+        const { auditor_id, product_id, status_id } = req.params;
+        const { status } = req.body;  // ค่าสถานะใหม่ที่ต้องการอัพเดต
+
+        if (typeof status === 'undefined') {
+            return res.status(400).json({ error: 'Missing status in request body' });
+        }
+
+        const result = await Auditor.updateStatusProduct(auditor_id, product_id, status_id, status);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Product status not found or no change' });
+        }
+
+        res.json({ message: 'Product status updated', result });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};

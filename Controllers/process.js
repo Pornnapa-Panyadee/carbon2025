@@ -36,9 +36,16 @@ exports.list = async (req, res) => {
 exports.create = async (req, res) => {
     try {
         const data = req.body;
-        const result = await Process.create(data);
-        res.status(201).json({ message: 'Process created', ProcessId: result.insertId });
+        const file = req.file;
+
+        const result = await Process.create(data, file);
+
+        res.status(201).json({
+            message: 'Process created',
+            ProcessId: result.insertId
+        });
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 };

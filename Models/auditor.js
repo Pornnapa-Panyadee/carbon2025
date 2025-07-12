@@ -140,6 +140,16 @@ const auditorModel = {
             comments: comments || []
         };
     },
+
+    updateStatusProduct: async (auditor_id, product_id, status_id, newStatus) => {
+        const sql = `
+        UPDATE auditor_status
+        SET status = ?, updated_at = NOW()
+        WHERE auditor_id = ? AND product_id = ? AND status_id = ?
+    `;
+        const [result] = await db.query(sql, [newStatus, auditor_id, product_id, status_id]);
+        return result;
+    },
 };
 
 module.exports = auditorModel;

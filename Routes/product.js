@@ -6,7 +6,6 @@ const upload = multer();
 const { read, list, create, update, remove, updatePhoto } = require('../Controllers/product');
 
 router.post('/product', upload.single('product_photo'), create);
-
 router.get('/product', list);
 router.get('/product/:product_id', read);
 router.put('/product/:product_id', upload.single('product_photo'), update);

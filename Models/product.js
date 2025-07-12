@@ -16,27 +16,28 @@ const productModel = {
             photoPath = relativePath.replace(/\\/g, '/');
         }
 
-        const sql = `
-            INSERT INTO products (
-                company_id, product_name_th, product_name_en, scope, FU_value, FU_th, FU_en,
-                PU_value, PU_th, PU_en, sale_ratio, product_techinfo, pcr_reference,
-                collect_data_start, collect_data_end, product_photo, auditor_id,
-                verify_status, submitted_round, submitted_date
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        const sql = 'INSERT INTO products SET ?, created_date = NOW(), updated_date = NOW()';
+
+        const [results] = await db.query(sql, {
+            ...data,
+            product_photo: photoPath
+        });
+
+        const product_id = results.insertId; // ✅ เก็บ product_id จากตรงนี้
+
+        const auditorstatusSql = `
+            INSERT INTO auditor_status 
+            SET auditor_id = ?, company_id = ?, product_id = ?, status = ?, created_at = NOW(), updated_at = NOW()
         `;
 
-        const values = [
-            data.company_id, data.product_name_th, data.product_name_en, data.scope,
-            data.FU_value, data.FU_th, data.FU_en,
-            data.PU_value, data.PU_th, data.PU_en,
-            data.sale_ratio, data.product_techinfo, data.pcr_reference,
-            data.collect_data_start, data.collect_data_end,
-            photoPath, data.auditor_id,
-            data.verify_status, data.submitted_round,
-            data.submitted_date
-        ];
+        await db.query(auditorstatusSql, [
+            data.auditor_id,
+            data.company_id,
+            product_id,
+            0 // หรือจะใช้ status_id ก็ได้ ถ้าค่ามันคือ 0
+        ]);
 
-        const [results] = await db.query(sql, values);
+
         return results;
     },
 
