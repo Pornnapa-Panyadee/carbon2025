@@ -142,13 +142,18 @@ const auditorModel = {
     },
 
     updateStatusProduct: async (auditor_id, product_id, status_id, newStatus) => {
-        const sql = `
-        UPDATE auditor_status
-        SET status = ?, updated_at = NOW()
-        WHERE auditor_id = ? AND product_id = ? AND status_id = ?
-    `;
+        const sql = ` UPDATE auditor_status SET status = ?, updated_at = NOW() WHERE auditor_id = ? AND product_id = ? AND status_id = ?`;
+        const sql1 = `SELECT status_eng FROM auditors_status_infos WHERE status_id = ?`;
+        const productSql = ` UPDATE products SET  verify_status = ?, updated_date = NOW() WHERE product_id = ? `;
+
         const [result] = await db.query(sql, [newStatus, auditor_id, product_id, status_id]);
-        return result;
+        const [resultStatus] = await db.query(sql1, [status_id]);
+        const statusInfo = resultStatus[0] ? resultStatus[0].status_eng : null;
+
+
+        await db.query(productSql, [newStatus, product_id]);
+
+        return { result, statusInfo };
     },
 };
 

@@ -126,7 +126,7 @@ exports.updateStatusProduct = async (req, res) => {
             return res.status(400).json({ error: 'Missing status in request body' });
         }
 
-        const result = await Auditor.updateStatusProduct(auditor_id, product_id, status_id, status);
+        const { result, statusInfo } = await Auditor.updateStatusProduct(auditor_id, product_id, status_id, status);
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Product status not found or no change' });
