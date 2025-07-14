@@ -1,5 +1,8 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'your_secret_key'; // ควรเก็บใน .env
+// const JWT_SECRET = 'your_secret_key'; // ควรเก็บใน .env
+
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
 
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];

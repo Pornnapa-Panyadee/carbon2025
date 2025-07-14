@@ -24,7 +24,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Static path for product images
-app.use('/product/image/', express.static(path.join(__dirname, 'Public/product')));
+app.use('/product/image/', express.static(path.join(__dirname, 'public/product')));
 
 // Load routes from /Routes (เฉพาะ .js เท่านั้น)
 fs.readdirSync('./Routes')
