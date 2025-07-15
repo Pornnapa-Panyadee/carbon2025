@@ -53,7 +53,12 @@ const companyModel = {
     deleteById: async (company_id) => {
         const [result] = await db.query('DELETE FROM companies WHERE company_id = ?', [company_id]);
         return result;
-    }
+    },
+    findByUserId: async (user_id) => {
+        const [rows] = await db.query('SELECT * FROM companies WHERE user_id = ?', [user_id]);
+        return rows || [];
+    },
+
 };
 
 module.exports = companyModel;

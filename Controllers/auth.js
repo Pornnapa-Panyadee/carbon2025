@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../Models/user');
+const Company = require('../Models/company');
 
 // const JWT_SECRET = 'your_secret_key'; // ใช้ process.env.JWT_SECRET ใน production
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
@@ -17,12 +18,19 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
+        const company = await Company.findByUserId(user.user_id);
+        if (!company) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
+
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
         delete user.password;
+
+
 
         const expiresIn = '12h';
         const token = jwt.sign(
@@ -39,7 +47,8 @@ exports.login = async (req, res) => {
             message: 'Login successful',
             token,
             expires_at: new Date(expirationTime).toISOString(),
-            user
+            user,
+            company
         });
     } catch (error) {
         console.error(error);
