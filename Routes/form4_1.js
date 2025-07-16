@@ -13,7 +13,7 @@ router.delete('/f4-1/item/:id', remove_item);
 
 router.get('/f4-1/sum/:id', read_sum);
 router.post('/f4-1/sum/', create_sum);
-router.put('/f4-1/sum/:id', update_sum);
+router.put('/f4-1/sum/', update_sum);
 router.delete('/f4-1/sum/:id', remove_sum);
 
 router.get('/f4-1/reportweb/:id', read_formweb);
@@ -21,5 +21,7 @@ router.get('/f4-1/report/:id', read_form);
 router.get('/f4-1/form/:company_id/:product_id', read_f03);
 
 router.get('/f4-1/:life_cycle_phase/:company_id/:product_id/:class/:item_id', readByItem);
+
+
 
 module.exports = router; // Export the router

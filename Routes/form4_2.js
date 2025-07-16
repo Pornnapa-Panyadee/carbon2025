@@ -13,7 +13,7 @@ router.delete('/f4-2/item/:id', remove_item);
 
 router.get('/f4-2/sum/:id', read_sum);
 router.post('/f4-2/sum/', create_sum);
-router.put('/f4-2/sum/:id', update_sum);
+router.put('/f4-2/sum/', update_sum);
 router.delete('/f4-2/sum/:id', remove_sum);
 
 router.get('/f4-2/form/:id', read_form);

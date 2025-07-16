@@ -51,12 +51,21 @@ exports.remove_item = async (req, res) => {
 // Sum
 exports.create_sum = async (req, res) => {
     try {
-        const data = req.body;
-        if (!data) return res.status(400).json({ error: "Missing data" });
-        const result = await Form41.createSum(data);
-        res.status(201).json({ message: "Created successfully", result });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+        const { product_id } = req.body;
+        if (!product_id) {
+            return res.status(400).json({ message: "product_id is required" });
+        }
+
+        // เรียกใช้ฟังก์ชัน createSum ใน model
+        const result = await Form41.createSum({ product_id });
+
+        return res.status(200).json({
+            message: "Calculation successful",
+            id: result.report41_sum_id
+        });
+    } catch (error) {
+        console.error("createSum error:", error);
+        return res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
 
@@ -74,14 +83,21 @@ exports.read_sum = async (req, res) => {
 
 exports.update_sum = async (req, res) => {
     try {
-        const id = parseInt(req.params.id, 10);
-        if (isNaN(id)) return res.status(400).json({ error: 'Invalid ID' });
-        const data = req.body;
-        const result = await Form41.updateByIdSum(id, data);
-        if (!result || result.affectedRows === 0) return res.status(404).json({ error: 'Not found or no changes made' });
-        res.json({ message: 'Updated successfully' });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+        const { report41_sum_id, product_id } = req.body;
+        if (!report41_sum_id || !product_id) {
+            return res.status(400).json({ message: "report41_sum_id and product_id are required" });
+        }
+
+        const result = await Form41.updateByIdSum({ report41_sum_id, product_id });
+
+        return res.status(200).json({
+            message: "Sum updated successfully",
+            data: result
+        });
+
+    } catch (error) {
+        console.error("updateSum error:", error);
+        return res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
 

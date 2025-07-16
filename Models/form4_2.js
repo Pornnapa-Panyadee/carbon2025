@@ -55,25 +55,38 @@ const form42Model = {
         return result;
     },
 
-    createSum: async (data) => {
-        const sql = `
-          INSERT INTO cfp_report42_sums (
-            product_id, lc1_transport_emission, lc2_transport_emission,
-            lc3_transport_emission, lc4_transport_emission, lc5_transport_emission,
-            total_transport_emission, created_date, updated_date
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
-        `;
-        const values = [
-            data.product_id,
-            data.lc1_transport_emission,
-            data.lc2_transport_emission,
-            data.lc3_transport_emission,
-            data.lc4_transport_emission,
-            data.lc5_transport_emission,
-            data.total_transport_emission
-        ];
-        const [result] = await db.query(sql, values);
-        return result;
+    createSum: async ({ product_id }) => {
+        const phases = [1, 2, 3, 4, 5];
+        const results = {};
+        let total = 0;
+
+        for (const phase of phases) {
+            const [[{ sum_cl }]] = await db.query(
+                `SELECT SUM((type2_outbound_load * type2_outbound_ef) + (type2_return_load * type2_return_ef)) AS sum_cl
+             FROM cfp_report42_items WHERE life_cycle_phase = ? AND product_id = ?`,
+                [phase, product_id]
+            );
+            results[`lc${phase}_transport_emission`] = sum_cl || 0;
+            total += sum_cl || 0;
+        }
+
+        await db.query(
+            `INSERT INTO cfp_report42_sums (
+            product_id, ${phases.map(p => `lc${p}_transport_emission`).join(', ')}, total_transport_emission, created_date, updated_date
+         ) VALUES (?, ${phases.map(() => '?').join(', ')}, ?, NOW(), NOW())
+         ON DUPLICATE KEY UPDATE
+         ${phases.map(p => `lc${p}_transport_emission = VALUES(lc${p}_transport_emission)`).join(', ')},
+         total_transport_emission = VALUES(total_transport_emission),
+         updated_date = VALUES(updated_date)`,
+            [product_id, ...phases.map(p => results[`lc${p}_transport_emission`]), total]
+        );
+
+        const [[{ report42_sum_id }]] = await db.query(
+            `SELECT report42_sum_id FROM cfp_report42_sums WHERE product_id = ? ORDER BY updated_date DESC LIMIT 1`,
+            [product_id]
+        );
+
+        return { report42_sum_id, product_id, ...results, total_transport_emission: total };
     },
 
     findByIdSum: async (id) => {
@@ -82,23 +95,33 @@ const form42Model = {
         return rows;
     },
 
-    updateByIdSum: async (id, data) => {
-        let fields = [];
-        let values = [];
-        for (const key in data) {
-            fields.push(`${key} = ?`);
-            values.push(data[key]);
+    updateByIdSum: async ({ report42_sum_id, product_id }) => {
+        const phases = [1, 2, 3, 4, 5];
+        const results = {};
+        let total = 0;
+
+        for (const phase of phases) {
+            const [[{ sum_cl }]] = await db.query(
+                `SELECT SUM((type2_outbound_load * type2_outbound_ef) + (type2_return_load * type2_return_ef)) AS sum_cl
+             FROM cfp_report42_items WHERE life_cycle_phase = ? AND product_id = ?`,
+                [phase, product_id]
+            );
+            results[`lc${phase}_transport_emission`] = sum_cl || 0;
+            total += sum_cl || 0;
         }
-        fields.push('updated_date = NOW()');
-        const sql = `
-            UPDATE cfp_report42_sums
-            SET ${fields.join(', ')}
-            WHERE report42_sum_id = ?
-        `;
-        values.push(id);
-        const [result] = await db.query(sql, values);
-        return result;
+
+        await db.query(
+            `UPDATE cfp_report42_sums SET
+            ${phases.map(p => `lc${p}_transport_emission = ?`).join(', ')},
+            total_transport_emission = ?,
+            updated_date = NOW()
+         WHERE report42_sum_id = ?`,
+            [...phases.map(p => results[`lc${p}_transport_emission`]), total, report42_sum_id]
+        );
+
+        return { report42_sum_id, product_id, ...results, total_transport_emission: total };
     },
+
 
     deleteByIdSum: async (id) => {
         const sql = 'DELETE FROM cfp_report42_sums WHERE report42_sum_id = ?';

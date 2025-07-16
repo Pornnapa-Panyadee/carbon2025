@@ -55,28 +55,83 @@ const form41Model = {
     },
 
     createSum: async (data) => {
-        const sql = `
-          INSERT INTO cfp_report41_sums (
-            product_id, sum_lc1_FU_qty, sum_lc1_emission, sum_lc1_emission_proportion,
-            sum_lc2_FU_qty, sum_lc2_emission, sum_lc2_emission_proportion,
-            sum_lc3_FU_qty, sum_lc3_emission, sum_lc3_emission_proportion,
-            sum_lc4_FU_qty, sum_lc4_emission, sum_lc4_emission_proportion,
-            sum_lc5_FU_qty, sum_lc5_emission, sum_lc5_emission_proportion,
-            total_sum_emission, created_date, updated_date
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
-        `;
-        const values = [
-            data.product_id,
-            data.sum_lc1_FU_qty, data.sum_lc1_emission, data.sum_lc1_emission_proportion,
-            data.sum_lc2_FU_qty, data.sum_lc2_emission, data.sum_lc2_emission_proportion,
-            data.sum_lc3_FU_qty, data.sum_lc3_emission, data.sum_lc3_emission_proportion,
-            data.sum_lc4_FU_qty, data.sum_lc4_emission, data.sum_lc4_emission_proportion,
-            data.sum_lc5_FU_qty, data.sum_lc5_emission, data.sum_lc5_emission_proportion,
-            data.total_sum_emission
-        ];
-        const [result] = await db.query(sql, values);
-        return result;
+        const product_id = data.product_id;
+
+        const [[{ total_output_quantity }]] = await db.query(`
+        SELECT SUM(o.output_quantity) AS total_output_quantity
+        FROM output_processes o
+        JOIN processes p ON o.process_id = p.process_id
+        WHERE o.finish_output = 1 AND p.product_id = ?;
+    `, [product_id]);
+
+        if (!total_output_quantity) throw new Error('Output quantity not found or zero');
+
+        const lifeCyclePhases = [1, 2, 3, 4, 5];
+
+        const results = {};
+        let total_sum_emission = 0;
+
+        for (const phase of lifeCyclePhases) {
+            const [[row]] = await db.query(`
+            SELECT
+                SUM(item_quantity) / ? AS sum_FU_qty,
+                SUM(ef * (item_quantity / ?)) AS sum_emission
+            FROM cfp_report41_items
+            WHERE life_cycle_phase = ? AND product_id = ?;
+        `, [total_output_quantity, total_output_quantity, phase, product_id]);
+
+            const fuQty = row.sum_FU_qty || 0;
+            const emission = row.sum_emission || 0;
+            total_sum_emission += emission;
+
+            results[`sum_lc${phase}_FU_qty`] = fuQty;
+            results[`sum_lc${phase}_emission`] = emission;
+        }
+
+        // คำนวณ proportion แบบ map
+        lifeCyclePhases.forEach(phase => {
+            results[`sum_lc${phase}_emission_proportion`] =
+                results[`sum_lc${phase}_emission`] > 0 ? 1 : 0;
+        });
+
+        const now = new Date();
+        await db.query(`
+        INSERT INTO cfp_report41_sums (
+            product_id,
+            ${lifeCyclePhases.map(p => `sum_lc${p}_FU_qty, sum_lc${p}_emission, sum_lc${p}_emission_proportion`).join(', ')},
+            total_sum_emission,
+            created_date, updated_date
+        ) VALUES (
+            ?, ${lifeCyclePhases.map(() => '?, ?, ?').join(', ')}, ?, ?, ?
+        )
+        ON DUPLICATE KEY UPDATE
+            ${lifeCyclePhases.map(p => `
+                sum_lc${p}_FU_qty = VALUES(sum_lc${p}_FU_qty),
+                sum_lc${p}_emission = VALUES(sum_lc${p}_emission),
+                sum_lc${p}_emission_proportion = VALUES(sum_lc${p}_emission_proportion)
+            `).join(', ')}
+            , total_sum_emission = VALUES(total_sum_emission),
+            updated_date = VALUES(updated_date)
+    `, [
+            product_id,
+            ...lifeCyclePhases.flatMap(p => [
+                results[`sum_lc${p}_FU_qty`],
+                results[`sum_lc${p}_emission`],
+                results[`sum_lc${p}_emission_proportion`]
+            ]),
+            total_sum_emission,
+            now, now
+        ]);
+
+        const [[{ report41_sum_id }]] = await db.query(
+            `SELECT report41_sum_id FROM cfp_report41_sums WHERE product_id = ? ORDER BY updated_date DESC LIMIT 1`,
+            [product_id]
+        );
+
+        return { report41_sum_id, product_id, ...results, total_sum_emission };
     },
+
+
 
     findByIdSum: async (id) => {
         const sql = 'SELECT * FROM cfp_report41_sums WHERE report41_sum_id = ?';
@@ -84,22 +139,87 @@ const form41Model = {
         return rows;
     },
 
-    updateByIdSum: async (id, data) => {
-        let fields = [];
-        let values = [];
-        for (const key in data) {
-            fields.push(`${key} = ?`);
-            values.push(data[key]);
+    // updateByIdSum: async (id, data) => {
+    //     let fields = [];
+    //     let values = [];
+    //     for (const key in data) {
+    //         fields.push(`${key} = ?`);
+    //         values.push(data[key]);
+    //     }
+    //     fields.push('updated_date = NOW()');
+    //     const sql = `
+    //         UPDATE cfp_report41_sums
+    //         SET ${fields.join(', ')}
+    //         WHERE report41_sum_id = ?
+    //     `;
+    //     values.push(id);
+    //     const [result] = await db.query(sql, values);
+    //     return result;
+    // },
+
+    updateByIdSum: async (data) => {
+        const { report41_sum_id, product_id } = data;
+
+        if (!report41_sum_id || !product_id) {
+            throw new Error("report41_sum_id and product_id are required");
         }
-        fields.push('updated_date = NOW()');
-        const sql = `
-            UPDATE cfp_report41_sums
-            SET ${fields.join(', ')}
-            WHERE report41_sum_id = ?
-        `;
-        values.push(id);
-        const [result] = await db.query(sql, values);
-        return result;
+
+        const [[{ total_output_quantity }]] = await db.query(`
+        SELECT SUM(o.output_quantity) AS total_output_quantity
+        FROM output_processes o
+        JOIN processes p ON o.process_id = p.process_id
+        WHERE o.finish_output = 1 AND p.product_id = ?;
+    `, [product_id]);
+
+        if (!total_output_quantity) throw new Error('Output quantity not found or zero');
+
+        const lifeCyclePhases = [1, 2, 3, 4, 5];
+        const results = {};
+        let total_sum_emission = 0;
+
+        for (const phase of lifeCyclePhases) {
+            const [[row]] = await db.query(`
+            SELECT
+                SUM(item_quantity) / ? AS sum_FU_qty,
+                SUM(ef * (item_quantity / ?)) AS sum_emission
+            FROM cfp_report41_items
+            WHERE life_cycle_phase = ? AND product_id = ?;
+        `, [total_output_quantity, total_output_quantity, phase, product_id]);
+
+            results[`sum_lc${phase}_FU_qty`] = row.sum_FU_qty || 0;
+            results[`sum_lc${phase}_emission`] = row.sum_emission || 0;
+            total_sum_emission += results[`sum_lc${phase}_emission`];
+        }
+
+        lifeCyclePhases.forEach(phase => {
+            results[`sum_lc${phase}_emission_proportion`] =
+                results[`sum_lc${phase}_emission`] > 0 ? 1 : 0;
+        });
+
+        const now = new Date();
+
+        await db.query(`
+        UPDATE cfp_report41_sums SET
+            ${lifeCyclePhases.map(p => `
+                sum_lc${p}_FU_qty = ?,
+                sum_lc${p}_emission = ?,
+                sum_lc${p}_emission_proportion = ?
+            `).join(', ')},
+            total_sum_emission = ?,
+            updated_date = ?
+        WHERE report41_sum_id = ?
+    `, [
+            ...lifeCyclePhases.flatMap(p => [
+                results[`sum_lc${p}_FU_qty`],
+                results[`sum_lc${p}_emission`],
+                results[`sum_lc${p}_emission_proportion`]
+            ]),
+            total_sum_emission,
+            now,
+            report41_sum_id
+        ]);
+
+        return { report41_sum_id, product_id, ...results, total_sum_emission };
     },
 
     deleteByIdSum: async (id) => {
@@ -137,6 +257,15 @@ const form41Model = {
 
         if (!companyResults.length) throw new Error('Company not found');
         if (!productResults.length) throw new Error('Product not found');
+
+        // 3. ดึง final product (output_processes ที่ finish_output = 1)
+        const finalOutputQuery = `
+            SELECT op.output_name, op.output_quantity, op.output_unit
+            FROM output_processes op
+            JOIN processes p ON op.process_id = p.process_id
+            WHERE p.product_id = ? AND op.finish_output = 1
+        `;
+        const [finalOutputResults] = await db.query(finalOutputQuery, [id]);
 
         // เตรียม process map
         const processMap = {};
@@ -187,12 +316,14 @@ const form41Model = {
             };
         });
 
+        // ✅ ส่งคืนข้อมูลรวม final product
         return {
             form41: groupedResult,
             company: companyResults[0],
             product: productResults[0],
             process: processResults,
-            report41Sum: report41SumResults
+            report41Sum: report41SumResults,
+            finalproduct: finalOutputResults
         };
     },
 
