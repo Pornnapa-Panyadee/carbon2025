@@ -152,7 +152,9 @@ const productModel = {
     deleteById: async (product_id) => {
         const [results] = await db.query('DELETE FROM products WHERE product_id = ?', [product_id]);
         return results;
-    }
+    },
+
+
 };
 
 module.exports = productModel;

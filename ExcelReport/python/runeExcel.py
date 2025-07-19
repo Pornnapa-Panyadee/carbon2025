@@ -204,9 +204,12 @@ def set_border(ws, cell_range):
 form1 = requests.get(form1)
 if form1.status_code == 200:
     data = form1.json()
-    product = data["product"]
-    company = data["company"]
-    process = data["process"]
+    product = data.get("product", {})
+    company = data.get("company", {})
+    process = data.get("process", [])
+    report41Sum = data.get("report41Sum", {})
+    if not report41Sum:
+        print("Warning: 'report41Sum' not found in API response.")
 else:
     print("เกิดข้อผิดพลาดในการเรียก API:", form1.status_code)
 start = thai_date_format(product["collect_data_start"])
@@ -223,7 +226,7 @@ if form4_1.status_code == 200:
     company = data41["company"]
     product = data41["product"]
     process = data41["process"]
-    report41Sum = data41["report41Sum"]
+    report41Sum = data41["report41Sum"][0]
     finalproduct = data41["finalproduct"][0]
 else:
     print("เกิดข้อผิดพลาดในการเรียก API:", form4_1.status_code)
@@ -263,7 +266,7 @@ else:
 
 
 file_path = "ExcelReport/excel/form_CFP.xlsx"
-timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+timestamp = datetime.now().strftime("%Y")
 output_path = "ExcelReport/output/"+timestamp+"_"+company["name"]+"_"+product["product_name_en"]+".xlsx"
 shutil.copy(file_path, output_path)
 process = data["process"]
@@ -552,11 +555,13 @@ r_start = 11
 row = 11
 # phase=["การได้มาของวัตถุดิบ","การผลิต","การกระจายสินค้า","การใช้งาน","การจัดการซาก"]
 phase = ["การได้มาของวัตถุดิบ", "การผลิต", "การกระจายสินค้า", "การใช้งาน", "การจัดการซาก"]
+columns = ["sum_lc1_emission", "sum_lc2_emission", "sum_lc3_emission", "sum_lc4_emission", "sum_lc5_emission"]
 for i in range(len(phase)):
     phase_start_row = row  # เก็บแถวเริ่มต้นของ phase นี้
     FU = 0  # กำหนดค่าเริ่มต้นของ FU
     Qemission = 0  # กำหนดค่าเริ่มต้นของ GHG Emission
-
+    sum_emission=0
+    sum_lc_emission = report41Sum[columns[i]]
     for j in range(len(form41[i]["process"])):
         process = form41[i]["process"][j]
         process_start_row = row  # เก็บแถวเริ่มต้นของ process นี้
@@ -589,11 +594,13 @@ for i in range(len(phase)):
                 ws41[f"P{row}"] = items["ratio"]
                 ef = round(float(items["ef"] if items["ef"] is not None else 0), 2)
                 ws41[f"Q{row}"] = FU1 * ef
+                ws41[f"R{row}"] = (FU1 * ef)/sum_lc_emission    
                 ws41[f"S{row}"] = items["cut_off"]
                 ws41[f"T{row}"] = items["description"]
                 row += 1  # ขยับแถวสำหรับ item ถัดไป
                 FU = FU + FU1
                 Qemission= Qemission + (FU1 * ef)
+                sum_emission=sum_emission+ ((FU1 * ef)/sum_lc_emission)
 
 
         # หลังจบแต่ละ process ให้เว้น 1 แถว
@@ -612,6 +619,7 @@ for i in range(len(phase)):
     ws41[f"C{row}"] = "รวม"
     ws41[f"E{row}"] = round(float(FU),2)
     ws41[f"Q{row}"] = round(float(Qemission),2)
+    ws41[f"R{row}"] = round(float(sum_emission),2)
 
     for r in range(row, row + 1):
         for col in ["C", "D", "E", "Q", "R"]:

@@ -33,6 +33,18 @@ exports.readperId = async (req, res) => {
     }
 };
 
+exports.readperIdYear = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const year = req.params.year;
+        const result = await Form61.readperIdYear(id, year);
+        if (!result) return res.status(404).json({ message: 'Form61 not found' });
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 exports.deleteById = async (req, res) => {
     try {
         const id = req.params.id;
@@ -51,8 +63,8 @@ exports.deleteById = async (req, res) => {
 
 exports.readperIdreport = async (req, res) => {
     try {
-        const id = req.params.id;
-        const result = await Form61.readperIdreport(id);
+        const product_id = req.params.product_id;
+        const result = await Form61.readperIdreport(product_id);
         if (!result) return res.status(404).json({ message: 'Form61 not found' });
         res.json(result);
     } catch (err) {

@@ -53,3 +53,14 @@ exports.remove = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.readByCompanyId = async (req, res) => {
+    try {
+        const company_id = req.params.company_id;
+        const products = await Company.readByCompanyId(company_id);
+        if (!products || products.length === 0) return res.status(404).json({ message: 'No products found for this company' });
+        res.json(products);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};

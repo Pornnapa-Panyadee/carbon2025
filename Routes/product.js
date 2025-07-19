@@ -16,5 +16,4 @@ router.delete('/product/:product_id', remove);
 // router.put('/product/photo/:product_id', updatePhoto);
 
 
-
 module.exports = router; // Export the router

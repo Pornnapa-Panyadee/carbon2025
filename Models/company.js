@@ -24,7 +24,16 @@ const companyModel = {
     },
 
     findById: async (id) => {
-        const [rows] = await db.query('SELECT * FROM companies WHERE company_id = ?', [id]);
+        const query = `
+            SELECT 
+                c.*, 
+                i.industrial_name, 
+                i.required_cbam
+            FROM companies c
+            LEFT JOIN industrials i ON c.industrial_id = i.industrial_id
+            WHERE c.company_id = ?
+        `;
+        const [rows] = await db.query(query, [id]);
         return rows[0] || null;
     },
 
@@ -57,6 +66,13 @@ const companyModel = {
     findByUserId: async (user_id) => {
         const [rows] = await db.query('SELECT * FROM companies WHERE user_id = ?', [user_id]);
         return rows || [];
+    },
+
+    readByCompanyId: async (company_id) => {
+        const [results] = await db.query('SELECT * FROM products WHERE company_id = ?', [company_id]);
+        // Add photo_name and photo_path for readByCompanyId as well
+
+        return results;
     },
 
 };
