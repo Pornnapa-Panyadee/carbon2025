@@ -3,25 +3,8 @@ const db = require('../Config/db.js');
 
 const form42Model = {
     create: async (data) => {
-        const sql = `
-        INSERT INTO cfp_report42_items (
-            company_id, product_id, process_id, life_cycle_phase,
-            item_name, item_unit, item_fu_qty, distance, distance_source, calculate_type,
-            type1_gas, type1_gas_unit, type1_gas_qty, type1_ef, type1_ef_source,
-            type2_outbound_load, type2_return_load, type2_vehicle, type2_outbound_load_percent,
-            type2_return_load_percent, type2_outbound_ef, type2_return_ef, type2_ef_source, type2_ef_source_ref, ratio,
-            transport_emission, cut_off, add_on_detail, created_date, updated_date
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
-        `;
-        const values = [
-            data.company_id, data.product_id, data.process_id, data.life_cycle_phase,
-            data.item_name, data.item_unit, data.item_fu_qty, data.distance, data.distance_source, data.calculate_type,
-            data.type1_gas, data.type1_gas_unit, data.type1_gas_qty, data.type1_ef, data.type1_ef_source,
-            data.type2_outbound_load, data.type2_return_load, data.type2_vehicle, data.type2_outbound_load_percent,
-            data.type2_return_load_percent, data.type2_outbound_ef, data.type2_return_ef, data.type2_ef_source, data.type2_ef_source_ref, data.ratio,
-            data.transport_emission, data.cut_off, data.add_on_detail
-        ];
-        const [result] = await db.query(sql, values);
+        const query = 'INSERT INTO cfp_report42_items SET ?, created_date = NOW(), updated_date = NOW() ';
+        const [result] = await db.query(query, data);
         return result;
     },
 

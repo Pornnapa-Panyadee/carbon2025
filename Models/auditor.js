@@ -98,6 +98,23 @@ const auditorModel = {
     createComment: async (data) => {
         const query = 'INSERT INTO auditor_comments SET ?, created_at = NOW(), updated_at = NOW() ';
         const [result] = await db.query(query, data);
+
+        // แยกเฉพาะข้อมูลที่ต้องใช้ใน notifications
+        const notificationData = {
+            auditor_id: data.auditor_id,
+            company_id: data.company_id,
+            product_id: data.product_id,
+            comments_id: result.insertId, // อ้างถึง comment ที่เพิ่งสร้าง
+            is_read: 0,
+        };
+
+        const notificationQuery = 'INSERT INTO notifications SET ?, created_at = NOW(), updated_at = NOW() ';
+        const [notificationResult] = await db.query(notificationQuery, notificationData);
+
+        if (notificationResult.affectedRows === 0) {
+            throw new Error('Failed to create notification');
+        }
+
         return result;
     },
 
