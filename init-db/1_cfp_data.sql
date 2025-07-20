@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 20, 2025 at 07:02 AM
+-- Generation Time: Jul 20, 2025 at 12:07 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.1.25
 
@@ -83,21 +83,24 @@ CREATE TABLE `auditor_comments` (
   `product_id` int(11) DEFAULT NULL,
   `comment` text DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `comment_company` text DEFAULT NULL,
+  `updated_at_company` datetime DEFAULT NULL,
+  `created_at_company` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `auditor_comments`
 --
 
-INSERT INTO `auditor_comments` (`comments_id`, `auditor_id`, `company_id`, `product_id`, `comment`, `created_at`, `updated_at`) VALUES
-(1, 1, 1005, 7, 'เลขไม่ตรง', '2025-07-10 15:05:14', '2025-07-10 15:05:14'),
-(3, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรง', '2025-07-10 15:22:50', '2025-07-10 15:22:50'),
-(4, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:46:23', '2025-07-19 12:46:23'),
-(5, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:46:35', '2025-07-19 12:46:35'),
-(6, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:48:03', '2025-07-19 12:48:03'),
-(7, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:48:38', '2025-07-19 12:48:38'),
-(8, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:49:13', '2025-07-19 12:49:13');
+INSERT INTO `auditor_comments` (`comments_id`, `auditor_id`, `company_id`, `product_id`, `comment`, `created_at`, `updated_at`, `comment_company`, `updated_at_company`, `created_at_company`) VALUES
+(1, 1, 1005, 7, 'เลขไม่ตรง', '2025-07-10 15:05:14', '2025-07-10 15:05:14', NULL, NULL, NULL),
+(3, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรง', '2025-07-10 15:22:50', '2025-07-10 15:22:50', NULL, NULL, NULL),
+(4, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:46:23', '2025-07-19 12:46:23', NULL, NULL, NULL),
+(5, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:46:35', '2025-07-19 12:46:35', NULL, NULL, NULL),
+(6, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:48:03', '2025-07-19 12:48:03', NULL, NULL, NULL),
+(7, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:48:38', '2025-07-19 12:48:38', NULL, NULL, NULL),
+(8, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:49:13', '2025-07-19 12:49:13', 'ทดสอบ', '2025-07-20 17:06:57', '2025-07-20 17:06:57');
 
 -- --------------------------------------------------------
 
@@ -1764,6 +1767,13 @@ CREATE TABLE `notifications` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `notifications`
+--
+
+INSERT INTO `notifications` (`id`, `auditor_id`, `company_id`, `comments_id`, `product_id`, `create_by`, `message_alert`, `is_read`, `created_at`, `updated_at`) VALUES
+(9, 1, 1005, 8, 7, 'company', 'บริษัทตอบกลับข้อความของท่าน', 0, '2025-07-20 10:06:57', '2025-07-20 10:06:57');
 
 -- --------------------------------------------------------
 
@@ -11276,7 +11286,7 @@ ALTER TABLE `input_processes`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `output_categories`

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 19, 2025 at 08:15 PM
+-- Generation Time: Jul 20, 2025 at 07:02 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.1.25
 
@@ -67,7 +67,8 @@ INSERT INTO `auditors_status_infos` (`status_id`, `status_th`, `status_eng`, `cl
 (1, 'รอการพิจารณา', 'Pending', 1, 'รอการพิจารณา'),
 (2, 'อยู่ระหว่างการพิจารณา', 'Under', 2, 'อยู่ระหว่างการพิจารณา'),
 (3, 'อนุมัติ', 'Approved', 3, 'ผลการพิจารณา'),
-(4, 'ไม่อนุมัติ', 'Rejected', 3, 'ผลการพิจารณา');
+(4, 'ไม่อนุมัติ', 'Rejected', 3, 'ผลการพิจารณา'),
+(5, 'ร่างเอกสาร', 'Draft', 0, 'ร่างเอกสาร');
 
 -- --------------------------------------------------------
 
@@ -190,6 +191,7 @@ CREATE TABLE `cfp_report41_items` (
   `company_id` int(11) DEFAULT NULL,
   `product_id` int(11) DEFAULT NULL,
   `process_id` int(11) DEFAULT NULL,
+  `item_process_id` int(11) DEFAULT NULL,
   `life_cycle_phase` int(11) DEFAULT NULL,
   `production_class` text DEFAULT NULL,
   `item_name` varchar(255) DEFAULT NULL,
@@ -213,39 +215,40 @@ CREATE TABLE `cfp_report41_items` (
 -- Dumping data for table `cfp_report41_items`
 --
 
-INSERT INTO `cfp_report41_items` (`report_41_id`, `company_id`, `product_id`, `process_id`, `life_cycle_phase`, `production_class`, `item_name`, `item_unit`, `item_quantity`, `lci_source_period`, `ef`, `ef_source`, `ef_source_ref`, `transport_type`, `ratio`, `ghg_emission`, `ghg_emission_proportion`, `cut_off`, `description`, `created_date`, `updated_date`) VALUES
-(6, 1004, 6, 2, 2, NULL, 'Electricity', '', 1500, '2022', 0.4, 'Self collect', 'Fr04.3 กระบวนการบำบัดน้ำเสีย', 'type1', 100, 68, 34, 0, 'Energy use in production process', NULL, NULL),
-(7, 1005, 7, 6, 1, 'input', 'ยางก้อนถ้วย (55%DRC)', 'kg', 1133333.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.0863, 'TGO EF', 'ผลิตจาก Styrene และ Ethylbenzene; LCIA method IPCC 2013 GWP 100a V1.03', 'type2', 0, 0, 0, 0, 'asdfasdf', '2025-05-30 16:40:36', '2025-07-05 15:13:05'),
-(8, 1005, 7, 7, 1, 'output', 'ยาง Re-process \r\n', 'kg', 66666.67, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, 'ไม่มี Emission Factor', NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 16:45:02', '2025-05-30 16:45:02'),
-(9, 1005, 7, 9, 1, 'input', 'พลาสติกห่อยาง (LLDPE) ', 'kg', 21000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 2.7107, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Linear Low Density Polyethylene (LLDPE)+Extrusion, plastic film)\r\n', NULL, 100, 0.05, 0.3, NULL, NULL, '2025-05-30 16:47:18', '2025-05-30 16:47:18'),
-(10, 1005, 7, 6, 2, 'input', 'ยางก้อนถ้วย (55% DRC) \r\n', 'kg', 1133333.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 16:52:08', '2025-05-30 16:52:08'),
-(11, 1005, 7, 9, 1, 'input', 'พลาสติกรอง/คลุมยาง (LDPE) ', 'kg', 10500, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 3.2009, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Low Density Polyethylene (LDPE)+ Extrusion, plastic film)', NULL, 100, 0.03, 0.18, NULL, NULL, '2025-05-30 17:00:45', '2025-05-30 17:00:45'),
-(12, 1005, 7, 6, 2, 'input', 'Diesel (ใช้กับรถตัก) - การได้มา', 'kg', 1133333.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.3522, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Diesel (น้ำมันดีเซล /น้ำมัน\r\nโซล่าร์))', NULL, 100, 0, NULL, NULL, NULL, '2025-05-30 19:52:00', '2025-05-30 19:52:00'),
-(13, 1005, 7, 6, 2, 'input', 'Diesel (ใช้กับรถตัก) - การเผาไหม้ ', 'L', 666.67, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 2.9793, 'TGO EF', 'EF_CFO_UPDATE_Apr 2565 (Mobile Combustion off-road/Diesel)', NULL, 100, 0, NULL, NULL, NULL, '2025-05-30 19:54:20', '2025-05-30 19:54:20'),
-(14, 1005, 7, 9, 2, 'output', 'ยางก้อนถ้วย (55% DRC) ', 'kg', 1133333.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 19:56:12', '2025-05-30 19:56:12'),
-(15, 1005, 7, 6, 2, 'input', 'ยาง Re-process ', 'kg', 66, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 20:23:19', '2025-05-30 20:23:19'),
-(16, 1005, 7, 6, 2, 'input', 'ไฟฟ้าจากระบบสายส่งของประเทศ ', 'kWh', 210000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.5986, 'TGO EF', 'EF_CFO_UPDATE_Apr 2565 (Electricity, grid mix (ไฟฟ้า))', '', 0, 0.35, NULL, NULL, NULL, '2025-05-30 20:23:19', '2025-05-30 20:23:19'),
-(17, 1005, 7, 7, 2, 'input', 'ไฟฟ้า (Solar Cell) ', 'kWh', 93, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, 'TGO EF', 'ไม่มี Emission Factor', NULL, 100, NULL, NULL, NULL, NULL, '2025-05-30 20:31:24', '2025-05-30 20:31:24'),
-(18, 1005, 7, 7, 2, 'input', 'กรดซัลฟูริก (Sulfuric Acid) ', 'kg', 58666.67, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.1219, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Sulfuric acid)', NULL, 100, 0.01, 0.02, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
-(19, 1005, 7, 7, 2, 'input', 'โซดาไฟ (Sodium Hydroxide)', 'kg', 46666.67, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 1.1148, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Sodium hydroxide)', '', 100, 0.05, 0.14, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
-(20, 1005, 7, 7, 2, 'input', 'น้ำ Recycle', 'm3', 11666.67, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.4789, 'Self collect', 'Fr04.3 กระบวนการบำบัดน้ำ', '', 100, 0.01, 0.02, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
-(21, 1005, 7, 7, 2, 'output', 'ยางย่อยก่อนอบ', 'kg', 1166666.67, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 20:37:23', '2025-05-23 20:37:23'),
-(22, 1005, 7, 7, 2, 'waste/co-products', 'สิ่งปนเปื้อน', 'kg', 33333.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.7933, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (การฝังกลบขยะมูลฝอยชุมชนแบบถูกหลักสุขาภิบาล)', '', 100, 0.03, 0.07, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
-(23, 1005, 7, 7, 2, 'waste/co-products', 'น้ำเสีย', 'm3', 30000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, 100, 0.03, NULL, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
-(24, 1005, 7, 7, 2, 'waste/co-products', 'น้ำสูญเสีย', 'm3', 5105.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, 100, 0, NULL, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
-(25, 1005, 7, 8, 2, 'input', 'LPG (การได้มา)', 'kg', 31500, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.8582, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Liquefied Petroleum Gas, LPG Mixed (ก๊าซหุงต้มแบบผสม))', '', 100, 0.03, NULL, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
-(26, 1005, 7, 8, 2, 'input', 'LPG (การเผาไหม้)', 'kg', 31500, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 3.1134, 'TGO EF', 'EF_CFO_UPDATE_Apr 2565 (LPG)', '', 101, 0.09, NULL, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
-(27, 1005, 7, 8, 2, 'input', 'Biogas (การได้มา)', 'm3', 52500, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.27, 'Self collect', 'Fr04.3 ระบบผลิตน้ำ RO', '', 100, 0.01, NULL, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
-(28, 1005, 7, 8, 2, 'input', 'Biogas (การเผาไหม้)', 'm3', 52500, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.0011, 'TGO EF', 'EF_CFO_UPDATE_Apr 2565 (Biogas)', '', 100, 0, NULL, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
-(29, 1005, 7, 8, 2, 'output', 'ยางแท่ง A ', 'kg', 1050000, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 20:43:27', '2025-05-30 20:43:27'),
-(30, 1005, 7, 8, 2, 'waste/co-products', 'ยางเสียส่ง Reprocess ', 'kg', 116666.67, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 20:43:27', '2025-05-30 20:43:27'),
-(31, 1005, 7, 9, 2, 'input', 'พลาสติกห่อยาง (LLDPE)', 'kg', 21000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, 0.02, NULL, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
-(32, 1005, 7, 9, 2, 'input', 'พลาสติกรอง/คลุมยาง (LDPE)', 'kg', 10500, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, 0.01, NULL, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
-(33, 1005, 7, 9, 2, 'input', 'LPG (การได้มา)', 'kg', 1050, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 3.9716, 'TGO EF', 'EF_CFO_UPDATE_Apr 2565 (LPG)', '', 100, 0, 0, 0.01, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
-(34, 1005, 7, 9, 2, 'input', 'LPG (การเผาไหม้)', 'kg', 1050, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.8582, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Liquefied Petroleum Gas, LPG Mixed (ก๊าซหุงต้มแบบผสม))', '', 100, 0, 0, 0, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
-(35, 1005, 7, 9, 2, 'output', 'ยางแท่ง A (net weight) ', 'kg', 1050000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(36, 1005, 7, 9, 2, 'output', 'packaging', 'kg', 31500, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(37, 1005, 7, 9, 2, 'output', 'ยางแท่ง + packaging ', 'kg', 1081500, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `cfp_report41_items` (`report_41_id`, `company_id`, `product_id`, `process_id`, `item_process_id`, `life_cycle_phase`, `production_class`, `item_name`, `item_unit`, `item_quantity`, `lci_source_period`, `ef`, `ef_source`, `ef_source_ref`, `transport_type`, `ratio`, `ghg_emission`, `ghg_emission_proportion`, `cut_off`, `description`, `created_date`, `updated_date`) VALUES
+(6, 1004, 6, 2, NULL, 2, NULL, 'Electricity', '', 1500, '2022', 0.4, 'Self collect', 'Fr04.3 กระบวนการบำบัดน้ำเสีย', 'type1', 100, 68, 34, 0, 'Energy use in production process', NULL, NULL),
+(7, 1005, 7, 6, 3, 1, 'input', 'ยางก้อนถ้วย (55%DRC)', 'kg', 1133333.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.0863, 'TGO EF', 'ผลิตจาก Styrene และ Ethylbenzene; LCIA method IPCC 2013 GWP 100a V1.03', 'type2', 0, 0, 0, 0, 'asdfasdf', '2025-05-30 16:40:36', '2025-07-05 15:13:05'),
+(8, 1005, 7, 7, 5, 1, 'output', 'ยาง Re-process \r\n', 'kg', 66666.67, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, 'ไม่มี Emission Factor', NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 16:45:02', '2025-05-30 16:45:02'),
+(9, 1005, 7, 9, 14, 1, 'input', 'พลาสติกห่อยาง (LLDPE) ', 'kg', 21000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 2.7107, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Linear Low Density Polyethylene (LLDPE)+Extrusion, plastic film)\r\n', NULL, 100, 0.05, 0.3, NULL, NULL, '2025-05-30 16:47:18', '2025-05-30 16:47:18'),
+(10, 1005, 7, 6, 3, 2, 'input', 'ยางก้อนถ้วย (55% DRC) \r\n', 'kg', 1133333.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 16:52:08', '2025-05-30 16:52:08'),
+(11, 1005, 7, 9, 15, 1, 'input', 'พลาสติกรอง/คลุมยาง (LDPE) ', 'kg', 10500, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 3.2009, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Low Density Polyethylene (LDPE)+ Extrusion, plastic film)', NULL, 100, 0.03, 0.18, NULL, NULL, '2025-05-30 17:00:45', '2025-05-30 17:00:45'),
+(12, 1005, 7, 6, 4, 2, 'input', 'Diesel (ใช้กับรถตัก) - การได้มา', 'kg', 1133333.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.3522, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Diesel (น้ำมันดีเซล /น้ำมัน\r\nโซล่าร์))', NULL, 100, 0, NULL, NULL, NULL, '2025-05-30 19:52:00', '2025-05-30 19:52:00'),
+(13, 1005, 7, 6, NULL, 2, 'input', 'Diesel (ใช้กับรถตัก) - การเผาไหม้ ', 'L', 666.67, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 2.9793, 'TGO EF', 'EF_CFO_UPDATE_Apr 2565 (Mobile Combustion off-road/Diesel)', NULL, 100, 0, NULL, NULL, NULL, '2025-05-30 19:54:20', '2025-05-30 19:54:20'),
+(14, 1005, 7, 9, NULL, 2, 'output', 'ยางก้อนถ้วย (55% DRC) ', 'kg', 1133333.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 19:56:12', '2025-05-30 19:56:12'),
+(15, 1005, 7, 6, NULL, 2, 'input', 'ยาง Re-process ', 'kg', 66, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 20:23:19', '2025-05-30 20:23:19'),
+(16, 1005, 7, 6, NULL, 2, 'input', 'ไฟฟ้าจากระบบสายส่งของประเทศ ', 'kWh', 210000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.5986, 'TGO EF', 'EF_CFO_UPDATE_Apr 2565 (Electricity, grid mix (ไฟฟ้า))', '', 0, 0.35, NULL, NULL, NULL, '2025-05-30 20:23:19', '2025-05-30 20:23:19'),
+(17, 1005, 7, 7, NULL, 2, 'input', 'ไฟฟ้า (Solar Cell) ', 'kWh', 93, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, 'TGO EF', 'ไม่มี Emission Factor', NULL, 100, NULL, NULL, NULL, NULL, '2025-05-30 20:31:24', '2025-05-30 20:31:24'),
+(18, 1005, 7, 7, NULL, 2, 'input', 'กรดซัลฟูริก (Sulfuric Acid) ', 'kg', 58666.67, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.1219, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Sulfuric acid)', NULL, 100, 0.01, 0.02, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
+(19, 1005, 7, 7, NULL, 2, 'input', 'โซดาไฟ (Sodium Hydroxide)', 'kg', 46666.67, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 1.1148, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Sodium hydroxide)', '', 100, 0.05, 0.14, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
+(20, 1005, 7, 7, NULL, 2, 'input', 'น้ำ Recycle', 'm3', 11666.67, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.4789, 'Self collect', 'Fr04.3 กระบวนการบำบัดน้ำ', '', 100, 0.01, 0.02, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
+(21, 1005, 7, 7, NULL, 2, 'output', 'ยางย่อยก่อนอบ', 'kg', 1166666.67, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 20:37:23', '2025-05-23 20:37:23'),
+(22, 1005, 7, 7, NULL, 2, 'waste/co-products', 'สิ่งปนเปื้อน', 'kg', 33333.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.7933, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (การฝังกลบขยะมูลฝอยชุมชนแบบถูกหลักสุขาภิบาล)', '', 100, 0.03, 0.07, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
+(23, 1005, 7, 7, NULL, 2, 'waste/co-products', 'น้ำเสีย', 'm3', 30000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, 100, 0.03, NULL, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
+(24, 1005, 7, 7, NULL, 2, 'waste/co-products', 'น้ำสูญเสีย', 'm3', 5105.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, 100, 0, NULL, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
+(25, 1005, 7, 8, NULL, 2, 'input', 'LPG (การได้มา)', 'kg', 31500, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.8582, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Liquefied Petroleum Gas, LPG Mixed (ก๊าซหุงต้มแบบผสม))', '', 100, 0.03, NULL, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
+(26, 1005, 7, 8, NULL, 2, 'input', 'LPG (การเผาไหม้)', 'kg', 31500, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 3.1134, 'TGO EF', 'EF_CFO_UPDATE_Apr 2565 (LPG)', '', 101, 0.09, NULL, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
+(27, 1005, 7, 8, NULL, 2, 'input', 'Biogas (การได้มา)', 'm3', 52500, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.27, 'Self collect', 'Fr04.3 ระบบผลิตน้ำ RO', '', 100, 0.01, NULL, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
+(28, 1005, 7, 8, NULL, 2, 'input', 'Biogas (การเผาไหม้)', 'm3', 52500, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.0011, 'TGO EF', 'EF_CFO_UPDATE_Apr 2565 (Biogas)', '', 100, 0, NULL, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
+(29, 1005, 7, 8, NULL, 2, 'output', 'ยางแท่ง A ', 'kg', 1050000, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 20:43:27', '2025-05-30 20:43:27'),
+(30, 1005, 7, 8, NULL, 2, 'waste/co-products', 'ยางเสียส่ง Reprocess ', 'kg', 116666.67, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 20:43:27', '2025-05-30 20:43:27'),
+(31, 1005, 7, 9, NULL, 2, 'input', 'พลาสติกห่อยาง (LLDPE)', 'kg', 21000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, 0.02, NULL, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
+(32, 1005, 7, 9, NULL, 2, 'input', 'พลาสติกรอง/คลุมยาง (LDPE)', 'kg', 10500, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, 0.01, NULL, NULL, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
+(33, 1005, 7, 9, NULL, 2, 'input', 'LPG (การได้มา)', 'kg', 1050, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 3.9716, 'TGO EF', 'EF_CFO_UPDATE_Apr 2565 (LPG)', '', 100, 0, 0, 0.01, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
+(34, 1005, 7, 9, NULL, 2, 'input', 'LPG (การเผาไหม้)', 'kg', 1050, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.8582, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Liquefied Petroleum Gas, LPG Mixed (ก๊าซหุงต้มแบบผสม))', '', 100, 0, 0, 0, NULL, '2025-05-30 20:32:46', '2025-05-30 20:32:46'),
+(35, 1005, 7, 9, NULL, 2, 'output', 'ยางแท่ง A (net weight) ', 'kg', 1050000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(36, 1005, 7, 9, NULL, 2, 'output', 'packaging', 'kg', 31500, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(37, 1005, 7, 9, NULL, 2, 'output', 'ยางแท่ง + packaging ', 'kg', 1081500, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(45, 1005, 7, 6, 3, 1, 'input', 'ยางก้อนถ้วย (55%DRC)', 'kg', 1133333.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.0863, 'TGO EF', 'ผลิตจาก Styrene และ Ethylbenzene; LCIA method IPCC 2013 GWP 100a V1.03', 'type2', 0, 0, 0, 0, 'asdfasdf', '2025-07-20 11:41:32', '2025-07-20 11:41:32');
 
 -- --------------------------------------------------------
 
@@ -1715,7 +1718,7 @@ CREATE TABLE `input_processes` (
 
 INSERT INTO `input_processes` (`input_process_id`, `process_id`, `input_cat_id`, `input_name`, `input_unit`, `input_quantity`, `chemical_reaction`, `created_date`, `updated_date`, `input_title_id`) VALUES
 (3, 6, 7, 'ยางก้อนถ้วย (55%DRC)', 'kg', 1133333.33, 0, '2025-05-30 16:16:33', '2025-05-30 16:16:33', 1),
-(4, 6, 9, 'Diesel (ใช้กับรถตัก)', 'L', 666.67, 0, '2025-05-30 16:16:33', '2025-05-30 16:16:33', 2),
+(4, 6, 9, 'Diesel (ใช้กับรถตัก) - การได้มา', 'L', 666.67, 0, '2025-05-30 16:16:33', '2025-05-30 16:16:33', 2),
 (5, 7, 7, 'ยาง Re-process', 'kg', 66666.67, 0, '2025-05-30 16:16:33', '2025-05-30 16:16:33', 1),
 (6, 7, 10, 'ไฟฟ้าจากระบบสายส่งของประเทศ', 'kWh', 2100000, 0, '2025-05-30 16:20:42', '2025-05-30 16:20:42', 2),
 (7, 7, 10, 'ไฟฟ้า (Solar Cell)', 'kWh', 93333.33, 0, '2025-05-30 16:21:58', '2025-05-30 16:21:58', 2),
@@ -1755,19 +1758,12 @@ CREATE TABLE `notifications` (
   `company_id` int(11) NOT NULL,
   `comments_id` int(11) DEFAULT NULL,
   `product_id` int(11) DEFAULT NULL,
+  `create_by` text DEFAULT NULL,
+  `message_alert` text DEFAULT NULL,
   `is_read` tinyint(1) DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `notifications`
---
-
-INSERT INTO `notifications` (`id`, `auditor_id`, `company_id`, `comments_id`, `product_id`, `is_read`, `created_at`, `updated_at`) VALUES
-(1, 1, 1005, 3, 7, 1, '2025-07-19 04:43:42', '2025-07-19 04:43:42'),
-(2, 1, 1005, 7, NULL, 0, '2025-07-19 05:48:38', '2025-07-19 05:48:38'),
-(3, 1, 1005, 8, 7, 0, '2025-07-19 05:49:13', '2025-07-19 05:49:13');
 
 -- --------------------------------------------------------
 
@@ -1807,7 +1803,7 @@ INSERT INTO `output_processes` (`output_process_id`, `process_id`, `output_cat_i
 (2, 2, 2, 'testtttttt', '', 1111, 0, '2025-05-29 15:02:42', '2025-05-29 15:02:42', 0),
 (3, 6, 2, 'ยางก้อนถ้วย (55% DRC', 'kg', 1133333.33, 0, '2025-05-30 20:17:34', '2025-05-30 20:17:34', 0),
 (4, 7, 2, 'ยางย่อยก่อนอบ', 'kg', 1166666.67, 0, '2025-05-30 20:19:03', '2025-05-30 20:19:03', 0),
-(5, 8, 2, 'ยางแท่ง A', 'kg', 1050000, 0, '2025-05-30 20:19:03', '2025-05-30 20:19:03', 0),
+(5, 7, 2, 'ยาง Re-process ', 'kg', 1050000, 0, '2025-05-30 20:19:03', '2025-05-30 20:19:03', 0),
 (6, 9, 2, 'ยางแท่ง A (net weight)', 'kg', 1050000, 1, '2025-05-30 20:20:19', '2025-05-30 20:20:19', 0),
 (7, 9, 2, 'packaging', 'kg', 31500, 0, '2025-06-01 21:12:51', '2025-06-01 21:12:51', 0),
 (8, 9, 2, 'ยางแท่ง + packaging', 'kg', 1081500, 0, '2025-06-01 21:12:51', '2025-06-01 21:12:51', 0);
@@ -2164,7 +2160,7 @@ CREATE TABLE `products` (
   `collect_data_end` date DEFAULT NULL,
   `product_photo` varchar(255) DEFAULT NULL,
   `auditor_id` int(11) DEFAULT NULL,
-  `verify_status` enum('Pending','Under','Approved','Rejected') DEFAULT NULL,
+  `verify_status` enum('Draft','Pending','Under','Approved','Rejected') DEFAULT NULL,
   `submitted_round` varchar(255) DEFAULT NULL,
   `submitted_date` datetime DEFAULT NULL,
   `created_date` datetime DEFAULT NULL,
@@ -2176,27 +2172,8 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`product_id`, `company_id`, `product_name_th`, `product_name_en`, `scope`, `FU_value`, `FU_th`, `FU_en`, `PU_value`, `PU_th`, `PU_en`, `sale_ratio`, `product_techinfo`, `pcr_reference`, `collect_data_start`, `collect_data_end`, `product_photo`, `auditor_id`, `verify_status`, `submitted_round`, `submitted_date`, `created_date`, `updated_date`) VALUES
-(4, 1004, 'test', 'test', 'B2B', NULL, 'test', 'test', 0, '', '', 'test', NULL, 'test', '2025-05-27', '2025-05-30', NULL, 1, '', 'test', '2025-05-27 12:00:52', NULL, NULL),
-(5, 1004, 'test', 'test', '', NULL, 'test', 'test0001', 0, '', '', 'test', NULL, 'test', '2025-05-27', '2025-05-27', '', NULL, '', 'test', '2025-05-27 12:00:52', NULL, NULL),
 (6, 1004, 'test', 'test', '', NULL, 'test', 'test', 0, '', '', 'test', NULL, 'test', '2025-05-27', '2025-05-27', 'public/product/1.jpg', NULL, '', 'test', '2025-05-27 12:00:52', NULL, NULL),
-(7, 1005, 'ยางแท่งเกรด A', 'STR Rubber A', 'B2B', 1, 'กิโลกรัม', 'kg', 1, 'กิโลกรัม', 'kg', '65%', '[\"Dirt (Max,% wt) = 0.08\", \"Ash (Max,%wt) =0.60\",\"Volatile Matter (Max,%wt)=0.80\"]', 'ข้อกำหนดเฉพาะกลุ่มผลิตภัณฑ์ยางพาราและผลิตภัณฑ์จากยางพารา', '2025-03-01', '2025-05-31', 'public/product/1.jpg', 1, 'Pending', NULL, '2025-05-22 15:54:32', '2025-06-02 00:26:13', '2025-06-02 00:26:13'),
-(8, 1005, 'test', 'test', '', NULL, 'test', 'test0001', 0, '', '', 'test', NULL, 'test', '2025-05-26', '2025-05-26', NULL, NULL, '', 'test', '2025-05-27 05:00:52', NULL, NULL),
-(9, 1005, 'ปูนซีเมนต์เอ', 'Cement A', 'B2B', 1000, '3', '3', 1000, '3', '3', '0.1', '[\"ปูนซีเมนต์สำหรับงานโครงสร้างคอนกรีตและผลิตภัณฑ์คอนกรีต หล่อสำเร็จที่ต้องการความไหลลื่นดี\"]', 'ข้อกำหนดเฉพำะกลุ่มผลิตภัณฑ์สำหรับผลิตภัณฑ์ปูนซีเมนต์สำเร็จรูป', '2023-12-31', '2025-12-30', NULL, NULL, '', '1/2568', NULL, NULL, NULL),
-(10, 1005, 'sakura', 'sakura', 'B2B', 123, '1', '1', 123, '8', '8', '123', '[\"\"]', 'ข้อกำหนดเฉพำะกลุ่มผลิตภัณฑ์สำหรับผลิตภัณฑ์ปูนซีเมนต์สำเร็จรูป', '2025-02-11', '2025-06-12', NULL, NULL, '', '1/2568', NULL, NULL, NULL),
-(11, 1005, 'hellp', 'testset', 'B2B', 1, '4', '4', 3, '5', '5', '12', '[\"asdfasdf\",\"asdfasdfasfasd\"]', 'ข้อกำหนดเฉพำะกลุ่มผลิตภัณฑ์สำหรับผลิตภัณฑ์ปูนซีเมนต์สำเร็จรูป', '2025-07-11', '2025-07-30', NULL, NULL, '', '2/2568', NULL, NULL, NULL),
-(12, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-12 22:07:38', '2025-07-12 22:07:38'),
-(13, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-12 22:14:36', '2025-07-12 22:14:36'),
-(14, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-12 22:15:00', '2025-07-12 22:15:00'),
-(15, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-12 22:21:57', '2025-07-12 22:21:57'),
-(16, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-12 22:23:26', '2025-07-12 22:23:26'),
-(17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-12 22:26:09', '2025-07-12 22:26:09'),
-(18, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-12 22:29:16', '2025-07-12 22:29:16'),
-(19, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-12 22:31:39', '2025-07-12 22:31:39'),
-(20, 1005, 'ยางแท่งเกรด A', 'STR Rubber A', 'B2B', 1, 'กิโลกรัม', 'kg', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'Pending', NULL, NULL, '2025-07-12 22:33:57', '2025-07-12 22:33:57'),
-(21, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-19 21:13:32', '2025-07-19 21:13:32'),
-(22, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-19 21:13:50', '2025-07-19 21:13:50'),
-(23, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-19 21:14:28', '2025-07-19 21:14:28'),
-(24, 1008, 'test', 'test', 'B2B', 1, 'กิโลกรัม', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-19 21:18:52', '2025-07-19 21:18:52');
+(7, 1005, 'ยางแท่งเกรด A', 'STR Rubber A', 'B2B', 1, 'กิโลกรัม', 'kg', 1, 'กิโลกรัม', 'kg', '65%', '[\"Dirt (Max,% wt) = 0.08\", \"Ash (Max,%wt) =0.60\",\"Volatile Matter (Max,%wt)=0.80\"]', 'ข้อกำหนดเฉพาะกลุ่มผลิตภัณฑ์ยางพาราและผลิตภัณฑ์จากยางพารา', '2025-03-01', '2025-05-31', 'public/product/1.jpg', 1, 'Draft', NULL, '2025-05-22 15:54:32', '2025-06-02 00:26:13', '2025-06-02 00:26:13');
 
 -- --------------------------------------------------------
 
@@ -11173,7 +11150,7 @@ ALTER TABLE `auditors`
 -- AUTO_INCREMENT for table `auditors_status_infos`
 --
 ALTER TABLE `auditors_status_infos`
-  MODIFY `status_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `status_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `auditor_comments`
@@ -11203,7 +11180,7 @@ ALTER TABLE `cfp_report5_sums`
 -- AUTO_INCREMENT for table `cfp_report41_items`
 --
 ALTER TABLE `cfp_report41_items`
-  MODIFY `report_41_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `report_41_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `cfp_report41_sums`
@@ -11299,7 +11276,7 @@ ALTER TABLE `input_processes`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `output_categories`
