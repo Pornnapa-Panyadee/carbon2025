@@ -75,6 +75,13 @@ const companyModel = {
         return results;
     },
 
+
+    listCommentsByProduct: async (auditor_id, company_id, product_id) => {
+        const query = 'SELECT * FROM auditor_comments WHERE auditor_id=? AND company_id = ? AND product_id=? ORDER BY created_at DESC';
+        const [rows] = await db.query(query, [auditor_id, company_id, product_id]);
+        return rows;
+    },
+
 };
 
 module.exports = companyModel;

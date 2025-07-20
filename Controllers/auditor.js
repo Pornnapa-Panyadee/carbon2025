@@ -68,7 +68,10 @@ exports.readAuditorReport = async (req, res) => {
 exports.createComment = async (req, res) => {
     try {
         const data = req.body;
-        const result = await Auditor.createComment(data);
+        const message_alert = "ผู้ทวนสอบได้ตอบกลับบริษัทของคุณ";
+        const create_by = "auditor";
+
+        const result = await Auditor.createComment(data, message_alert, create_by);
         res.status(201).json({ message: 'Comment created', comment_id: result.insertId });
     } catch (err) {
         res.status(500).json({ error: err.message });

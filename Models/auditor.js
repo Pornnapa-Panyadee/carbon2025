@@ -53,11 +53,11 @@ const auditorModel = {
     },
 
     readAuditorReportID: async (auditor_id) => {
-        const sql1 = `SELECT * FROM products WHERE auditor_id = ?`;
+        const sql1 = `SELECT * FROM products WHERE auditor_id = ? AND verify_status != ?`;
         const sql2 = `SELECT * FROM auditors WHERE auditor_id = ?`;
         const sql3 = `SELECT * FROM auditor_status WHERE auditor_id = ?`;
 
-        const [products] = await db.query(sql1, [auditor_id]);
+        const [products] = await db.query(sql1, [auditor_id, "Draft"],);
         const [auditor] = await db.query(sql2, [auditor_id]);
         const [statuses] = await db.query(sql3, [auditor_id]);
 
@@ -95,7 +95,7 @@ const auditorModel = {
             products: groupedProducts
         };
     },
-    createComment: async (data) => {
+    createComment: async (data, message_alert, create_by) => {
         const query = 'INSERT INTO auditor_comments SET ?, created_at = NOW(), updated_at = NOW() ';
         const [result] = await db.query(query, data);
 
@@ -106,6 +106,8 @@ const auditorModel = {
             product_id: data.product_id,
             comments_id: result.insertId, // อ้างถึง comment ที่เพิ่งสร้าง
             is_read: 0,
+            message_alert: message_alert,
+            create_by: create_by
         };
 
         const notificationQuery = 'INSERT INTO notifications SET ?, created_at = NOW(), updated_at = NOW() ';
@@ -124,8 +126,39 @@ const auditorModel = {
         return rows[0];
     },
     updateComment: async (comments_id, data) => {
-        const query = 'UPDATE auditor_comments SET ?, updated_date = NOW() WHERE comments_id = ?';
-        const [result] = await db.query(query, [data, comments_id]);
+        const query = `
+        UPDATE auditor_comments 
+        SET 
+            comment_company = ?, 
+            updated_at_company = NOW(),
+            created_at_company = CASE 
+                WHEN created_at_company IS NULL THEN NOW() 
+                ELSE created_at_company 
+            END 
+        WHERE comments_id = ?`;
+
+        const [result] = await db.query(query, [data.comment_company, comments_id]);
+
+        const sql = 'SELECT * FROM auditor_comments WHERE comments_id = ?';
+        const [rows] = await db.query(sql, [comments_id]);
+
+        // แยกเฉพาะข้อมูลที่ต้องใช้ใน notifications
+        const notificationData = {
+            auditor_id: rows[0].auditor_id,
+            company_id: rows[0].company_id,
+            product_id: rows[0].product_id,
+            comments_id: comments_id, // อ้างถึง comment ที่เพิ่งสร้าง
+            is_read: 0,
+            message_alert: "บริษัทตอบกลับข้อความของท่าน",
+            create_by: "company"
+        };
+
+        const notificationQuery = 'INSERT INTO notifications SET ?, created_at = NOW(), updated_at = NOW() ';
+        const [notificationResult] = await db.query(notificationQuery, notificationData);
+
+        if (notificationResult.affectedRows === 0) {
+            throw new Error('Failed to create notification');
+        }
         return result;
     },
     deleteComment: async (comments_id) => {
@@ -134,7 +167,7 @@ const auditorModel = {
         return result;
     },
     readAuditorProductDetails: async (auditor_id, product_id) => {
-        const sql1 = `SELECT * FROM products WHERE auditor_id = ? AND product_id = ?`;
+        const sql1 = `SELECT * FROM products WHERE auditor_id = ? AND product_id = ? `;
         const sql2 = `SELECT * FROM auditors WHERE auditor_id = ?`;
         const sql3 = `SELECT * FROM auditor_status WHERE auditor_id = ? AND product_id = ?`;
         const sql4 = `SELECT * FROM auditor_comments WHERE auditor_id = ? AND product_id = ? ORDER BY created_at DESC`;
@@ -152,7 +185,7 @@ const auditorModel = {
         return {
             auditor_id,
             auditor: auditor[0] || null,
-            product: products[0],
+            product: products,
             status: statuses[0] || null,
             comments: comments || []
         };
@@ -166,7 +199,6 @@ const auditorModel = {
         const [result] = await db.query(sql, [newStatus, auditor_id, product_id, status_id]);
         const [resultStatus] = await db.query(sql1, [status_id]);
         const statusInfo = resultStatus[0] ? resultStatus[0].status_eng : null;
-
 
         await db.query(productSql, [newStatus, product_id]);
 
