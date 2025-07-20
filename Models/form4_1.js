@@ -4,24 +4,10 @@ const db = require('../Config/db.js');
 
 const form41Model = {
     create: async (data) => {
-        const sql = `
-            INSERT INTO cfp_report41_items (
-                report_41_id, company_id, product_id, process_id, life_cycle_phase,
-                item_name, item_unit, item_quantity, lci_source_period,
-                ef, ef_source, ef_source_ref, transport_type, ratio,
-                ghg_emission, ghg_emission_proportion, cut_off, description,
-                created_date, updated_date
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
-        `;
-        const values = [
-            data.report_41_id, data.company_id, data.product_id, data.process_id,
-            data.life_cycle_phase, data.item_name, data.item_unit, data.item_quantity,
-            data.lci_source_period, data.ef, data.ef_source, data.ef_source_ref,
-            data.transport_type, data.ratio, data.ghg_emission, data.ghg_emission_proportion,
-            data.cut_off, data.description
-        ];
-        const [result] = await db.query(sql, values);
+        const query = 'INSERT INTO  cfp_report41_items SET ?, created_date = NOW(), updated_date = NOW() ';
+        const [result] = await db.query(query, data);
         return result;
+
     },
 
     findById: async (id) => {
