@@ -141,6 +141,12 @@ const ExcelModel = {
         return relativePath;
     },
 
+    loadExcelByAuditor: async function (auditor_id, product_id) {
+        const query = 'SELECT * FROM auditor_excel_paths WHERE auditor_id = ? AND product_id = ?';
+        const [result] = await db.query(query, [auditor_id, product_id]);
+        return result;
+    },
+
 }
 module.exports = ExcelModel;
 

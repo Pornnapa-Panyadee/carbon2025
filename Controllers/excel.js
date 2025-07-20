@@ -69,3 +69,15 @@ exports.getExcelByAuditor = async (req, res) => {
     }
 };
 
+exports.loadExcelByAuditor = async (req, res) => {
+    try {
+        const auditor_id = req.params.auditor_id;
+        const product_id = req.params.product_id;
+        const result = await Excel.loadExcelByAuditor(auditor_id, product_id);
+        if (!result) return res.status(404).json({ message: 'Excel not found' });
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
