@@ -68,10 +68,10 @@ exports.readAuditorReport = async (req, res) => {
 exports.createComment = async (req, res) => {
     try {
         const data = req.body;
-        const message_alert = "ผู้ทวนสอบได้ตอบกลับบริษัทของคุณ";
+        // const message_alert = "ผู้ทวนสอบได้ตอบกลับบริษัทของคุณ";
         const create_by = "auditor";
 
-        const result = await Auditor.createComment(data, message_alert, create_by);
+        const result = await Auditor.createComment(data, create_by);
         res.status(201).json({ message: 'Comment created', comment_id: result.insertId });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -91,10 +91,15 @@ exports.listComments = async (req, res) => {
 
 exports.updateComment = async (req, res) => {
     try {
+        console.log("req.body = ", req.body); // << debug
+
         const comments_id = req.params.comments_id;
         const data = req.body;
+        console.log(req.body)
+
         const result = await Auditor.updateComment(comments_id, data);
         if (!result || result.affectedRows === 0) return res.status(404).json({ message: 'Comment not found' });
+
         res.json({ message: 'Comment updated' });
     } catch (err) {
         res.status(500).json({ error: err.message });

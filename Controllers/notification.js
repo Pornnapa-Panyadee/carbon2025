@@ -6,7 +6,7 @@ exports.createNotificationAuditor = async (req, res) => {
         const data = req.body;
 
         // ตั้งค่าคงที่ก่อนตรวจสอบ
-        data.message_alert = "ผู้ทวนสอบได้ตอบกลับบริษัทของคุณ";
+        // data.message_alert = "ผู้ทวนสอบได้ตอบกลับผลิตภัณฑ์ของคุณ";
         data.create_by = "auditor";
 
         if (!data.auditor_id) {
@@ -64,7 +64,7 @@ exports.createNotificationCompany = async (req, res) => {
         const data = req.body;
 
         // ตั้งค่าคงที่ก่อนตรวจสอบ
-        data.message_alert = "บริษัทได้ส่งคำขอพิจารณา CFP";
+        // data.message_alert = "สถานประกอบการได้ส่งคำขอพิจารณาแบบฟอร์ม CFP";
         data.create_by = "company";
 
         if (!data.company_id) {

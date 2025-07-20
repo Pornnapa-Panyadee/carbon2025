@@ -95,7 +95,13 @@ const auditorModel = {
             products: groupedProducts
         };
     },
-    createComment: async (data, message_alert, create_by) => {
+    createComment: async (data, create_by) => {
+        const productQuery = 'SELECT product_name_th FROM products WHERE product_id = ?';
+        const [rows] = await db.query(productQuery, [data.product_id]);
+
+        const product_name = rows[0]?.product_name_th || "ผลิตภัณฑ์ที่ไม่ทราบชื่อ";
+        const message_alert = `ผู้ทวนสอบได้ระบุประเด็นที่ต้องปรับปรุงในผลิตภัณฑ์${product_name} ของคุณ`;
+
         const query = 'INSERT INTO auditor_comments SET ?, created_at = NOW(), updated_at = NOW() ';
         const [result] = await db.query(query, data);
 
@@ -142,6 +148,14 @@ const auditorModel = {
         const sql = 'SELECT * FROM auditor_comments WHERE comments_id = ?';
         const [rows] = await db.query(sql, [comments_id]);
 
+        const [companyRows] = await db.query('SELECT name FROM companies WHERE company_id  = ?', [rows[0].company_id]);
+        const company_name = companyRows[0]?.name || 'ไม่ทราบชื่อบริษัท';
+
+        // ดึงชื่อผลิตภัณฑ์
+        const [productRows] = await db.query('SELECT product_name_th FROM products WHERE product_id  = ?', [rows[0].product_id]);
+        const product_name = productRows[0]?.product_name_th || 'ไม่ทราบชื่อผลิตภัณฑ์';
+
+
         // แยกเฉพาะข้อมูลที่ต้องใช้ใน notifications
         const notificationData = {
             auditor_id: rows[0].auditor_id,
@@ -149,7 +163,7 @@ const auditorModel = {
             product_id: rows[0].product_id,
             comments_id: comments_id, // อ้างถึง comment ที่เพิ่งสร้าง
             is_read: 0,
-            message_alert: "บริษัทตอบกลับข้อความของท่าน",
+            message_alert: `สถานประกอบการ ${company_name} ได้ตอบกลับประเด็นของคุณในผลิตภัณฑ์ ${product_name}`,
             create_by: "company"
         };
 
@@ -196,11 +210,36 @@ const auditorModel = {
         const sql1 = `SELECT status_eng FROM auditors_status_infos WHERE status_id = ?`;
         const productSql = ` UPDATE products SET  verify_status = ?, updated_date = NOW() WHERE product_id = ? `;
 
+
         const [result] = await db.query(sql, [newStatus, auditor_id, product_id, status_id]);
         const [resultStatus] = await db.query(sql1, [status_id]);
         const statusInfo = resultStatus[0] ? resultStatus[0].status_eng : null;
 
         await db.query(productSql, [newStatus, product_id]);
+
+        // ดึงชื่อผลิตภัณฑ์
+        const [productRows] = await db.query('SELECT product_name_th, company_id  FROM products WHERE product_id  = ?', [product_id]);
+        const product_name = productRows[0]?.product_name_th || 'ไม่ทราบชื่อผลิตภัณฑ์';
+        const company_id = productRows[0]?.company_id || 'ไม่ทราบชื่อผลิตภัณฑ์';
+
+
+        // แยกเฉพาะข้อมูลที่ต้องใช้ใน notifications
+        const notificationData = {
+            auditor_id: auditor_id,
+            company_id: company_id,
+            product_id: product_id,
+            is_read: 0,
+            message_alert: `ผลิตภัณฑ์${product_name} ของคุณได้รับการอนุมัติแบบฟอร์ม CFP โดยผู้ทวนสอบแล้ว`,
+            create_by: "auditer"
+        };
+
+        const notificationQuery = 'INSERT INTO notifications SET ?, created_at = NOW(), updated_at = NOW() ';
+        const [notificationResult] = await db.query(notificationQuery, notificationData);
+
+        if (notificationResult.affectedRows === 0) {
+            throw new Error('Failed to create notification');
+        }
+
 
         return { result, statusInfo };
     },
