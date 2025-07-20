@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 12, 2025 at 05:54 PM
+-- Generation Time: Jul 19, 2025 at 08:15 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.1.25
 
@@ -91,7 +91,36 @@ CREATE TABLE `auditor_comments` (
 
 INSERT INTO `auditor_comments` (`comments_id`, `auditor_id`, `company_id`, `product_id`, `comment`, `created_at`, `updated_at`) VALUES
 (1, 1, 1005, 7, 'เลขไม่ตรง', '2025-07-10 15:05:14', '2025-07-10 15:05:14'),
-(3, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรง', '2025-07-10 15:22:50', '2025-07-10 15:22:50');
+(3, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรง', '2025-07-10 15:22:50', '2025-07-10 15:22:50'),
+(4, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:46:23', '2025-07-19 12:46:23'),
+(5, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:46:35', '2025-07-19 12:46:35'),
+(6, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:48:03', '2025-07-19 12:48:03'),
+(7, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:48:38', '2025-07-19 12:48:38'),
+(8, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:49:13', '2025-07-19 12:49:13');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `auditor_excel_paths`
+--
+
+CREATE TABLE `auditor_excel_paths` (
+  `id` int(11) NOT NULL,
+  `auditor_id` int(11) DEFAULT NULL,
+  `company_id` int(11) DEFAULT NULL,
+  `product_id` int(11) DEFAULT NULL,
+  `path_excel` text DEFAULT NULL,
+  `version` int(11) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `auditor_excel_paths`
+--
+
+INSERT INTO `auditor_excel_paths` (`id`, `auditor_id`, `company_id`, `product_id`, `path_excel`, `version`, `created_at`, `updated_at`) VALUES
+(4, 1, 1005, 7, '/download/version1_2025_บริษัท ช้างน้อยการยาง จำกัด_STR Rubber A.xlsx', 1, '2025-07-20 00:50:57', '2025-07-20 00:50:57');
 
 -- --------------------------------------------------------
 
@@ -116,7 +145,8 @@ CREATE TABLE `auditor_status` (
 INSERT INTO `auditor_status` (`status_id`, `auditor_id`, `company_id`, `product_id`, `status`, `created_at`, `updated_at`) VALUES
 (1, 1, 1005, 4, 0, '2025-07-10 15:02:26', '2025-07-11 15:02:30'),
 (7, 1, 1005, 7, 1, '2025-06-19 11:07:08', '2025-06-19 11:07:08'),
-(8, 1, 1005, 20, 3, '2025-07-12 22:33:57', '2025-07-12 22:52:15');
+(8, 1, 1005, 20, 3, '2025-07-12 22:33:57', '2025-07-12 22:52:15'),
+(9, NULL, 1008, 24, 0, '2025-07-19 21:18:52', '2025-07-19 21:18:52');
 
 -- --------------------------------------------------------
 
@@ -185,7 +215,7 @@ CREATE TABLE `cfp_report41_items` (
 
 INSERT INTO `cfp_report41_items` (`report_41_id`, `company_id`, `product_id`, `process_id`, `life_cycle_phase`, `production_class`, `item_name`, `item_unit`, `item_quantity`, `lci_source_period`, `ef`, `ef_source`, `ef_source_ref`, `transport_type`, `ratio`, `ghg_emission`, `ghg_emission_proportion`, `cut_off`, `description`, `created_date`, `updated_date`) VALUES
 (6, 1004, 6, 2, 2, NULL, 'Electricity', '', 1500, '2022', 0.4, 'Self collect', 'Fr04.3 กระบวนการบำบัดน้ำเสีย', 'type1', 100, 68, 34, 0, 'Energy use in production process', NULL, NULL),
-(7, 1005, 7, 6, 1, 'input', 'ยางก้อนถ้วย (55%DRC)', 'kg', 1133333.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 3.2281, 'TGO EF', 'ผลิตจาก Styrene และ Ethylbenzene; LCIA method IPCC 2013 GWP 100a V1.03', 'type2', 0, 0, 0, 0, 'asdfasdf', '2025-05-30 16:40:36', '2025-07-05 15:13:05'),
+(7, 1005, 7, 6, 1, 'input', 'ยางก้อนถ้วย (55%DRC)', 'kg', 1133333.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 0.0863, 'TGO EF', 'ผลิตจาก Styrene และ Ethylbenzene; LCIA method IPCC 2013 GWP 100a V1.03', 'type2', 0, 0, 0, 0, 'asdfasdf', '2025-05-30 16:40:36', '2025-07-05 15:13:05'),
 (8, 1005, 7, 7, 1, 'output', 'ยาง Re-process \r\n', 'kg', 66666.67, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, 'ไม่มี Emission Factor', NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 16:45:02', '2025-05-30 16:45:02'),
 (9, 1005, 7, 9, 1, 'input', 'พลาสติกห่อยาง (LLDPE) ', 'kg', 21000, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 2.7107, 'TGO EF', 'EF_CFP_UPDATE_Jul 2565 (Linear Low Density Polyethylene (LLDPE)+Extrusion, plastic film)\r\n', NULL, 100, 0.05, 0.3, NULL, NULL, '2025-05-30 16:47:18', '2025-05-30 16:47:18'),
 (10, 1005, 7, 6, 2, 'input', 'ยางก้อนถ้วย (55% DRC) \r\n', 'kg', 1133333.33, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-30 16:52:08', '2025-05-30 16:52:08'),
@@ -251,8 +281,7 @@ CREATE TABLE `cfp_report41_sums` (
 --
 
 INSERT INTO `cfp_report41_sums` (`report41_sum_id`, `product_id`, `sum_lc1_FU_qty`, `sum_lc1_emission`, `sum_lc1_emission_proportion`, `sum_lc2_FU_qty`, `sum_lc2_emission`, `sum_lc2_emission_proportion`, `sum_lc3_FU_qty`, `sum_lc3_emission`, `sum_lc3_emission_proportion`, `sum_lc4_FU_qty`, `sum_lc4_emission`, `sum_lc4_emission_proportion`, `sum_lc5_FU_qty`, `sum_lc5_emission`, `sum_lc5_emission_proportion`, `total_sum_emission`, `created_date`, `updated_date`) VALUES
-(4, 6, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, NULL, NULL),
-(5, 7, 1.17, 0.18, 1, 0, 0.35, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.53, '2025-06-02 20:20:47', '2025-06-02 20:20:47');
+(6, 7, 1.17286, 0.179372, 1, 8.08971, 0.72616, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.905532, '2025-07-16 20:14:21', '2025-07-16 20:24:21');
 
 -- --------------------------------------------------------
 
@@ -301,8 +330,11 @@ CREATE TABLE `cfp_report42_items` (
 --
 
 INSERT INTO `cfp_report42_items` (`report_42_id`, `company_id`, `product_id`, `process_id`, `production_class`, `life_cycle_phase`, `item_name`, `item_unit`, `item_fu_qty`, `distance`, `distance_source`, `calculate_type`, `type1_gas`, `type1_gas_unit`, `type1_gas_qty`, `type1_ef`, `type1_ef_source`, `type2_outbound_load`, `type2_return_load`, `type2_vehicle_outbound`, `type2_outbound_load_percent`, `type2_return_load_percent`, `type2_outbound_ef`, `type2_return_ef`, `type2_ef_source`, `type2_ef_source_ref`, `ratio`, `transport_emission`, `cut_off`, `add_on_detail`, `created_date`, `updated_date`, `type2_vehicle_return`) VALUES
-(1, 1005, 7, 6, 'input', 1, 'ยางก้อนถ้วย (55% DRC)', 'kg', 1, 420, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 'ทราบระยะทางและน้ำหนักบรรทุก', NULL, NULL, NULL, NULL, NULL, NULL, 0, 'รถบรรทุกเฉพาะกิจ (ติดเครน)  10 ล้อ วิ่งแบบสมบุกสมบัน 100% Loading', 100, 0, 0.0533, 0.59, 'TGO_ef', 'EF_CFP_UPDATE_Jul 2565 ', 100, 0, NULL, NULL, '2025-06-10 21:55:33', '2025-07-06 16:47:22', 'รถบรรทุกเฉพาะกิจ (ติดเครน)  10 ล้อ วิ่งแบบสมบุกสมบัน 0% Loading'),
-(2, 1005, 7, 7, 'input', 1, ' ยาง Re-process', 'kg', 0.06, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'TGO_ef', 'EF_CFP_UPDATE_Jul 2565 ', NULL, NULL, NULL, NULL, '2025-06-10 22:28:58', '2025-06-10 22:28:58', NULL);
+(1, 1005, 7, 6, 'input', 1, 'ยางก้อนถ้วย (55% DRC)', 'kg', 1, 420, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 'ทราบระยะทางและน้ำหนักบรรทุก', NULL, NULL, NULL, NULL, NULL, 0.45, 0.03, 'รถบรรทุกเฉพาะกิจ (ติดเครน)  10 ล้อ วิ่งแบบสมบุกสมบัน 100% Loading', 100, 0, 0.0533, 0.59, 'TGO_ef', 'EF_CFP_UPDATE_Jul 2565 ', 100, 0, NULL, NULL, '2025-06-10 21:55:33', '2025-07-06 16:47:22', 'รถบรรทุกเฉพาะกิจ (ติดเครน)  10 ล้อ วิ่งแบบสมบุกสมบัน 0% Loading'),
+(2, 1005, 7, 7, 'input', 1, ' ยาง Re-process', 'kg', 0.06, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'TGO_ef', 'EF_CFP_UPDATE_Jul 2565 ', NULL, NULL, NULL, NULL, '2025-06-10 22:28:58', '2025-06-10 22:28:58', NULL),
+(3, 1005, 7, 9, 'input', 1, 'พลาสติกห่อยาง (LLDPE) ', 'kg', 0.02, 250, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, 0.01, 0, 'รถตู้บรรทุก 10 ล้อ 16 ตัน', 100, 0, 0.0454, 0.5747, 'TGO_ef', 'EF_CFP_UPDATE_Jul 2565 ', 100, NULL, NULL, NULL, NULL, NULL, 'รถตู้บรรทุก 10 ล้อ 16 ตัน'),
+(4, 1005, 7, 9, 'input', 1, ' พลาสติกรอง/คลุมยาง (LDPE)', 'kg', 0.01, 250, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 'รถตู้บรรทุก 10 ล้อ 16 ตัน', 100, 0, 0.0454, 0.5747, 'TGO_ef', 'EF_CFP_UPDATE_Jul 2565 ', 100, NULL, NULL, NULL, NULL, NULL, 'รถตู้บรรทุก 10 ล้อ 16 ตัน'),
+(5, 1005, 7, 7, NULL, 1, ' ยาง Re-process', 'kg', 0.06, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-19 20:11:34', '2025-07-19 20:11:34', NULL);
 
 -- --------------------------------------------------------
 
@@ -328,7 +360,7 @@ CREATE TABLE `cfp_report42_sums` (
 --
 
 INSERT INTO `cfp_report42_sums` (`report42_sum_id`, `product_id`, `lc1_transport_emission`, `lc2_transport_emission`, `lc3_transport_emission`, `lc4_transport_emission`, `lc5_transport_emission`, `total_transport_emission`, `created_date`, `updated_date`) VALUES
-(1, 7, 0.0415, 0.0177, 0, 0, 0, 0.06, '2025-06-10 22:31:49', '2025-06-10 22:31:49');
+(3, 7, 0.042139, 0, 0, 0, 0, 0.042139, '2025-07-16 20:19:56', '2025-07-16 20:19:56');
 
 -- --------------------------------------------------------
 
@@ -529,15 +561,17 @@ CREATE TABLE `cfp_report61_sums` (
   `sum_diff_emission_percent` decimal(18,6) DEFAULT NULL,
   `verified_date` datetime DEFAULT NULL,
   `created_date` datetime DEFAULT NULL,
-  `updated_date` datetime DEFAULT NULL
+  `updated_date` datetime DEFAULT NULL,
+  `year` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `cfp_report61_sums`
 --
 
-INSERT INTO `cfp_report61_sums` (`report61_sum_id`, `product_id`, `company_id`, `document_name_by_TGO`, `document_no_by_TGO`, `lc1_based_emission`, `lc2_based_emission`, `lc3_based_emission`, `lc4_based_emission`, `lc5_based_emission`, `land_used_based_emission`, `lc1_diff_emission`, `lc2_diff_emission`, `lc3_diff_emission`, `lc4_diff_emission`, `lc5_diff_emission`, `land_used_diff_emission`, `lc1_diff_emission_percent`, `lc2_diff_emission_percent`, `lc3_diff_emission_percent`, `lc4_diff_emission_percent`, `lc5_diff_emission_percent`, `land_used_diff_emission_percent`, `sum_based_emission`, `sum_diff_emission`, `sum_diff_emission_percent`, `verified_date`, `created_date`, `updated_date`) VALUES
-(1, 7, 1005, NULL, NULL, 21.000000, 3.800000, 0.400000, 10.600000, 5.500000, 0.000000, 1.000000, -0.200000, 0.000000, -2.000000, -0.500000, 0.000000, 5.000000, -5.000000, 0.000000, -15.870000, -8.330000, 0.000000, 43.000000, -1.700000, -3.950000, '2025-07-02 18:53:44', '2025-07-02 20:07:23', '2025-07-02 20:07:23');
+INSERT INTO `cfp_report61_sums` (`report61_sum_id`, `product_id`, `company_id`, `document_name_by_TGO`, `document_no_by_TGO`, `lc1_based_emission`, `lc2_based_emission`, `lc3_based_emission`, `lc4_based_emission`, `lc5_based_emission`, `land_used_based_emission`, `lc1_diff_emission`, `lc2_diff_emission`, `lc3_diff_emission`, `lc4_diff_emission`, `lc5_diff_emission`, `land_used_diff_emission`, `lc1_diff_emission_percent`, `lc2_diff_emission_percent`, `lc3_diff_emission_percent`, `lc4_diff_emission_percent`, `lc5_diff_emission_percent`, `land_used_diff_emission_percent`, `sum_based_emission`, `sum_diff_emission`, `sum_diff_emission_percent`, `verified_date`, `created_date`, `updated_date`, `year`) VALUES
+(1, 7, 1005, 'test', NULL, 21.000000, 3.800000, 0.400000, 10.600000, 5.500000, 0.000000, 1.000000, -0.200000, 0.000000, -2.000000, -0.500000, 0.000000, 5.000000, -5.000000, 0.000000, -15.870000, -8.330000, 0.000000, 43.000000, -1.700000, -3.950000, '2025-07-02 18:53:44', '2025-07-02 20:07:23', '2025-07-02 20:07:23', NULL),
+(2, 7, 1005, NULL, NULL, 21.000000, 3.800000, 0.400000, 10.600000, 5.500000, 0.000000, 1.000000, -0.200000, 0.000000, -2.000000, -0.500000, 0.000000, 5.000000, -5.000000, 0.000000, -15.870000, -8.330000, 0.000000, 43.000000, -1.700000, -3.950000, '2025-07-02 18:53:44', '2025-07-19 23:03:19', '2025-07-19 23:03:19', 2025);
 
 -- --------------------------------------------------------
 
@@ -595,6 +629,28 @@ INSERT INTO `companies` (`company_id`, `user_id`, `name`, `address`, `province_i
 (1006, NULL, 'sakuraii', 'สมุทรปราการ', 2, '1234567890', 1, '2025-06-25 23:03:37', '2025-06-25 23:03:37'),
 (1007, 5, 'สถานประกอบการ A', 'นนทบุรี', 3, '811111111', 2, '2025-06-26 01:06:40', '2025-06-26 01:06:40'),
 (1008, 6, 'test', 'เชียงใหม่', 38, '81234567', 2, '2025-06-26 03:39:57', '2025-06-26 03:39:57');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `company_excel_paths`
+--
+
+CREATE TABLE `company_excel_paths` (
+  `id` int(11) NOT NULL,
+  `company_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `path_excel` text NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `company_excel_paths`
+--
+
+INSERT INTO `company_excel_paths` (`id`, `company_id`, `product_id`, `path_excel`, `created_at`, `updated_at`) VALUES
+(13, 1005, 7, '/download/2025_บริษัท ช้างน้อยการยาง จำกัด_STR Rubber A.xlsx', '2025-07-20 00:23:10', '2025-07-20 00:24:13');
 
 -- --------------------------------------------------------
 
@@ -1690,6 +1746,32 @@ INSERT INTO `input_processes` (`input_process_id`, `process_id`, `input_cat_id`,
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `notifications`
+--
+
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL,
+  `auditor_id` int(11) NOT NULL,
+  `company_id` int(11) NOT NULL,
+  `comments_id` int(11) DEFAULT NULL,
+  `product_id` int(11) DEFAULT NULL,
+  `is_read` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `notifications`
+--
+
+INSERT INTO `notifications` (`id`, `auditor_id`, `company_id`, `comments_id`, `product_id`, `is_read`, `created_at`, `updated_at`) VALUES
+(1, 1, 1005, 3, 7, 1, '2025-07-19 04:43:42', '2025-07-19 04:43:42'),
+(2, 1, 1005, 7, NULL, 0, '2025-07-19 05:48:38', '2025-07-19 05:48:38'),
+(3, 1, 1005, 8, 7, 0, '2025-07-19 05:49:13', '2025-07-19 05:49:13');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `output_categories`
 --
 
@@ -2110,7 +2192,11 @@ INSERT INTO `products` (`product_id`, `company_id`, `product_name_th`, `product_
 (17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-12 22:26:09', '2025-07-12 22:26:09'),
 (18, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-12 22:29:16', '2025-07-12 22:29:16'),
 (19, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-12 22:31:39', '2025-07-12 22:31:39'),
-(20, 1005, 'ยางแท่งเกรด A', 'STR Rubber A', 'B2B', 1, 'กิโลกรัม', 'kg', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'Pending', NULL, NULL, '2025-07-12 22:33:57', '2025-07-12 22:33:57');
+(20, 1005, 'ยางแท่งเกรด A', 'STR Rubber A', 'B2B', 1, 'กิโลกรัม', 'kg', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'Pending', NULL, NULL, '2025-07-12 22:33:57', '2025-07-12 22:33:57'),
+(21, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-19 21:13:32', '2025-07-19 21:13:32'),
+(22, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-19 21:13:50', '2025-07-19 21:13:50'),
+(23, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-19 21:14:28', '2025-07-19 21:14:28'),
+(24, 1008, 'test', 'test', 'B2B', 1, 'กิโลกรัม', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-19 21:18:52', '2025-07-19 21:18:52');
 
 -- --------------------------------------------------------
 
@@ -10812,6 +10898,12 @@ ALTER TABLE `auditor_comments`
   ADD KEY `auditor_id` (`auditor_id`) USING BTREE;
 
 --
+-- Indexes for table `auditor_excel_paths`
+--
+ALTER TABLE `auditor_excel_paths`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `auditor_status`
 --
 ALTER TABLE `auditor_status`
@@ -10915,6 +11007,12 @@ ALTER TABLE `companies`
   ADD KEY `industrial_id` (`industrial_id`);
 
 --
+-- Indexes for table `company_excel_paths`
+--
+ALTER TABLE `company_excel_paths`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `districts`
 --
 ALTER TABLE `districts`
@@ -10940,6 +11038,12 @@ ALTER TABLE `input_processes`
   ADD PRIMARY KEY (`input_process_id`),
   ADD KEY `process_id` (`process_id`),
   ADD KEY `input_cat_id` (`input_cat_id`);
+
+--
+-- Indexes for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `output_categories`
@@ -11075,13 +11179,19 @@ ALTER TABLE `auditors_status_infos`
 -- AUTO_INCREMENT for table `auditor_comments`
 --
 ALTER TABLE `auditor_comments`
-  MODIFY `comments_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `comments_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `auditor_excel_paths`
+--
+ALTER TABLE `auditor_excel_paths`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `auditor_status`
 --
 ALTER TABLE `auditor_status`
-  MODIFY `status_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `status_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `cfp_report5_sums`
@@ -11093,25 +11203,25 @@ ALTER TABLE `cfp_report5_sums`
 -- AUTO_INCREMENT for table `cfp_report41_items`
 --
 ALTER TABLE `cfp_report41_items`
-  MODIFY `report_41_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `report_41_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `cfp_report41_sums`
 --
 ALTER TABLE `cfp_report41_sums`
-  MODIFY `report41_sum_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `report41_sum_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `cfp_report42_items`
 --
 ALTER TABLE `cfp_report42_items`
-  MODIFY `report_42_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `report_42_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `cfp_report42_sums`
 --
 ALTER TABLE `cfp_report42_sums`
-  MODIFY `report42_sum_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `report42_sum_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `cfp_report43_items`
@@ -11141,19 +11251,25 @@ ALTER TABLE `cfp_report44_sums`
 -- AUTO_INCREMENT for table `cfp_report61_sums`
 --
 ALTER TABLE `cfp_report61_sums`
-  MODIFY `report61_sum_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `report61_sum_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `cfp_report62_sums`
 --
 ALTER TABLE `cfp_report62_sums`
-  MODIFY `report62_sum_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `report62_sum_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `companies`
 --
 ALTER TABLE `companies`
   MODIFY `company_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1009;
+
+--
+-- AUTO_INCREMENT for table `company_excel_paths`
+--
+ALTER TABLE `company_excel_paths`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `districts`
@@ -11178,6 +11294,12 @@ ALTER TABLE `input_categories`
 --
 ALTER TABLE `input_processes`
   MODIFY `input_process_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+
+--
+-- AUTO_INCREMENT for table `notifications`
+--
+ALTER TABLE `notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `output_categories`
@@ -11207,7 +11329,7 @@ ALTER TABLE `processes`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `product_verify_status`
