@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 20, 2025 at 12:07 PM
+-- Generation Time: Jul 21, 2025 at 01:20 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.1.25
 
@@ -94,13 +94,8 @@ CREATE TABLE `auditor_comments` (
 --
 
 INSERT INTO `auditor_comments` (`comments_id`, `auditor_id`, `company_id`, `product_id`, `comment`, `created_at`, `updated_at`, `comment_company`, `updated_at_company`, `created_at_company`) VALUES
-(1, 1, 1005, 7, 'เลขไม่ตรง', '2025-07-10 15:05:14', '2025-07-10 15:05:14', NULL, NULL, NULL),
-(3, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรง', '2025-07-10 15:22:50', '2025-07-10 15:22:50', NULL, NULL, NULL),
-(4, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:46:23', '2025-07-19 12:46:23', NULL, NULL, NULL),
-(5, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:46:35', '2025-07-19 12:46:35', NULL, NULL, NULL),
-(6, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:48:03', '2025-07-19 12:48:03', NULL, NULL, NULL),
-(7, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:48:38', '2025-07-19 12:48:38', NULL, NULL, NULL),
-(8, 1, 1005, 7, 'ปรับแล้วเลขก็ยังไม่ตรงเลขไม่ตรงdf;kglfkhlkgfl;khl;gfklkdfp;gkopfldnjhmbl;zkdfp;\'oasdp[mtgjkl;dfmbhnl;tgkop[hbjol', '2025-07-19 12:49:13', '2025-07-19 12:49:13', 'ทดสอบ', '2025-07-20 17:06:57', '2025-07-20 17:06:57');
+(14, 1, 1005, 7, 'เลขไม่ตรงtestเลขไม่ตรงtestเลขไม่ตรงtestเลขไม่ตรงtestเลขไม่ตรงtestเลขไม่ตรงtestเลขไม่ตรงtestเลขไม่ตรงtestเลขไม่ตรงtestเลขไม่ตรงtest', '2025-07-20 23:03:49', '2025-07-20 23:03:49', 'test', '2025-07-20 23:29:42', '2025-07-20 23:29:42'),
+(15, 1, 1005, 7, 'เลขไม่ตรงtestเลขไม่ตรงtestเลขไม่ตรงtestเลขไม่ตรงtestเลขไม่ตรงtestเลขไม่ตรงtestเลขไม่ตรงtestเลขไม่ตรงtestเลขไม่ตรงtest', '2025-07-20 23:08:17', '2025-07-20 23:08:17', 'test', '2025-07-20 23:20:22', '2025-07-20 23:20:22');
 
 -- --------------------------------------------------------
 
@@ -124,7 +119,8 @@ CREATE TABLE `auditor_excel_paths` (
 --
 
 INSERT INTO `auditor_excel_paths` (`id`, `auditor_id`, `company_id`, `product_id`, `path_excel`, `version`, `created_at`, `updated_at`) VALUES
-(4, 1, 1005, 7, '/download/version1_2025_บริษัท ช้างน้อยการยาง จำกัด_STR Rubber A.xlsx', 1, '2025-07-20 00:50:57', '2025-07-20 00:50:57');
+(4, 1, 1005, 7, '/download/version1_2025_บริษัท ช้างน้อยการยาง จำกัด_STR Rubber A.xlsx', 1, '2025-07-20 00:50:57', '2025-07-20 00:50:57'),
+(5, 1, 1005, 7, '/download/version2_2025_บริษัท ช้างน้อยการยาง จำกัด_STR Rubber A.xlsx', 2, '2025-07-20 17:36:53', '2025-07-20 17:36:53');
 
 -- --------------------------------------------------------
 
@@ -148,7 +144,7 @@ CREATE TABLE `auditor_status` (
 
 INSERT INTO `auditor_status` (`status_id`, `auditor_id`, `company_id`, `product_id`, `status`, `created_at`, `updated_at`) VALUES
 (1, 1, 1005, 4, 0, '2025-07-10 15:02:26', '2025-07-11 15:02:30'),
-(7, 1, 1005, 7, 1, '2025-06-19 11:07:08', '2025-06-19 11:07:08'),
+(7, 1, 1005, 7, 4, '2025-06-19 11:07:08', '2025-07-20 23:45:36'),
 (8, 1, 1005, 20, 3, '2025-07-12 22:33:57', '2025-07-12 22:52:15'),
 (9, NULL, 1008, 24, 0, '2025-07-19 21:18:52', '2025-07-19 21:18:52');
 
@@ -301,6 +297,7 @@ CREATE TABLE `cfp_report42_items` (
   `product_id` int(11) DEFAULT NULL,
   `process_id` int(11) DEFAULT NULL,
   `production_class` text DEFAULT NULL,
+  `item_process_id` int(11) DEFAULT NULL,
   `life_cycle_phase` int(11) DEFAULT NULL,
   `item_name` varchar(255) DEFAULT NULL,
   `item_unit` text DEFAULT NULL,
@@ -335,12 +332,12 @@ CREATE TABLE `cfp_report42_items` (
 -- Dumping data for table `cfp_report42_items`
 --
 
-INSERT INTO `cfp_report42_items` (`report_42_id`, `company_id`, `product_id`, `process_id`, `production_class`, `life_cycle_phase`, `item_name`, `item_unit`, `item_fu_qty`, `distance`, `distance_source`, `calculate_type`, `type1_gas`, `type1_gas_unit`, `type1_gas_qty`, `type1_ef`, `type1_ef_source`, `type2_outbound_load`, `type2_return_load`, `type2_vehicle_outbound`, `type2_outbound_load_percent`, `type2_return_load_percent`, `type2_outbound_ef`, `type2_return_ef`, `type2_ef_source`, `type2_ef_source_ref`, `ratio`, `transport_emission`, `cut_off`, `add_on_detail`, `created_date`, `updated_date`, `type2_vehicle_return`) VALUES
-(1, 1005, 7, 6, 'input', 1, 'ยางก้อนถ้วย (55% DRC)', 'kg', 1, 420, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 'ทราบระยะทางและน้ำหนักบรรทุก', NULL, NULL, NULL, NULL, NULL, 0.45, 0.03, 'รถบรรทุกเฉพาะกิจ (ติดเครน)  10 ล้อ วิ่งแบบสมบุกสมบัน 100% Loading', 100, 0, 0.0533, 0.59, 'TGO_ef', 'EF_CFP_UPDATE_Jul 2565 ', 100, 0, NULL, NULL, '2025-06-10 21:55:33', '2025-07-06 16:47:22', 'รถบรรทุกเฉพาะกิจ (ติดเครน)  10 ล้อ วิ่งแบบสมบุกสมบัน 0% Loading'),
-(2, 1005, 7, 7, 'input', 1, ' ยาง Re-process', 'kg', 0.06, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'TGO_ef', 'EF_CFP_UPDATE_Jul 2565 ', NULL, NULL, NULL, NULL, '2025-06-10 22:28:58', '2025-06-10 22:28:58', NULL),
-(3, 1005, 7, 9, 'input', 1, 'พลาสติกห่อยาง (LLDPE) ', 'kg', 0.02, 250, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, 0.01, 0, 'รถตู้บรรทุก 10 ล้อ 16 ตัน', 100, 0, 0.0454, 0.5747, 'TGO_ef', 'EF_CFP_UPDATE_Jul 2565 ', 100, NULL, NULL, NULL, NULL, NULL, 'รถตู้บรรทุก 10 ล้อ 16 ตัน'),
-(4, 1005, 7, 9, 'input', 1, ' พลาสติกรอง/คลุมยาง (LDPE)', 'kg', 0.01, 250, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 'รถตู้บรรทุก 10 ล้อ 16 ตัน', 100, 0, 0.0454, 0.5747, 'TGO_ef', 'EF_CFP_UPDATE_Jul 2565 ', 100, NULL, NULL, NULL, NULL, NULL, 'รถตู้บรรทุก 10 ล้อ 16 ตัน'),
-(5, 1005, 7, 7, NULL, 1, ' ยาง Re-process', 'kg', 0.06, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-19 20:11:34', '2025-07-19 20:11:34', NULL);
+INSERT INTO `cfp_report42_items` (`report_42_id`, `company_id`, `product_id`, `process_id`, `production_class`, `item_process_id`, `life_cycle_phase`, `item_name`, `item_unit`, `item_fu_qty`, `distance`, `distance_source`, `calculate_type`, `type1_gas`, `type1_gas_unit`, `type1_gas_qty`, `type1_ef`, `type1_ef_source`, `type2_outbound_load`, `type2_return_load`, `type2_vehicle_outbound`, `type2_outbound_load_percent`, `type2_return_load_percent`, `type2_outbound_ef`, `type2_return_ef`, `type2_ef_source`, `type2_ef_source_ref`, `ratio`, `transport_emission`, `cut_off`, `add_on_detail`, `created_date`, `updated_date`, `type2_vehicle_return`) VALUES
+(1, 1005, 7, 6, 'input', 3, 1, 'ยางก้อนถ้วย (55%DRC)', 'kg', 1, 420, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', 'ทราบระยะทางและน้ำหนักบรรทุก', NULL, NULL, NULL, NULL, NULL, 0.45, 0.03, 'รถบรรทุกเฉพาะกิจ (ติดเครน)  10 ล้อ วิ่งแบบสมบุกสมบัน 100% Loading', 100, 0, 0.0533, 0.59, 'TGO_ef', 'EF_CFP_UPDATE_Jul 2565 ', 100, 0, NULL, NULL, '2025-06-10 21:55:33', '2025-07-06 16:47:22', 'รถบรรทุกเฉพาะกิจ (ติดเครน)  10 ล้อ วิ่งแบบสมบุกสมบัน 0% Loading'),
+(2, 1005, 7, 7, 'input', 5, 1, ' ยาง Re-process', 'kg', 0.06, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'TGO_ef', 'EF_CFP_UPDATE_Jul 2565 ', NULL, NULL, NULL, NULL, '2025-06-10 22:28:58', '2025-06-10 22:28:58', NULL),
+(3, 1005, 7, 9, 'input', 14, 1, 'พลาสติกห่อยาง (LLDPE) ', 'kg', 0.02, 250, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, 0.01, 0, 'รถตู้บรรทุก 10 ล้อ 16 ตัน', 100, 0, 0.0454, 0.5747, 'TGO_ef', 'EF_CFP_UPDATE_Jul 2565 ', 100, NULL, NULL, NULL, NULL, NULL, 'รถตู้บรรทุก 10 ล้อ 16 ตัน'),
+(4, 1005, 7, 9, 'input', 15, 1, ' พลาสติกรอง/คลุมยาง (LDPE)', 'kg', 0.01, 250, 'ข้อมูลการผลิตของโรงงาน ม.ค - ธ.ค.', NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 'รถตู้บรรทุก 10 ล้อ 16 ตัน', 100, 0, 0.0454, 0.5747, 'TGO_ef', 'EF_CFP_UPDATE_Jul 2565 ', 100, NULL, NULL, NULL, NULL, NULL, 'รถตู้บรรทุก 10 ล้อ 16 ตัน'),
+(5, 1005, 7, 7, NULL, 5, 1, ' ยาง Re-process', 'kg', 0.06, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-07-19 20:11:34', '2025-07-19 20:11:34', NULL);
 
 -- --------------------------------------------------------
 
@@ -656,7 +653,7 @@ CREATE TABLE `company_excel_paths` (
 --
 
 INSERT INTO `company_excel_paths` (`id`, `company_id`, `product_id`, `path_excel`, `created_at`, `updated_at`) VALUES
-(13, 1005, 7, '/download/2025_บริษัท ช้างน้อยการยาง จำกัด_STR Rubber A.xlsx', '2025-07-20 00:23:10', '2025-07-20 00:24:13');
+(13, 1005, 7, '/download/2025_บริษัท ช้างน้อยการยาง จำกัด_STR Rubber A.xlsx', '2025-07-20 00:23:10', '2025-07-20 17:41:39');
 
 -- --------------------------------------------------------
 
@@ -1773,7 +1770,15 @@ CREATE TABLE `notifications` (
 --
 
 INSERT INTO `notifications` (`id`, `auditor_id`, `company_id`, `comments_id`, `product_id`, `create_by`, `message_alert`, `is_read`, `created_at`, `updated_at`) VALUES
-(9, 1, 1005, 8, 7, 'company', 'บริษัทตอบกลับข้อความของท่าน', 0, '2025-07-20 10:06:57', '2025-07-20 10:06:57');
+(18, 1, 1005, NULL, 7, 'company', 'สถานประกอบการส่งคำขอพิจารณาแบบฟอร์ม CFP ของผลิตภัณฑ์ยางแท่งเกรด A ', 1, '2025-07-20 15:58:37', '2025-07-20 15:58:37'),
+(20, 1, 1005, 15, 7, 'auditor', 'ผู้ทวนสอบได้เพิ่มประเด็นที่ต้องปรับปรุงผลิตภัณฑ์ ยางแท่งเกรด A ของคุณ', 1, '2025-07-20 16:08:17', '2025-07-20 16:08:17'),
+(21, 1, 1005, 15, 7, 'company', 'ผลติภัฒฑ์xxx ของสถานประกอบการyyyyyตอบกลับข้อความของท่าน', 1, '2025-07-20 16:20:22', '2025-07-20 16:20:22'),
+(22, 1, 1005, 14, 7, 'company', 'สถานประกอบการ บริษัท ช้างน้อยการยาง จำกัด ได้ตอบกลับประเด็นของคุณในผลิตภัณฑ์ ยางแท่งเกรด A', 1, '2025-07-20 16:29:42', '2025-07-20 16:29:42'),
+(23, 1, 1005, NULL, 7, 'auditer', 'ผลิตภัณฑ์ยางแท่งเกรด A ของคุณได้รับการอนุมัติแบบฟอร์ม CFP โดยผู้ทวนสอบแล้ว', 0, '2025-07-20 16:42:50', '2025-07-20 16:42:50'),
+(24, 1, 1005, NULL, 7, 'auditer', 'ผลิตภัณฑ์ยางแท่งเกรด A ของคุณได้รับการอนุมัติแบบฟอร์ม CFP โดยผู้ทวนสอบแล้ว', 0, '2025-07-20 16:44:12', '2025-07-20 16:44:12'),
+(25, 1, 1005, NULL, 7, 'auditer', 'ผลิตภัณฑ์ยางแท่งเกรด A ของคุณได้รับการอนุมัติแบบฟอร์ม CFP โดยผู้ทวนสอบแล้ว', 0, '2025-07-20 16:45:01', '2025-07-20 16:45:01'),
+(26, 1, 1005, NULL, 7, 'auditer', 'ผลิตภัณฑ์ยางแท่งเกรด A ของคุณได้รับการอนุมัติแบบฟอร์ม CFP โดยผู้ทวนสอบแล้ว', 0, '2025-07-20 16:45:22', '2025-07-20 16:45:22'),
+(27, 1, 1005, NULL, 7, 'auditer', 'ผลิตภัณฑ์ยางแท่งเกรด A ของคุณได้รับการอนุมัติแบบฟอร์ม CFP โดยผู้ทวนสอบแล้ว', 0, '2025-07-20 16:45:36', '2025-07-20 16:45:36');
 
 -- --------------------------------------------------------
 
@@ -2183,7 +2188,7 @@ CREATE TABLE `products` (
 
 INSERT INTO `products` (`product_id`, `company_id`, `product_name_th`, `product_name_en`, `scope`, `FU_value`, `FU_th`, `FU_en`, `PU_value`, `PU_th`, `PU_en`, `sale_ratio`, `product_techinfo`, `pcr_reference`, `collect_data_start`, `collect_data_end`, `product_photo`, `auditor_id`, `verify_status`, `submitted_round`, `submitted_date`, `created_date`, `updated_date`) VALUES
 (6, 1004, 'test', 'test', '', NULL, 'test', 'test', 0, '', '', 'test', NULL, 'test', '2025-05-27', '2025-05-27', 'public/product/1.jpg', NULL, '', 'test', '2025-05-27 12:00:52', NULL, NULL),
-(7, 1005, 'ยางแท่งเกรด A', 'STR Rubber A', 'B2B', 1, 'กิโลกรัม', 'kg', 1, 'กิโลกรัม', 'kg', '65%', '[\"Dirt (Max,% wt) = 0.08\", \"Ash (Max,%wt) =0.60\",\"Volatile Matter (Max,%wt)=0.80\"]', 'ข้อกำหนดเฉพาะกลุ่มผลิตภัณฑ์ยางพาราและผลิตภัณฑ์จากยางพารา', '2025-03-01', '2025-05-31', 'public/product/1.jpg', 1, 'Draft', NULL, '2025-05-22 15:54:32', '2025-06-02 00:26:13', '2025-06-02 00:26:13');
+(7, 1005, 'ยางแท่งเกรด A', 'STR Rubber A', 'B2B', 1, 'กิโลกรัม', 'kg', 1, 'กิโลกรัม', 'kg', '65%', '[\"Dirt (Max,% wt) = 0.08\", \"Ash (Max,%wt) =0.60\",\"Volatile Matter (Max,%wt)=0.80\"]', 'ข้อกำหนดเฉพาะกลุ่มผลิตภัณฑ์ยางพาราและผลิตภัณฑ์จากยางพารา', '2025-03-01', '2025-05-31', 'public/product/1.jpg', 1, 'Approved', NULL, '2025-05-22 15:54:32', '2025-06-02 00:26:13', '2025-07-20 23:45:36');
 
 -- --------------------------------------------------------
 
@@ -10799,7 +10804,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `password`, `email`, `role_id`, `name`, `status`, `created_date`, `updated_date`) VALUES
 (2, '$2b$10$KkfTITEK3k2nBDHap4/vwO4L2wPz.xfphRinivWSowAp9MZ4v5HVq', 'test1@example.com', 1, '', 'disable', '2025-04-23 21:57:32', '2025-05-27 14:23:29'),
-(3, '$2b$10$c.xTUEqgh9pXtAN5WzmV4e3c77YtdS/N9gNXcwQlUAp3KXHL65Efi', 'test2@example.com', 1, 'test02', 'enable', '2025-04-23 22:01:22', '2025-04-23 22:01:22'),
+(3, '$2b$10$c.xTUEqgh9pXtAN5WzmV4e3c77YtdS/N9gNXcwQlUAp3KXHL65Efi', 'test2@example.com', 1, 'North Thailand', 'enable', '2025-04-23 22:01:22', '2025-04-23 22:01:22'),
 (4, '$2b$10$v9sM94OXe7Xswz65rHAvPOMgRIwGSSHQX/CYsynKszSa.3eL1ZFgG', 'test3@example.com', 1, 'test03', 'enable', '2025-05-27 14:23:07', '2025-05-27 14:23:07'),
 (5, '$2b$10$XnnB.C9dq7vaT./XwjQjT.s5ejsnyFjFIok8ObBbr2Ssb6gYY4aHW', 'pearl@gmail.com', 2, 'sakuraii', 'enable', '2025-06-25 23:03:37', '2025-06-25 23:03:37'),
 (6, '$2b$10$hNCEMo9xh9vpGuTmFZXHxONTXtW6D0Q29alYdesrboBnaUk6EgRMC', 'a@gmail.com', 2, 'สถานประกอบการ A', 'enable', '2025-06-26 01:06:40', '2025-06-26 01:06:40'),
@@ -11166,13 +11171,13 @@ ALTER TABLE `auditors_status_infos`
 -- AUTO_INCREMENT for table `auditor_comments`
 --
 ALTER TABLE `auditor_comments`
-  MODIFY `comments_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `comments_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `auditor_excel_paths`
 --
 ALTER TABLE `auditor_excel_paths`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `auditor_status`
@@ -11286,7 +11291,7 @@ ALTER TABLE `input_processes`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `output_categories`
