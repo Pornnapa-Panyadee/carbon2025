@@ -8,6 +8,7 @@ const form42Model = {
         return result;
     },
 
+
     findById: async (id) => {
         const sql = 'SELECT * FROM cfp_report42_items WHERE report_42_id = ?';
         const [rows] = await db.query(sql, [id]);
@@ -210,10 +211,13 @@ const form42Model = {
         // Step 1: หาจาก process table
         if (classLower === 'input') {
             [[processItem]] = await db.query(`SELECT * FROM input_processes WHERE input_process_id = ?`, [item_id]);
+            item_name = processItem.input_name
         } else if (classLower === 'output') {
             [[processItem]] = await db.query(`SELECT * FROM output_processes WHERE output_process_id = ?`, [item_id]);
+            item_name = processItem.output_name
         } else if (classLower === 'waste') {
             [[processItem]] = await db.query(`SELECT * FROM waste_processes WHERE waste_process_id = ?`, [item_id]);
+            item_name = processItem.waste_name
         } else {
             throw new Error('Invalid class');
         }
@@ -227,8 +231,8 @@ const form42Model = {
         // Step 2: หาจาก cfp_report42_items
         const [items] = await db.query(`
               SELECT * FROM cfp_report42_items
-              WHERE life_cycle_phase = ? AND company_id = ? AND product_id = ? AND process_id = ? AND production_class = ?
-            `, [life_cycle_phase, company_id, product_id, process_id, classLower]);
+              WHERE life_cycle_phase = ? AND company_id = ? AND product_id = ? AND process_id = ? AND production_class = ? AND  (item_process_id = ? OR  item_name = ?)
+            `, [life_cycle_phase, company_id, product_id, process_id, classLower, item_id, item_name]);
 
         if (!items || items.length === 0) {
             throw new Error('Item from cfp_report42_items not found');
