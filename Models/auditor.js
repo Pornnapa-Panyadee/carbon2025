@@ -105,6 +105,10 @@ const auditorModel = {
         const query = 'INSERT INTO auditor_comments SET ?, created_at = NOW(), updated_at = NOW() ';
         const [result] = await db.query(query, data);
 
+        const product = 'UPDATE products  SET verify_status = "Under" WHERE product_id  = ?';
+        const [result_product] = await db.query(product, [data.product_id]);
+
+
         // แยกเฉพาะข้อมูลที่ต้องใช้ใน notifications
         const notificationData = {
             auditor_id: data.auditor_id,
