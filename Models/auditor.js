@@ -159,6 +159,9 @@ const auditorModel = {
         const [productRows] = await db.query('SELECT product_name_th FROM products WHERE product_id  = ?', [rows[0].product_id]);
         const product_name = productRows[0]?.product_name_th || 'ไม่ทราบชื่อผลิตภัณฑ์';
 
+        const product = 'UPDATE products  SET verify_status = "Pending" WHERE product_id  = ?';
+        const [result_product] = await db.query(product, [data.product_id]);
+
 
         // แยกเฉพาะข้อมูลที่ต้องใช้ใน notifications
         const notificationData = {
