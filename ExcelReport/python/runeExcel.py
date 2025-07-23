@@ -32,18 +32,22 @@ form6_1= "http://localhost:5000/api/v1/f6-1/sum/" + product_1
 form6_2= "http://localhost:5000/api/v1/f6-2/sum/" + product_1
 
 def thai_date_format(iso_date_str):
-    # แปลง string เป็น datetime object
-    dt = datetime.fromisoformat(iso_date_str.replace("Z", "+00:00"))
-    
-    # สร้างชื่อเดือนภาษาไทย
+    if not iso_date_str:
+        return ""  # หรือ return "ไม่ระบุวันที่" ตามต้องการ
+
+    try:
+        dt = datetime.fromisoformat(iso_date_str.replace("Z", "+00:00"))
+    except ValueError:
+        return "รูปแบบวันที่ไม่ถูกต้อง"
+
     months_th = ["", "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม",
                  "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม",
                  "พฤศจิกายน", "ธันวาคม"]
-    
+
     day = dt.day
     month = months_th[dt.month]
-    year = dt.year + 543  # เปลี่ยนเป็นปี พ.ศ.
-    
+    year = dt.year + 543
+
     return f"{day} {month} {year}"
 
 # ///check Source Form4-1
