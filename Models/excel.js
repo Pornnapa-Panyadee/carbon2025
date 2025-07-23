@@ -142,7 +142,7 @@ const ExcelModel = {
     },
 
     loadExcelByAuditor: async function (auditor_id, product_id) {
-        const query = 'SELECT * FROM auditor_excel_paths WHERE auditor_id = ? AND product_id = ?';
+        const query = 'SELECT * FROM auditor_excel_paths WHERE auditor_id = ? AND product_id = ? ORDER BY created_at DESC';
         const [result] = await db.query(query, [auditor_id, product_id]);
         return result;
     },
