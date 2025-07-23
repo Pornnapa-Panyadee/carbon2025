@@ -9,7 +9,7 @@ const form62Model = {
     updateByID: async (data) => {
         const { id, ...updateFields } = data; // แยก id ออก
 
-        const query = 'UPDATE cfp_report62_sums SET ? WHERE product_id = ?';
+        const query = 'UPDATE cfp_report62_sums SET ? WHERE report62_sum_id = ?';
         const [result] = await db.query(query, [updateFields, id]);
 
         return result;
