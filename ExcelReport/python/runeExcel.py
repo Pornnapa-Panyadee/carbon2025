@@ -866,8 +866,30 @@ ws61[f"D18"] = ""
 ######## ----Fr-06.2-----------------------------------------------------------
 
 ws62 = wb["Fr-06.2"]
-ws62[f"B11"] = round(float(form62["std_emission"]), 2) 
-ws62[f"C11"] = round(float(form62["product_emission"]), 2)
+start_row = 11
+for i, form62 in enumerate(data62):
+    row = start_row + i
+    ws62[f"B{row}"] = round(float(form62["std_emission"]), 2)
+    ws62[f"C{row}"] = round(float(form62["product_emission"]), 2)
+    ws62[f"D{row}"] = round(float(form62["diff_emission"]), 2)
+    ws62[f"E{row}"] = form62["std_emission_source"] or ""
+
+# ws62[f"B11"] = round(float(form62["std_emission"]), 2) 
+# ws62[f"C11"] = round(float(form62["product_emission"]), 2)
+# ws62[f"D11"] = round(float(form62["diff_emission"]), 2)
+# ws62[f"E11"] = round(float(form62["std_emission_source"]), 2)
+# ws62[f"B12"] = round(float(form62["std_emission"]), 2) 
+# ws62[f"C12"] = round(float(form62["product_emission"]), 2)
+# ws62[f"D12"] = round(float(form62["diff_emission"]), 2)
+# ws62[f"E12"] = round(float(form62["std_emission_source"]), 2)
+# ws62[f"B13"] = round(float(form62["std_emission"]), 2) 
+# ws62[f"C13"] = round(float(form62["product_emission"]), 2)
+# ws62[f"D13"] = round(float(form62["diff_emission"]), 2)
+# ws62[f"E13"] = round(float(form62["std_emission_source"]), 2)
+# ws62[f"B14"] = round(float(form62["std_emission"]), 2) 
+# ws62[f"C14"] = round(float(form62["product_emission"]), 2)
+# ws62[f"D14"] = round(float(form62["diff_emission"]), 2)
+# ws62[f"E14"] = round(float(form62["std_emission_source"]), 2)
 
 
 
