@@ -18,6 +18,12 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
+        const role = await User.fimdIdRole(user.role_id);
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
+
+
         const company = await Company.findByUserId(user.user_id);
         if (!company) {
             return res.status(401).json({ message: 'Invalid email or password' });
@@ -48,6 +54,7 @@ exports.login = async (req, res) => {
             token,
             expires_at: new Date(expirationTime).toISOString(),
             user,
+            role,
             company
         });
     } catch (error) {
