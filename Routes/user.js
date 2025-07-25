@@ -6,7 +6,7 @@ const authenticateToken = require('../Middlewares/auth');
 
 router.get('/users', authenticateToken, list);
 router.get('/users/:user_id', authenticateToken, read);
-router.post('/users', authenticateToken, create);
+router.post('/users', create);
 router.put('/users/:user_id', authenticateToken, update);
 router.delete('/users/:user_id', authenticateToken, remove);
 
