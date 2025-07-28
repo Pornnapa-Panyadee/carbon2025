@@ -5,17 +5,9 @@ const db = require('../Config/db.js');
 
 const companyModel = {
     create: async (data) => {
-        const sql = `
-            INSERT INTO companies (
-                user_id, name, address, province_id, contact_no, industrial_id, created_date, updated_date
-            ) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())
-        `;
-        const [results] = await db.query(sql, [
-            data.user_id, data.name,
-            data.address, data.province_id,
-            data.contact_no, data.industrial_id
-        ]);
-        return results;
+        const sql = 'INSERT INTO companies SET ?, created_date = NOW(), updated_date = NOW()';
+        const [result] = await db.query(sql, data);
+        return result;
     },
 
     findAll: async () => {
