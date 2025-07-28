@@ -20,9 +20,15 @@ const companyModel = {
             SELECT 
                 c.*, 
                 i.industrial_name, 
-                i.required_cbam
+                i.required_cbam,
+                p.province_name,
+                d.district_name,
+                s.subdistrict_name
             FROM companies c
             LEFT JOIN industrials i ON c.industrial_id = i.industrial_id
+            LEFT JOIN provinces p ON c.province_id = p.province_id
+            LEFT JOIN districts d ON c.district_id = d.district_id
+            LEFT JOIN subdistricts s ON c.subdistrict_id = s.subdistrict_id
             WHERE c.company_id = ?
         `;
         const [rows] = await db.query(query, [id]);
