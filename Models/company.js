@@ -56,7 +56,30 @@ const companyModel = {
         return result;
     },
     findByUserId: async (user_id) => {
-        const [rows] = await db.query('SELECT * FROM companies WHERE user_id = ?', [user_id]);
+        const [rows] = await db.query(`
+        SELECT 
+            c.company_id, 
+            c.user_id, 
+            c.name, 
+            c.address, 
+            c.province_id,
+            p.province_name,
+            c.district_id,
+            d.district_name,
+            c.subdistrict_id,
+            s.subdistrict_name,
+            c.contact_no, 
+            c.industrial_id, 
+            c.created_date, 
+            c.updated_date, 
+            c.zipcode
+            FROM companies c
+            LEFT JOIN provinces p ON c.province_id = p.province_id
+            LEFT JOIN districts d ON c.district_id = d.district_id
+            LEFT JOIN subdistricts s ON c.subdistrict_id = s.subdistrict_id
+            WHERE c.user_id = ?
+        `, [user_id]);
+
         return rows || [];
     },
 
