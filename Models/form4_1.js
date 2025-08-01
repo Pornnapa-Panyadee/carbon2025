@@ -217,11 +217,21 @@ const form41Model = {
     getFormById: async (id) => {
         // 1. ดึงข้อมูล form41 items + process_name
         const form41Query = `
-            SELECT i.*, p.process_name
+            SELECT
+                i.*,
+                p.process_name,
+                CASE
+                    WHEN i.ef_source = 'Self collect' THEN s.self_collect_name
+                    WHEN i.ef_source = 'TGO EF' THEN CONCAT('EF_CFP_',t.tgo_updated,' ',t.item, '')
+                    ELSE i.ef_source_ref
+                END AS ef_source_ref_display
             FROM cfp_report41_items i
             LEFT JOIN processes p ON i.process_id = p.process_id
+            LEFT JOIN self_collect_efs s ON (i.ef_source = 'Self collect' AND i.ef_source_ref = s.self_collect_id)
+            LEFT JOIN tgo_efs t ON (i.ef_source = 'TGO EF' AND i.ef_source_ref = t.ef_id)
             WHERE i.product_id = ?
-            ORDER BY i.life_cycle_phase ASC
+            ORDER BY i.life_cycle_phase ASC;
+
         `;
         const [formResults] = await db.query(form41Query, [id]);
         if (!formResults.length) throw new Error('Form41 not found');

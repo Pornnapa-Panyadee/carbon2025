@@ -116,11 +116,15 @@ const form42Model = {
     getFormById: async (id) => {
         // 1. ดึงข้อมูล form41 items + process_name
         const form42Query = `
-            SELECT i.*, p.process_name
+           SELECT
+                i.*,
+                p.process_name,
+                tgo.item AS type2_vehicle_outbound_display
             FROM cfp_report42_items i
             LEFT JOIN processes p ON i.process_id = p.process_id
+            LEFT JOIN tgo_efs tgo ON i.type2_vehicle_outbound = tgo.ef_id
             WHERE i.product_id = ?
-            ORDER BY i.life_cycle_phase ASC
+            ORDER BY i.life_cycle_phase ASC;
         `;
         const [formResults] = await db.query(form42Query, [id]);
         if (!formResults.length) throw new Error('Form42 not found');

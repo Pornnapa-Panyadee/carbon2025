@@ -84,8 +84,8 @@ exports.listselfcollect = async (req, res) => {
 exports.listSelfCollectId = async (req, res) => {
     try {
         const company_id = req.params.company_id;
-        const self_collect_id = req.params.self_collect_id;
-        const results = await selfcollect.listSelfCollectId(company_id, self_collect_id);
+        const product_id = req.params.product_id;
+        const results = await selfcollect.listSelfCollectId(company_id, product_id);
         if (!results || !results.length) {
             return res.status(404).json({ message: 'Product and Company not found' });
         }

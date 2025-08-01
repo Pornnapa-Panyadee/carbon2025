@@ -20,7 +20,7 @@ router.get('/selfcollect/product/:company_id/:product_id', list);
 router.get('/selfcollect/list/:company_id', listselfcollect);
 
 // get list of name self collection data
-router.get('/selfcollect/list/:company_id/:self_collect_id', listSelfCollectId);
+router.get('/selfcollect/list/:company_id/:product_id', listSelfCollectId);
 router.delete('/selfcollect/list/:company_id/:self_collect_id', deleteSelfCollect);
 
 // Follow Process and input output data

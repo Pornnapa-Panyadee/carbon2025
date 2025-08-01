@@ -68,37 +68,52 @@ const selfCollectModel = {
     },
 
     findByProductIdSelf: async (company_id, product_id) => {
-        const selfQuery = 'SELECT * FROM self_collect_efs WHERE product_id = ? AND company_id = ?';
+        // Step 1: Get ef_source_ref
+        const f41selfcollectQuery = `
+            SELECT ef_source_ref 
+            FROM cfp_report41_items 
+            WHERE product_id = ? AND company_id = ? AND ef_source = "Self collect"
+        `;
+        const [refResults] = await db.query(f41selfcollectQuery, [product_id, company_id]);
 
-        const inputQuery = `
-                SELECT DISTINCT  *
+        if (!refResults.length) throw new Error('No ef_source_ref found for this product');
+
+        // Step 2: Get self_collect_efs by self_collect_name = ef_source_ref
+        const selfQuery = `
+            SELECT * 
+            FROM self_collect_efs 
+            WHERE self_collect_name = ?
+        `;
+
+        // เราอาจมีหลาย ref → map เป็น Promise.all
+        const processes = await Promise.all(refResults.map(async (refRow) => {
+            const ef_source_ref = refRow.ef_source_ref;
+
+            const [selfResults] = await db.query(selfQuery, [ef_source_ref]);
+            if (!selfResults.length) throw new Error(`No self_collect_efs found for ref: ${ef_source_ref}`);
+
+            // สมมติว่ามีได้แค่ 1 result ต่อชื่อ
+            const process = selfResults[0];
+
+            // Step 3: Get input/output from cfp_report43_selfcollect_efs
+            const inputQuery = `
+                SELECT DISTINCT * 
                 FROM cfp_report43_selfcollect_efs 
                 WHERE self_collect_id = ?
             `;
 
-        // 1. Company
-        const [companyResults] = await db.query(selfQuery, [product_id, company_id]);
-        if (!companyResults.length) throw new Error('Company not found');
-
-        // 4. For each process, get inputs, outputs, wastes
-        const processes = await Promise.all(companyResults.map(async (process) => {
-            // Inputs & Outputs
             const [inputResults] = await db.query(inputQuery, [process.self_collect_id]);
-
-            // แยก input และ output ตาม item_type
             const inputs = inputResults.filter(item => item.item_type === 'input');
             const outputs = inputResults.filter(item => item.item_type === 'output');
 
             return {
                 ...process,
                 input: inputs,
-                output: outputs,
+                output: outputs
             };
         }));
 
-        return [{
-            processes
-        }];
+        return [{ processes }];
     },
 
     listselfcollect: async (id) => {
@@ -108,25 +123,39 @@ const selfCollectModel = {
     },
 
 
-    listSelfCollectId: async (company_id, self_collect_id) => {
-        const selfQuery = 'SELECT * FROM self_collect_efs WHERE self_collect_id = ? AND company_id = ?';
+    listSelfCollectId: async (company_id, product_id) => {
+        const findIdsQuery = `
+        SELECT DISTINCT ef_source_ref
+        FROM cfp_report41_items
+        WHERE product_id = ? AND ef_source = 'Self collect'
+    `;
+        const [refRows] = await db.query(findIdsQuery, [product_id]);
 
+        if (!refRows.length) throw new Error('No Self Collect references found for this product');
+
+        const selfCollectIds = refRows.map(row => row.ef_source_ref);
+        const placeholders = selfCollectIds.map(() => '?').join(',');
+
+        // Step 2: ดึง self_collect_efs ที่มี company_id ตรง และ self_collect_id ที่เจอ
+        const selfQuery = `
+        SELECT *
+        FROM self_collect_efs
+        WHERE company_id = ? AND self_collect_id IN (${placeholders})
+    `;
+        const [companyResults] = await db.query(selfQuery, [company_id, ...selfCollectIds]);
+
+        if (!companyResults.length) throw new Error('No matching self_collect_efs found for this company/product');
+
+        // Step 3: วนแต่ละ self_collect_id เพื่อดึง input/output จาก cfp_report43_selfcollect_efs
         const inputQuery = `
-                SELECT DISTINCT  *
-                FROM cfp_report43_selfcollect_efs 
-                WHERE self_collect_id = ?
-            `;
+        SELECT *
+        FROM cfp_report43_selfcollect_efs
+        WHERE self_collect_id = ?
+    `;
 
-        // 1. Company
-        const [companyResults] = await db.query(selfQuery, [self_collect_id, company_id]);
-        if (!companyResults.length) throw new Error('Company not found');
-
-        // 4. For each process, get inputs, outputs, wastes
         const processes = await Promise.all(companyResults.map(async (process) => {
-            // Inputs & Outputs
             const [inputResults] = await db.query(inputQuery, [process.self_collect_id]);
 
-            // แยก input และ output ตาม item_type
             const inputs = inputResults.filter(item => item.item_type === 'input');
             const outputs = inputResults.filter(item => item.item_type === 'output');
 
