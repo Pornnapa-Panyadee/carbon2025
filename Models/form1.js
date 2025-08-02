@@ -66,10 +66,12 @@ const Form1Model = {
         const productQuery = `
                 SELECT 
                     p.product_id, p.company_id,p.product_name_th,p.product_name_en,
-                    p.scope,p.FU_value,fu_th.product_unit_name_th AS FU_th_name,
-                    fu_en.product_unit_name_en AS FU_en_name,p.PU_value,
-                    pu_th.product_unit_name_th AS PU_th_name, pu_en.product_unit_name_en AS PU_en_name,
-                    p.sale_ratio, p.product_techinfo, pcr.pcr_name,pcr.approval_date, pcr.pcr_type,pcr.pcr_type_id,
+                    p.scope,p.FU_value,p.PU_value,p.FU_th, p.FU_en, p.PU_th, p.PU_en,
+                    fu_th.product_unit_name_th AS FU_th_name,
+                    fu_en.product_unit_name_en AS FU_en_name,
+                    pu_th.product_unit_name_th AS PU_th_name,
+                    pu_en.product_unit_name_en AS PU_en_name,
+                    p.sale_ratio, p.product_techinfo, p.pcr_reference,pcr.pcr_name,
                     p.collect_data_start, p.collect_data_end, p.product_photo,p.auditor_id,p.verify_status,
                     p.submitted_round,p.submitted_date,p.created_date, p.updated_date
                 FROM products p

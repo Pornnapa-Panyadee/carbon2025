@@ -29,6 +29,7 @@ url="http://localhost:5000/"
 # url="http://178.128.123.212:5000/"
 # company_name="1021"
 # product_1="39"
+
 form1 = url+"api/v1/f1/excel/"+company_name + "/" + product_1
 form4_1= url+"api/v1/f4-1/report/"+product_1
 form4_2= url+"api/v1/f4-2/form/"+product_1
@@ -74,7 +75,6 @@ def check_source_form4_1(ef_source, row, ws_name='ws41'):
         return f'{ws_name}["{cell}"] = "●"'
     else:
         return f'# ef_source \"{ef_source}\" not recognized'
-
 
 def check_source_form4_2_T1(type1_ef_source, row, ws_name='ws42'):
     ef_map = { 'TGO EF': 'K','Int. DB': 'L'}
@@ -215,7 +215,7 @@ def set_border(ws, cell_range):
 form1 = requests.get(form1)
 if form1.status_code == 200:
     data = form1.json()
-    product = data.get("product", {})
+    productform1 = data.get("product", {})
     company = data.get("company", {})
     process = data.get("process", [])
     report41Sum = data.get("report41Sum", {})
@@ -223,13 +223,15 @@ if form1.status_code == 200:
         print("Warning: 'report41Sum' not found in API response.")
 else:
     print("เกิดข้อผิดพลาดในการเรียก API:", form1.status_code)
-start = thai_date_format(product["collect_data_start"])
-end = thai_date_format(product["collect_data_end"])
+
+   
+start = thai_date_format(productform1["collect_data_start"])
+end = thai_date_format(productform1["collect_data_end"])
 date_range = f"{start} - {end}"
-submitted_date_thai = thai_date_format(product.get("submitted_date"))
+submitted_date_thai = thai_date_format(productform1.get("submitted_date"))
 # techinfo_list = json.loads(product["product_techinfo"])
 # product_techinfo_array = [item.strip() for item in techinfo_list]
-techinfo_raw = product.get("product_techinfo") or "[]"
+techinfo_raw = productform1.get("product_techinfo") or "[]"
 techinfo_list = json.loads(techinfo_raw) if techinfo_raw else []
 product_techinfo_array = [str(i).strip() for i in techinfo_list]
 
@@ -319,10 +321,10 @@ ws01["F6"] = product.get("product_name_th", "")
 ws01["J10"] = product.get("product_name_th", "")
 ws01["J11"] = product.get("product_name_en", "")
 ws01["J12"] = product.get("scope", "")
-ws01["J13"] = str(product.get("FU_value", "")) + " " + product.get("FU_th", "") if product.get("FU_value") and product.get("FU_th") else "0"
-ws01["J14"] = str(product.get("FU_value", "")) + " " + product.get("FU_en", "") if product.get("FU_value") and product.get("FU_en") else "0"
-ws01["J15"] = str(product.get("PU_value", "")) + " " + product.get("PU_th", "") if product.get("PU_value") and product.get("PU_th") else "0"
-ws01["J16"] = str(product.get("PU_value", "")) + " " +product.get("PU_en", "") if product.get("PU_value") and product.get("PU_en") else "0"
+ws01["J13"] = str(product.get("FU_value", "")) + " " + productform1.get("FU_th_name", "") if product.get("FU_value") and productform1.get("FU_th_name") else "0"
+ws01["J14"] = str(product.get("FU_value", "")) + " " + productform1.get("FU_en_name", "") if product.get("FU_value") and productform1.get("FU_en_name") else "0"
+ws01["J15"] = str(product.get("PU_value", "")) + " " + productform1.get("PU_th_name", "") if product.get("PU_value") and productform1.get("PU_th_name") else "0"
+ws01["J16"] = str(product.get("PU_value", "")) + " " +productform1.get("PU_en_name", "") if product.get("PU_value") and productform1.get("PU_en_name") else "0"
 ws01["J17"] = product.get("sale_ratio", "")
 
 start_row = 19
@@ -331,7 +333,7 @@ for idx, info in enumerate(product_techinfo_array):
     cell = f"{col}{start_row + idx}"
     ws01[cell] = info
 
-ws01["J24"] = product.get("pcr_reference", "")
+ws01["J24"] = productform1.get("pcr_name", "") 
 ws01["J25"] = submitted_date_thai
 
 # image 
