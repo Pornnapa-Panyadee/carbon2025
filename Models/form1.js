@@ -71,7 +71,7 @@ const Form1Model = {
                     pu_th.product_unit_name_th AS PU_th_name, pu_en.product_unit_name_en AS PU_en_name,
                     p.sale_ratio, p.product_techinfo, pcr.pcr_name,pcr.approval_date, pcr.pcr_type,pcr.pcr_type_id,
                     p.collect_data_start, p.collect_data_end, p.product_photo,p.auditor_id,p.verify_status,
-                    p.submitted_round,p.submitted_date,p.created_date, p.updated_date,p.products_status
+                    p.submitted_round,p.submitted_date,p.created_date, p.updated_date
                 FROM products p
                 LEFT JOIN units fu_th ON p.FU_th = fu_th.product_unit_id
                 LEFT JOIN units fu_en ON p.FU_en = fu_en.product_unit_id
