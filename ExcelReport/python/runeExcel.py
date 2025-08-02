@@ -14,6 +14,7 @@ import sys
 from datetime import datetime
 import io
 import re
+import os
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
@@ -24,16 +25,17 @@ if len(sys.argv) < 3:
 company_name = sys.argv[1]
 product_1 = sys.argv[2]
 
-form1 = "http://localhost:5000/api/v1/f1/excel/"+company_name + "/" + product_1
-form4_1= "http://localhost:5000/api/v1/f4-1/report/"+product_1
-form4_2= "http://localhost:5000/api/v1/f4-2/form/"+product_1
-form4_3= "http://localhost:5000/api/v1/selfcollect/product/"+company_name + "/" + product_1
-form6_1= "http://localhost:5000/api/v1/f6-1/sum/" + product_1
-form6_2= "http://localhost:5000/api/v1/f6-2/sum/" + product_1
-
-# form5_1= "http://localhost:5000/api/v1/f4-1/sum/" + product_1
-# form5_2= "http://localhost:5000/api/v1/f4-2/sum/" + product_1
-form5= "http://localhost:5000/api/v1/f6-1/sumform4142/" + product_1
+url="http://localhost:5000/"
+# url="http://178.128.123.212:5000/"
+# company_name="1021"
+# product_1="39"
+form1 = url+"api/v1/f1/excel/"+company_name + "/" + product_1
+form4_1= url+"api/v1/f4-1/report/"+product_1
+form4_2= url+"api/v1/f4-2/form/"+product_1
+form4_3= url+"api/v1/selfcollect/list/"+company_name + "/" + product_1
+form6_1= url+"api/v1/f6-1/sum/" + product_1
+form6_2= url+"api/v1/f6-2/sum/" + product_1
+form5= url+"api/v1/f6-1/sumform4142/" + product_1
 
 
 def thai_date_format(iso_date_str):
@@ -255,12 +257,6 @@ else:
     print("เกิดข้อผิดพลาดในการเรียก API:", form4_2.status_code)
 
 
-# response_form4_3 = requests.get(form4_3)
-# if response_form4_3.status_code == 200:
-#     data43 = response_form4_3.json()
-#     form43 = data43["processes"]
-# else:
-#     print("เกิดข้อผิดพลาดในการเรียก API:", response_form4_3.status_code)
 response_form4_3 = requests.get(form4_3)
 form43 = []  # กำหนดค่าเริ่มต้นก่อน
 if response_form4_3.status_code == 200:
@@ -340,11 +336,19 @@ ws01["J25"] = submitted_date_thai
 
 # image 
 #image_url = product.get("product_photo", "").replace("public/", "Public/")
+# image_url = product.get("product_photo", "")
+# img = Image(image_url)  
+# img.width = 300 
+# img.height = 300  
+# ws01.add_image(img, "B12")  
+
 image_url = product.get("product_photo", "")
-img = Image(image_url)  
-img.width = 300 
-img.height = 300  
-ws01.add_image(img, "B12")  
+
+if image_url and os.path.isfile(image_url):
+    img = Image(image_url)
+    img.width = 300
+    img.height = 300
+    ws01.add_image(img, "B12")
 
 ######## ---------------------------------------------------------------------
 ws02 = wb["Fr-02"]
@@ -486,13 +490,13 @@ for i in range(len(process)):
 
     if process[i]['wastes'] == []:
         ws03.merge_cells(f"K{current_row}:M{current_row}")
-        ws03[f"K{current_row}"] = waste_head[0]
+        ws03[f"K{current_row}"] = "ผลิตภัณฑ์ร่วม"
         ws03[f"K{current_row}"].fill = fill_intput_head
         ws03.merge_cells(f"K{current_row + 1}:M{current_row + 1}")
         ws03[f"K{current_row + 1}"].fill = fill_waste
 
         ws03.merge_cells(f"K{current_row+2}:M{current_row+2}")
-        ws03[f"K{current_row+2}"] = waste_head[1]
+        ws03[f"K{current_row+2}"] = "ของเสีย"
         ws03[f"K{current_row+2}"].fill = fill_intput_head
         ws03.merge_cells(f"K{current_row + 3}:M{current_row + 3}")
         ws03[f"K{current_row + 3}"].fill = fill_waste
@@ -632,7 +636,7 @@ for i in range(len(phase)):
                 ws41[f"F{row}"] = items["lci_source_period"]
                 ws41[f"G{row}"] = items["ef"]
                 exec(check_source_form4_1(items["ef_source"], row, ws_name='ws41'))
-                ws41[f"O{row}"] = items["ef_source_ref"]
+                ws41[f"O{row}"] = items["ef_source_ref_display"]
                 ws41[f"P{row}"] = items["ratio"]
                 ef = round(float(items["ef"] if items["ef"] is not None else 0), 2)
                 ws41[f"Q{row}"] = FU1 * ef
@@ -711,8 +715,8 @@ for i in range(len(phase)):
 
             for l in range(len(product["items"])):
                 items = product["items"][l]
-                text_out = items.get("type2_vehicle_outbound") or ""
-                text_ret = items.get("type2_vehicle_return") or ""
+                text_out = items.get("type2_vehicle_outbound_display") or ""
+                text_ret = items.get("type2_vehicle_outbound_display") or ""
 
                 match_out = re.search(r'(\d+)%', text_out)
                 match_ret = re.search(r'(\d+)%', text_ret)
@@ -890,17 +894,18 @@ if form43:
 
 ######## ----Fr-05-----------------------------------------------------------
 ws5 = wb["Fr-05"]
-ws5[f"C14"] =  round(float(report41Sum["sum_lc1_emission"]), 2)
-ws5[f"C15"] =  round(float(report41Sum["sum_lc2_emission"]), 2)
-ws5[f"C16"] =  round(float(report41Sum["sum_lc3_emission"]), 2)
-ws5[f"C17"] =  round(float(report41Sum["sum_lc4_emission"]), 2)
-ws5[f"C18"] =  round(float(report41Sum["sum_lc5_emission"]), 2)
+ws5["C14"] = round(float(report41Sum["sum_lc1_emission"]), 2) if report41Sum["sum_lc1_emission"] is not None else 0.00
+ws5["C15"] = round(float(report41Sum["sum_lc2_emission"]), 2) if report41Sum["sum_lc2_emission"] is not None else 0.00
+ws5["C16"] = round(float(report41Sum["sum_lc3_emission"]), 2) if report41Sum["sum_lc3_emission"] is not None else 0.00
+ws5["C17"] = round(float(report41Sum["sum_lc4_emission"]), 2) if report41Sum["sum_lc4_emission"] is not None else 0.00
+ws5["C18"] = round(float(report41Sum["sum_lc5_emission"]), 2) if report41Sum["sum_lc5_emission"] is not None else 0.00
 
-ws5[f"D14"] =  round(float(report42Sum["lc1_transport_emission"]), 2)
-ws5[f"D15"] =  round(float(report42Sum["lc2_transport_emission"]), 2)
-ws5[f"D16"] =  round(float(report42Sum["lc3_transport_emission"]), 2)
-ws5[f"D17"] =  round(float(report42Sum["lc4_transport_emission"]), 2)
-ws5[f"D18"] =  round(float(report42Sum["lc5_transport_emission"]), 2)
+ws5[f"D14"] =  round(float(report42Sum["lc1_transport_emission"]), 2) if report42Sum["lc1_transport_emission"] is not None else 0.00
+ws5[f"D15"] =  round(float(report42Sum["lc2_transport_emission"]), 2) if report42Sum["lc2_transport_emission"] is not None else 0.00 
+ws5[f"D16"] =  round(float(report42Sum["lc3_transport_emission"]), 2) if report42Sum["lc3_transport_emission"] is not None else 0.00
+ws5[f"D17"] =  round(float(report42Sum["lc4_transport_emission"]), 2) if report42Sum["lc4_transport_emission"] is not None else 0.00
+ws5[f"D18"] =  round(float(report42Sum["lc5_transport_emission"]), 2) if report42Sum["lc5_transport_emission"] is not None else 0.00
+
 
 
 

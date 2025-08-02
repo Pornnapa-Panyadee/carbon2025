@@ -125,10 +125,11 @@ const selfCollectModel = {
 
     listSelfCollectId: async (company_id, product_id) => {
         const findIdsQuery = `
-        SELECT DISTINCT ef_source_ref
-        FROM cfp_report41_items
-        WHERE product_id = ? AND ef_source = 'Self collect'
-    `;
+            SELECT DISTINCT ef_source_ref
+            FROM cfp_report41_items
+            WHERE product_id = ? AND ef_source = 'Self collect'
+        `;
+
         const [refRows] = await db.query(findIdsQuery, [product_id]);
 
         if (!refRows.length) throw new Error('No Self Collect references found for this product');
@@ -148,10 +149,15 @@ const selfCollectModel = {
 
         // Step 3: วนแต่ละ self_collect_id เพื่อดึง input/output จาก cfp_report43_selfcollect_efs
         const inputQuery = `
-        SELECT *
-        FROM cfp_report43_selfcollect_efs
-        WHERE self_collect_id = ?
-    `;
+                SELECT
+                    s.*,
+                    t1.item AS type2_vehicle_item,
+                    t2.item AS type2_vehicle_return_item
+                FROM cfp_report43_selfcollect_efs s
+                LEFT JOIN tgo_efs t1 ON s.type2_vehicle = t1.ef_id
+                LEFT JOIN tgo_efs t2 ON s.type2_vehicle_return = t2.ef_id
+                WHERE s.self_collect_id = ?
+            `;
 
         const processes = await Promise.all(companyResults.map(async (process) => {
             const [inputResults] = await db.query(inputQuery, [process.self_collect_id]);

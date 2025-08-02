@@ -63,7 +63,23 @@ const Form1Model = {
         }];
     },
     findByCompanyProduct1: async (company_id, product_id) => {
-        const productQuery = 'SELECT * FROM products WHERE product_id = ?';
+        const productQuery = `
+                SELECT 
+                    p.product_id, p.company_id,p.product_name_th,p.product_name_en, p.scope,p.FU_value,
+                    fu_th.product_unit_name_th AS FU_th_name, fu_en.product_unit_name_en AS FU_en_name,
+                    p.PU_value, pu_th.product_unit_name_th AS PU_th_name, pu_en.product_unit_name_en AS PU_en_name,
+                    p.sale_ratio, p.product_techinfo pcr.pcr_name,
+                    pcr.approval_date, pcr.pcr_type,pcr.pcr_type_id,
+                    p.collect_data_start, p.collect_data_end, p.product_photo,p.auditor_id,
+                    p.verify_status,p.submitted_round,p.submitted_date,p.created_date, p.updated_date,
+                    p.products_status
+                FROM products p
+                LEFT JOIN units fu_th ON p.FU_th = fu_th.product_unit_id
+                LEFT JOIN units fu_en ON p.FU_en = fu_en.product_unit_id
+                LEFT JOIN units pu_th ON p.PU_th = pu_th.product_unit_id
+                LEFT JOIN units pu_en ON p.PU_en = pu_en.product_unit_id
+                LEFT JOIN pcrs pcr ON p.pcr_reference = pcr.id
+                WHERE p.product_id = ? `;
         const companyQuery = 'SELECT * FROM companies WHERE company_id = ?';
         const processQuery = 'SELECT * FROM processes WHERE product_id = ? ORDER BY `processes`.`ordering` ASC';
 
