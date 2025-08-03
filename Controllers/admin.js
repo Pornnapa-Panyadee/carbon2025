@@ -18,6 +18,10 @@ const handler = (fn, getArgs) => async (req, res) => {
     }
 };
 
+// dashbard
+exports.listDashboard = handler(adminData.listDashboard);
+
+
 // Round
 exports.listRound = handler(adminData.listRound);
 exports.createRound = handler(adminData.createRound, req => [req.body]);

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { listRound, createRound, listRoundId, updateRoundId, deleteRoundId,
+const { listDashboard, listRound, createRound, listRoundId, updateRoundId, deleteRoundId,
     listUnit, createUnit, listUnitId, updateUnitId, deleteUnitId,
     listPCR, createPCR, listPCRId, updatePCRId, deletePCRId,
     listIndustrial, createIndustrial, listIndustrialId, updateIndustrialId, deleteIndustrialId,
@@ -9,7 +9,7 @@ const { listRound, createRound, listRoundId, updateRoundId, deleteRoundId,
 } = require('../Controllers/admin');
 
 // Dashboard
-// router.get('/admin/dashboard', listDashboard);
+router.get('/admin/dashboard', listDashboard);
 
 // Information
 // -- Round --

@@ -168,6 +168,37 @@ const adminModel = {
         return result;
     },
 
+    // Dashboard
+    // 1. Account Admin Detall
+    // 2. Count Company Product Approved
+    // 3. Company list detail name industrial type count product
+
+    listDashboard: async () => {
+        const querycompanies = `SELECT COUNT(*) AS total_companies FROM companies;`;
+        const [totalCompaniesResult] = await db.query(querycompanies);
+        const total_companies = totalCompaniesResult[0].total_companies;
+
+        const queryproducts = `SELECT COUNT(*) AS total_products FROM products;`;
+        const [totalProductsResult] = await db.query(queryproducts);
+        const total_products = totalProductsResult[0].total_products;
+
+        const query = `SELECT c.*,i.industrial_name, COUNT(p.product_id) AS product_count 
+                   FROM companies c
+                   LEFT JOIN products p ON c.company_id = p.company_id
+                   LEFT JOIN industrials i ON c.industrial_id = i.industrial_id
+                   GROUP BY c.company_id, c.name;`;
+        const [companyList] = await db.query(query);
+
+        const result = {
+            company_total: total_companies,
+            product_total: total_products,
+            company_detail: companyList
+        };
+
+        return result;
+    },
+
+
 
 };
 
