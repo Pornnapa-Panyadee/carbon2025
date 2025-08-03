@@ -272,15 +272,13 @@ const auditorModel = {
 
     updateStatusProduct: async (auditor_id, product_id, status_id, newStatus) => {
         const sql = ` UPDATE auditor_status SET status = ?, updated_at = NOW() WHERE auditor_id = ? AND product_id = ? AND status_id = ?`;
-        const sql1 = `SELECT status_eng FROM auditors_status_infos WHERE status_id = ?`;
-        const productSql = ` UPDATE products SET  verify_status = ?, updated_date = NOW() WHERE product_id = ? `;
-
-
+        const sql1 = `SELECT * FROM auditors_status_infos WHERE status_id = ?`;
         const [result] = await db.query(sql, [newStatus, auditor_id, product_id, status_id]);
-        const [resultStatus] = await db.query(sql1, [status_id]);
+        const [resultStatus] = await db.query(sql1, [newStatus]);
+        // console.log([status_id]);
+        const productSql = ` UPDATE products SET  verify_status = ?, updated_date = NOW() WHERE product_id = ? `;
         const statusInfo = resultStatus[0] ? resultStatus[0].status_eng : null;
-
-        await db.query(productSql, [newStatus, product_id]);
+        await db.query(productSql, [statusInfo, product_id]);
 
         // ดึงชื่อผลิตภัณฑ์
         const [productRows] = await db.query('SELECT product_name_th, company_id  FROM products WHERE product_id  = ?', [product_id]);
@@ -306,7 +304,7 @@ const auditorModel = {
         }
 
 
-        return { result, statusInfo };
+        return { result, statusInfo, newStatus };
     },
 };
 
