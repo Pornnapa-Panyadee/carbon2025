@@ -32,11 +32,12 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-        const id = req.params.auditor_id;
-        const data = req.body;
-        const result = await Auditor.updateById(id, data);
-        if (!result || result.affectedRows === 0) return res.status(404).json({ message: 'Auditor not found' });
-        res.json({ message: 'Auditor updated' });
+        const data = req.body; // { prefix_name: "Mr." }
+        const auditor_id = req.params.auditor_id; // '2'
+
+        const result = await Auditor.updateById(auditor_id, data); // ส่งแยกกัน
+
+        res.status(200).json({ message: 'Updated successfully', id: auditor_id });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -134,13 +135,13 @@ exports.updateStatusProduct = async (req, res) => {
             return res.status(400).json({ error: 'Missing status in request body' });
         }
 
-        const { result, statusInfo } = await Auditor.updateStatusProduct(auditor_id, product_id, status_id, status);
+        const { result, statusInfo, newStatus } = await Auditor.updateStatusProduct(auditor_id, product_id, status_id, status);
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Product status not found or no change' });
         }
 
-        res.json({ message: 'Product status updated', result });
+        res.json({ message: 'Product status updated', result, statusInfo, newStatus });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

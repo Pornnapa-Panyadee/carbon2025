@@ -28,22 +28,8 @@ const auditorModel = {
     },
 
     updateById: async (auditor_id, data) => {
-        const [rows] = await db.query('SELECT * FROM auditors WHERE auditor_id = ?', [auditor_id]);
-        if (!rows || rows.length === 0) throw new Error('Auditor not found');
-
-        const auditor = rows[0];
-        const {
-            user_id = auditor.user_id,
-            name = auditor.name,
-            register_id = auditor.register_id,
-            description = auditor.description
-        } = data;
-
-        const sql = `
-            UPDATE auditors SET user_id = ?, name = ?, register_id = ?, description = ?, updated_date = NOW()
-            WHERE auditor_id = ?
-        `;
-        const [result] = await db.query(sql, [user_id, name, register_id, description, auditor_id]);
+        const query = 'UPDATE auditors SET ? WHERE auditor_id = ?';
+        const [result] = await db.query(query, [data, auditor_id]);
         return result;
     },
 
