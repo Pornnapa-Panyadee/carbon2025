@@ -40,7 +40,13 @@ const dropDownModel = {
     findAllAdunits: async () => {
         const [rows] = await db.query(`SELECT * FROM ad_units`);
         return rows;
+    },
+
+    putsrcefelectricitys: async (data) => {
+        const [result] = await db.query(`UPDATE src_ef_electricitys SET ? WHERE id = ?`, [data, data.id]);
+        return result;
     }
+
 
 };
 

@@ -10,7 +10,7 @@ const { listcncodes,
     listdataqlys,
     listemissions,
     listefunits,
-    listadunits
+    listadunits, putsrcefelectricitys
 } = require('../../Controllers/cbam/dropdown');
 
 // Province
@@ -24,6 +24,9 @@ router.get('/dataqlys', listdataqlys);
 router.get('/emissions', listemissions);
 router.get('/efunits', listefunits);
 router.get('/adunits', listadunits);
+
+
+router.put('/srcefelectricitys/:id', putsrcefelectricitys);
 
 
 module.exports = router; // Export the router

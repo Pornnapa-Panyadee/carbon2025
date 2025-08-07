@@ -92,3 +92,14 @@ exports.listadunits = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.putsrcefelectricitys = async (req, res) => {
+    try {
+        const data = req.body;
+        const id = req.params.id;
+        const result = await Country.putsrcefelectricitys({ ...data, id });
+        res.status(200).json({ message: 'Updated successfully', id: id });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
