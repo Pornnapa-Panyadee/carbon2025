@@ -74,3 +74,15 @@ exports.deleteByReportId = async (req, res) => {
         res.status(500).json({ error: err.message || 'Internal server error' });
     }
 };
+
+exports.readsumaryperId = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await Report.readsumaryperId(id);
+        if (!result) return res.status(404).json({ message: 'Report not found' });
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+

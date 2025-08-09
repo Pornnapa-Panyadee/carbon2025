@@ -121,7 +121,54 @@ const Report = {
         } finally {
             connection.release();
         }
-    }
+    },
+
+    readsumaryperId: async (id) => {
+        const query = `
+            SELECT 
+                r.installation_id,r.industry_type_id,r.goods_id,
+                i.name AS installation_name,
+                v.name AS verifier_name,
+                it.name AS industry_type_name,
+                gc.name AS goods_category_name,
+                cn.name AS cn_name,
+                cn.cn_code AS cn_code,
+                d.name AS product_name
+            FROM reports r
+            LEFT JOIN installations i ON r.installation_id = i.id
+            LEFT JOIN verifiers v ON r.verifier_id = v.id
+            LEFT JOIN industry_types it ON r.industry_type_id = it.industry_id
+            LEFT JOIN goods_categories gc ON r.goods_id = gc.goods_id
+            LEFT JOIN cn_codes cn ON r.cn_id = cn.cn_id
+            LEFT JOIN d_processes d ON r.id = d.report_id
+            WHERE r.id = ?
+        `;
+        const [result] = await db.query(query, [id]);
+
+        const query1 = `
+                SELECT 
+                    (d.SEE_direct + SUM(e.SEE_direct)) AS SEE_direct_sum,
+                    (d.SEE_indirect + SUM(e.SEE_indirect)) AS SEE_indirect_sum,
+                    (d.SEE_total + SUM(e.SEE_total)) AS SEE_total_sum
+                FROM d_processes d
+                LEFT JOIN e_precursors e 
+                    ON d.report_id = e.report_id
+                WHERE d.report_id = ?
+                GROUP BY d.SEE_direct, d.SEE_indirect, d.SEE_total
+            `;
+        const [d_processes] = await db.query(query1, [id]);
+        const insertData = {
+            'data': result,
+            'sum': d_processes,
+            'unit': [{
+                "SEE_direct_sum": "tCO2e/t",
+                "SEE_indirect_sum": "tCO2e/t",
+                "SEE_total_sum": "tCO2e/t"
+            }],
+        };
+
+        return insertData;
+    },
 
 
 

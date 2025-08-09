@@ -2,13 +2,55 @@ const db = require('../../Config/dbCbam.js');
 
 const Report = {
     create: async (data) => {
+        const [processRows] = await db.query(
+            'SELECT total_consumed_within_installation FROM d_processes WHERE report_id = ?',
+            [data.report_id]
+        );
+        const totalProcess = Number(processRows[0].total_consumed_within_installation);
+        const consumed = Number(data.total_consumed_within_installation);
+        const directValue = Number(data.embedded_direct_emissions_value);
+        const indirectValue = Number(data.embedded_indirection_emissions_value);
+
+        const SEE_direct = (consumed / totalProcess) * directValue;
+        const SEE_indirect = (consumed / totalProcess) * indirectValue;
+        const SEE_total = SEE_direct + SEE_indirect;
+        // SEE_direct = totalProcess;
+
+        const insertData = {
+            ...data,
+            SEE_direct,
+            SEE_indirect,
+            SEE_total
+        };
+
         const query = 'INSERT INTO e_precursors SET ?, created_at = NOW(), updated_at = NOW() ';
-        const [result] = await db.query(query, data);
+        const [result] = await db.query(query, insertData);
         return result;
     },
     updateByID: async (data) => {
-        const query = 'UPDATE e_precursors SET ? WHERE id = ?';
-        const [result] = await db.query(query, [data, data.id]);
+        const [processRows] = await db.query(
+            'SELECT total_consumed_within_installation FROM d_processes WHERE report_id = ?',
+            [data.report_id]
+        );
+        const totalProcess = Number(processRows[0].total_consumed_within_installation);
+        const consumed = Number(data.total_consumed_within_installation);
+        const directValue = Number(data.embedded_direct_emissions_value);
+        const indirectValue = Number(data.embedded_indirection_emissions_value);
+
+        const SEE_direct = (consumed / totalProcess) * directValue;
+        const SEE_indirect = (consumed / totalProcess) * indirectValue;
+        const SEE_total = SEE_direct + SEE_indirect;
+        // SEE_direct = totalProcess;
+
+        const insertData = {
+            ...data,
+            SEE_direct,
+            SEE_indirect,
+            SEE_total
+        };
+
+        const query = 'UPDATE e_precursors SET ? , updated_at = NOW() WHERE id = ? ';
+        const [result] = await db.query(query, [insertData, data.id]);
         return result;
     },
     readperId: async (id) => {
