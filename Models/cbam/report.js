@@ -24,13 +24,15 @@ const Report = {
                 v.name AS verifier_name,
                 it.name AS industry_type_name,
                 gc.name AS goods_category_name,
-                cn.name AS name
+                cn.name AS name,
+                d.id AS d_processes_id
             FROM reports r
             LEFT JOIN installations i ON r.installation_id = i.id
             LEFT JOIN verifiers v ON r.verifier_id = v.id
             LEFT JOIN industry_types it ON r.industry_type_id = it.industry_id
             LEFT JOIN goods_categories gc ON r.goods_id = gc.goods_id
             LEFT JOIN cn_codes cn ON r.cn_id = cn.cn_id
+            LEFT JOIN d_processes d ON r.id = d.report_id
             WHERE r.id = ?
         `;
         const [result] = await db.query(query, [id]);
