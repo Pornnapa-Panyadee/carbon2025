@@ -2,6 +2,19 @@ const db = require('../../Config/dbCbam.js');
 
 const Report = {
     create: async (data) => {
+
+        let countryName = null;
+        if (data.country_id) {
+            const countryQuery = `SELECT name AS country_name FROM countries WHERE id = ?`;
+            const [countryResult] = await db.query(countryQuery, [data.country_id]);
+            if (countryResult.length > 0) {
+                countryName = countryResult[0].country_name;
+            }
+        }
+
+        // 2. เพิ่ม country_name เข้าไปใน object data
+        data.country_name_v = countryName;
+
         const query = 'INSERT INTO verifiers SET ? ,created_at = NOW(), updated_at = NOW() ';
         const [result] = await db.query(query, data);
         return result;
