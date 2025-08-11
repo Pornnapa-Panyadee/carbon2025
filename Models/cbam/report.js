@@ -25,14 +25,20 @@ const Report = {
                 it.name AS industry_type_name,
                 gc.name AS goods_category_name,
                 cn.name AS name,
-                d.id AS d_processes_id
+                b.id AS b_emission_installations_id,
+                c.id AS c_emission_energies_id,
+                d.id AS d_processes_id,
+                e.id AS e_precursors_id
             FROM reports r
             LEFT JOIN installations i ON r.installation_id = i.id
             LEFT JOIN verifiers v ON r.verifier_id = v.id
             LEFT JOIN industry_types it ON r.industry_type_id = it.industry_id
             LEFT JOIN goods_categories gc ON r.goods_id = gc.goods_id
             LEFT JOIN cn_codes cn ON r.cn_id = cn.cn_id
+            LEFT JOIN b_emission_installations b ON r.id = b.report_id
+            LEFT JOIN c_emission_energies c ON r.id = c.report_id
             LEFT JOIN d_processes d ON r.id = d.report_id
+            LEFT JOIN e_precursors e ON r.id = e.report_id
             WHERE r.id = ?
         `;
         const [result] = await db.query(query, [id]);
