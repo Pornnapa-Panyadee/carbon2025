@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router(); // Use router instead of app
 
-const { create, update, readperIDuser, readperID, deleteById, deleteByReportId, readsumaryperId } = require('../../Controllers/cbam/report');
+const { create, update, readperIDuser, readperID, deleteById, deleteByReportId, readsumaryperId, readDashboardPerId } = require('../../Controllers/cbam/report');
 
 // Province
 router.post('/report', create);
@@ -13,6 +13,7 @@ router.delete('/report/:id', deleteById);
 
 router.delete('/report/del/:id', deleteByReportId);
 router.get('/report/sumary/:id', readsumaryperId);
+router.get('/report/dashboard/:company_id', readDashboardPerId);
 
 
 

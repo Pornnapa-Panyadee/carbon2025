@@ -86,3 +86,14 @@ exports.readsumaryperId = async (req, res) => {
     }
 };
 
+exports.readDashboardPerId = async (req, res) => {
+    try {
+        const company_id = req.params.company_id;
+        const result = await Report.readDashboardPerId(company_id);
+        if (!result) return res.status(404).json({ message: 'Report not found' });
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+

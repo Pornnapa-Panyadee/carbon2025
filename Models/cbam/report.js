@@ -172,6 +172,70 @@ const Report = {
         return insertData;
     },
 
+    readDashboardPerId: async (company_id) => {
+        const query = `
+        SELECT 
+            r.id AS report_id,
+            r.installation_id,
+            r.industry_type_id,
+            r.updated_at,
+            r.goods_id,
+            i.name AS installation_name,
+            v.name AS verifier_name,
+            it.name AS industry_type_name,
+            gc.name AS goods_category_name,
+            cn.name AS cn_name,
+            cn.cn_code AS cn_code,
+            d.name AS product_name
+        FROM reports r
+        LEFT JOIN installations i ON r.installation_id = i.id
+        LEFT JOIN verifiers v ON r.verifier_id = v.id
+        LEFT JOIN industry_types it ON r.industry_type_id = it.industry_id
+        LEFT JOIN goods_categories gc ON r.goods_id = gc.goods_id
+        LEFT JOIN cn_codes cn ON r.cn_id = cn.cn_id
+        LEFT JOIN d_processes d ON r.id = d.report_id
+        WHERE r.company_id = ?
+    `;
+        const [result] = await db.query(query, [company_id]);
+
+        const query1 = `
+        SELECT 
+            d.report_id,
+            (d.SEE_direct + IFNULL(SUM(e.SEE_direct),0)) AS SEE_direct_sum,
+            (d.SEE_indirect + IFNULL(SUM(e.SEE_indirect),0)) AS SEE_indirect_sum,
+            (d.SEE_total + IFNULL(SUM(e.SEE_total),0)) AS SEE_total_sum
+        FROM d_processes d
+        LEFT JOIN e_precursors e 
+            ON d.report_id = e.report_id
+        LEFT JOIN reports r ON d.report_id = r.id
+        WHERE r.company_id = ?
+        GROUP BY d.report_id, d.SEE_direct, d.SEE_indirect, d.SEE_total
+    `;
+        const [sumRows] = await db.query(query1, [company_id]);
+
+        // แปลง sumRows เป็น map ตาม report_id
+        const sumMap = {};
+        sumRows.forEach(row => {
+            sumMap[row.report_id] = {
+                SEE_direct_sum: row.SEE_direct_sum,
+                SEE_indirect_sum: row.SEE_indirect_sum,
+                SEE_total_sum: row.SEE_total_sum
+            };
+        });
+
+        // Merge sum ตาม report_id
+        const mergedData = result.map(row => ({
+            ...row,
+            ...(sumMap[row.report_id] || {
+                SEE_direct_sum: 0,
+                SEE_indirect_sum: 0,
+                SEE_total_sum: 0
+            })
+        }));
+
+        return mergedData;
+    },
+
 
 
 };
