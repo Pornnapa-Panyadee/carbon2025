@@ -14,7 +14,7 @@ const ExcelModel = {
         } else if (sheet.toLowerCase() === 'fr03') {
             scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR3.py');
         } else {
-            throw new Error(`Unknown sheet: ${sheet}`);
+            scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR3.py');
         }
 
         // เรียก Python script

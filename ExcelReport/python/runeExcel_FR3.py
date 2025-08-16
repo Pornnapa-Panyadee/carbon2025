@@ -356,7 +356,7 @@ def export_pdf_libreoffice(input_file, output_dir):
     ], check=True)
 
 # PDF output path
-output_pdf = os.path.join(output_dir, f"{timestamp}_{company.get('name','')}_{product.get('product_name_en','')}_Fr03.pdf")
+output_pdf = os.path.join(output_dir, f"{timestamp}_Company{company.get('company_id','')}_Product{product.get('product_id','')}_Fr03.pdf")
 
 try:
     if platform.system() == "Windows":
