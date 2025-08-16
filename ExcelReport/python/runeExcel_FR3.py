@@ -68,7 +68,7 @@ output_dir = "ExcelReport/output"
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
-output_xlsx = os.path.join(output_dir, f"{timestamp}_{company.get('name','')}_{product.get('product_name_en','')}.xlsx")
+output_xlsx = os.path.join(output_dir, f"{timestamp}_Company{company.get('company_id','')}_Product{product.get('product_id','')}.xlsx")
 shutil.copy(template_path, output_xlsx)
 
 # ----------------- Load Workbook -----------------

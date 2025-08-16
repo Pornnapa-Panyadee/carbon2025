@@ -8,14 +8,15 @@ const db = require('../Config/db.js');
 const ExcelModel = {
     runPythonPDF: async function (sheet, company_id, product_id) {
         let scriptPath;
+        scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR3.py');
 
-        if (sheet.toLowerCase() === 'fr01') {
-            scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_pdf_F1.py');
-        } else if (sheet.toLowerCase() === 'fr03') {
-            scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR3.py');
-        } else {
-            scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR3.py');
-        }
+        // if (sheet.toLowerCase() === 'fr01') {
+        //     scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_pdf_F1.py');
+        // } else if (sheet.toLowerCase() === 'fr03') {
+        //     scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR3.py');
+        // } else {
+        //     scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR3.py');
+        // }
 
         // เรียก Python script
         const outputRaw = await new Promise((resolve, reject) => {
