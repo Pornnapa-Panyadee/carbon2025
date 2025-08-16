@@ -4,6 +4,18 @@ const path = require('path');
 // const { runPythonExcel } = require('../Models/excel');
 const Excel = require('../Models/excel');
 
+exports.getExcelPDF = async (req, res) => {
+    const { sheet, company_name, product_id } = req.params;
+    try {
+        const result = await Excel.runPythonPDF(sheet, company_name, product_id);
+        if (!result) return res.status(404).json({ message: 'Excel not found' });
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+
+};
+
 
 exports.getExcel = async (req, res) => {
     const { company_name, product_id } = req.params;

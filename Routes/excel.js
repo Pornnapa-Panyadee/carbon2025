@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { getExcel, getExcelByCompany, loadExcelByCompany, getExcelByAuditor, loadExcelByAuditor } = require('../Controllers/excel');
+const { getExcelPDF, getExcel, getExcelByCompany, loadExcelByCompany, getExcelByAuditor, loadExcelByAuditor } = require('../Controllers/excel');
 
+
+router.get('/excel/:sheet/:company_name/:product_id', getExcelPDF);
 
 router.get('/excel/:company_name/:product_id', getExcel);
 // company

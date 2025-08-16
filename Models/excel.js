@@ -6,6 +6,74 @@ const db = require('../Config/db.js');
 
 
 const ExcelModel = {
+    runPythonPDF: async function (sheet, company_id, product_id) {
+        let scriptPath;
+
+        if (sheet.toLowerCase() === 'fr01') {
+            scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_pdf_F1.py');
+        } else if (sheet.toLowerCase() === 'fr03') {
+            scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR3.py');
+        } else {
+            throw new Error(`Unknown sheet: ${sheet}`);
+        }
+
+        const outputPath = await new Promise((resolve, reject) => {
+            const py = spawn('python', [scriptPath, company_id, product_id]);
+
+            let stdoutData = '';
+            let stderrData = '';
+
+            py.stdout.on('data', (data) => { stdoutData += data.toString(); });
+            py.stderr.on('data', (data) => { stderrData += data.toString(); });
+
+            py.on('close', (code) => {
+                if (code !== 0) return reject(new Error(`Python script error: ${stderrData}`));
+                resolve(stdoutData.trim());
+            });
+        });
+
+        const fileName = path.basename(outputPath);
+        const relativePath = `/download/${fileName}`;
+
+        // 🔍 ตรวจสอบว่า record มีอยู่แล้วหรือไม่
+        const [existing] = await db.query(`
+            SELECT * FROM company_excel_paths
+            WHERE company_id = ? AND product_id = ?
+        `, [company_id, product_id]);
+
+        let record;
+        if (existing.length > 0) {
+            await db.query(`
+                UPDATE company_excel_paths
+                SET path_pdf_fr03 = ?, updated_at = NOW()
+                WHERE company_id = ? AND product_id = ?
+            `, [relativePath, company_id, product_id]);
+
+            // ดึง record หลัง update
+            const [updated] = await db.query(`
+                SELECT * FROM company_excel_paths
+                WHERE company_id = ? AND product_id = ?
+            `, [company_id, product_id]);
+            record = updated[0];
+        } else {
+            await db.query(`
+                INSERT INTO company_excel_paths (company_id, product_id, path_excel, path_pdf_fr03, created_at, updated_at)
+                VALUES (?, ?, ?, ?, NOW(), NOW())
+            `, [company_id, product_id, relativePath, relativePath]);
+
+            // ดึง record หลัง insert
+            const [inserted] = await db.query(`
+                SELECT * FROM company_excel_paths
+                WHERE company_id = ? AND product_id = ?
+            `, [company_id, product_id]);
+            record = inserted[0];
+        }
+
+        return [record];  // return array ตามที่คุณต้องการ
+    },
+
+
+
     runPythonExcel: async function (company_name, product_id) {
         const scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel.py');
         return await new Promise((resolve, reject) => {
