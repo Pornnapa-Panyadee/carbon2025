@@ -37,7 +37,31 @@ const productModel = {
             0 // หรือจะใช้ status_id ก็ได้ ถ้าค่ามันคือ 0
         ]);
 
+        const c3 = 'INSERT INTO processes SET ?, created_date = NOW(), updated_date = NOW() ';
+        const [processC3] = await db.query(c3, {
+            product_id: product_id,
+            ordering: 97,
+            process_name: 'การกระจายสินค้า',
+            mass_balanced: 0
+        });
+        const c4 = 'INSERT INTO processes SET ?, created_date = NOW(), updated_date = NOW() ';
+        const [processC4] = await db.query(c4, {
+            product_id: product_id,
+            ordering: 98,
+            process_name: 'การใช้งาน',
+            mass_balanced: 0
+        });
+        const c5 = 'INSERT INTO processes SET ?, created_date = NOW(), updated_date = NOW() ';
+        const [processC5] = await db.query(c5, {
+            product_id: product_id,
+            ordering: 99,
+            process_name: 'การจัดการซาก',
+            mass_balanced: 0
+        });
 
+        results.processC3 = processC3;
+        results.processC4 = processC4;
+        results.processC5 = processC5;
         return results;
     },
 
