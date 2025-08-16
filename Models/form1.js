@@ -7,25 +7,25 @@ const Form1Model = {
         const processQuery = 'SELECT * FROM processes WHERE product_id = ? ORDER BY `processes`.`ordering` ASC';
 
         const inputQuery = `
-            SELECT DISTINCT  ip.*, ic.input_title_id, ic.input_title
-            FROM input_processes ip
-            LEFT JOIN input_categories ic ON ip.input_title_id = ic.input_title_id
-            WHERE ip.process_id = ?
-        `;
+        SELECT DISTINCT  ip.*, ic.input_title_id, ic.input_title
+        FROM input_processes ip
+        LEFT JOIN input_categories ic ON ip.input_title_id = ic.input_title_id
+        WHERE ip.process_id = ?
+    `;
 
         const outputQuery = `
-            SELECT DISTINCT  op.*, oc.output_cat_name
-            FROM output_processes op
-            LEFT JOIN output_categories oc ON op.output_cat_id = oc.output_cat_id
-            WHERE op.process_id = ?
-        `;
+        SELECT DISTINCT  op.*, oc.output_cat_name
+        FROM output_processes op
+        LEFT JOIN output_categories oc ON op.output_cat_id = oc.output_cat_id
+        WHERE op.process_id = ?
+    `;
 
         const wastetQuery = `
-            SELECT DISTINCT  op.*, oc.waste_cat_name
-            FROM waste_processes op
-            LEFT JOIN waste_categories oc ON op.waste_cat_id = oc.waste_cat_id
-            WHERE op.process_id = ?
-        `;
+        SELECT DISTINCT  op.*, oc.waste_cat_name
+        FROM waste_processes op
+        LEFT JOIN waste_categories oc ON op.waste_cat_id = oc.waste_cat_id
+        WHERE op.process_id = ?
+    `;
 
         // 1. Company
         const [companyResults] = await db.query(companyQuery, [company_id]);
@@ -40,7 +40,7 @@ const Form1Model = {
         if (!processResults.length) throw new Error('Process not found');
 
         // 4. For each process, get inputs, outputs, wastes
-        const processes = await Promise.all(processResults.map(async (process) => {
+        const processesAll = await Promise.all(processResults.map(async (process) => {
             // Inputs
             const [inputResults] = await db.query(inputQuery, [process.process_id]);
             // Outputs
@@ -56,12 +56,20 @@ const Form1Model = {
             };
         }));
 
+        // 5. แยก process ออกเป็น 2 กลุ่ม
+        const excludedNames = ['การกระจายสินค้า', 'การใช้งาน', 'การจัดการซาก'];
+
+        const processes = processesAll.filter(p => !excludedNames.includes(p.process_name)); // กรองออก
+        const processB2C = processesAll.filter(p => excludedNames.includes(p.process_name)); // เฉพาะ 3 ตัวนี้
+
         return [{
             product: productResults[0],
             company: companyResults[0],
-            processes
+            processes,   // process ที่เหลือ
+            processB2C   // process ที่เป็น 3 ชื่อพิเศษ
         }];
     },
+
     findByCompanyProduct1: async (company_id, product_id) => {
         const productQuery = `
                 SELECT 

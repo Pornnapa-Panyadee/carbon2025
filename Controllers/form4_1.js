@@ -151,7 +151,6 @@ exports.read_f03 = async (req, res) => {
     }
 };
 
-
 exports.readByItem = async (req, res) => {
     const { life_cycle_phase, company_id, product_id, class: className, item_id } = req.params;
 

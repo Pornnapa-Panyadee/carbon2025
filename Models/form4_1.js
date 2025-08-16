@@ -326,28 +326,31 @@ const form41Model = {
     setInputFr04: async (company_id, product_id) => {
         const productQuery = 'SELECT * FROM products WHERE product_id = ?';
         const companyQuery = 'SELECT * FROM companies WHERE company_id = ?';
-        const processQuery = 'SELECT process_id, process_name  FROM processes WHERE product_id = ? ORDER BY `processes`.`ordering` ASC';
+        const processQuery = 'SELECT process_id, process_name FROM processes WHERE product_id = ? ORDER BY `processes`.`ordering` ASC';
 
         const inputQuery = `
-                    SELECT DISTINCT  ip.input_process_id AS item_id, ip.input_name AS item_name, ip.input_unit AS item_unit,ip.input_quantity AS item_quantity,ip.chemical_reaction AS chemical_reaction  , ic.input_title, 'input' AS item_class
-                    FROM input_processes ip
-                    LEFT JOIN input_categories ic ON ip.input_title_id = ic.input_title_id
-                    WHERE ip.process_id = ?
-                `;
+    SELECT DISTINCT ip.input_process_id AS item_id, ip.input_name AS item_name, ip.input_unit AS item_unit,
+           ip.input_quantity AS item_quantity, ip.chemical_reaction AS chemical_reaction, ic.input_title, 'input' AS item_class
+    FROM input_processes ip
+    LEFT JOIN input_categories ic ON ip.input_title_id = ic.input_title_id
+    WHERE ip.process_id = ?
+  `;
 
         const outputQuery = `
-                    SELECT DISTINCT  op.output_process_id AS item_id, op.output_name AS item_name, op.output_unit AS item_unit, op.output_quantity AS item_quantity,'output' AS item_class
-                    FROM output_processes op
-                    LEFT JOIN output_categories oc ON op.output_cat_id = oc.output_cat_id
-                    WHERE op.process_id = ?
-                `;
+    SELECT DISTINCT op.output_process_id AS item_id, op.output_name AS item_name, op.output_unit AS item_unit,
+           op.output_quantity AS item_quantity, 'output' AS item_class
+    FROM output_processes op
+    LEFT JOIN output_categories oc ON op.output_cat_id = oc.output_cat_id
+    WHERE op.process_id = ?
+  `;
 
         const wastetQuery = `
-                    SELECT DISTINCT  op.waste_process_id AS item_id, op.waste_name AS item_name, op.waste_unit AS item_unit, op.waste_qty AS item_quantity,'waste' AS item_class
-                    FROM waste_processes op
-                    LEFT JOIN waste_categories oc ON op.waste_cat_id = oc.waste_cat_id
-                    WHERE op.process_id = ?
-                `;
+    SELECT DISTINCT op.waste_process_id AS item_id, op.waste_name AS item_name, op.waste_unit AS item_unit,
+           op.waste_qty AS item_quantity, 'waste' AS item_class
+    FROM waste_processes op
+    LEFT JOIN waste_categories oc ON op.waste_cat_id = oc.waste_cat_id
+    WHERE op.process_id = ?
+  `;
 
         // 1. Company
         const [companyResults] = await db.query(companyQuery, [company_id]);
@@ -361,73 +364,68 @@ const form41Model = {
         const [processResults] = await db.query(processQuery, [product_id]);
         if (!processResults.length) throw new Error('Process not found');
 
-        // 4. For each process, get inputs, outputs, wastes
+        // 4. Build per phase
         const phases = [1, 2, 3, 4, 5];
         const phase_name = ["การได้มาของวัตถุดิบ", "การผลิต", "การกระจายสินค้า", "การใช้งาน", "การจัดการซาก"];
-        // const phases = [
-        //     { phase: 1, name: "การได้มาของวัตถุดิบ" },
-        //     { phase: 2, name: "การผลิต" },
-        //     { phase: 3, name: "การกระจายสินค้า" },
-        //     { phase: 4, name: "การใช้งาน" },
-        //     { phase: 5, name: "การจัดการซาก" }
-        // ];
-        const form41Input = await Promise.all(phases.map(async (phase) => {
-            const processes = await Promise.all(processResults.map(async (process) => {
-                const [inputResults] = await db.query(inputQuery, [process.process_id]);
-                const [outputResults] = await db.query(outputQuery, [process.process_id]);
-                const [wastetResults] = await db.query(wastetQuery, [process.process_id]);
-                const rawInputs = inputResults.filter(item => item.input_title === "วัตถุดิบ");
 
-                if (phase === 1) {
-                    // phase 1: input เฉพาะ "วัตถุดิบ"
-                    const rawInputs = inputResults.filter(item => item.input_title === "วัตถุดิบ");
-                    return {
-                        ...process,
+        const excludedNames = ["การกระจายสินค้า", "การใช้งาน", "การจัดการซาก"];
+        const nameByPhase = { 3: "การกระจายสินค้า", 4: "การใช้งาน", 5: "การจัดการซาก" };
 
-                        item: rawInputs
-                        // output, waste ไม่ต้องใส่หรือใส่เป็น [] ก็ได้
-                    };
-                } else if (phase === 2) {
-                    // phase 2: input, output, waste ครบ
-                    return {
-                        ...process,
-                        item: [...inputResults, ...outputResults, ...wastetResults]
-                    };
-                } else if (phase === 3) {
-                    return {
-                    };
-                } else if (phase === 4) {
-                    return {
-                    };
-                } else if (phase === 5) {
-                    return {
-                    };
-                }
-            }
-            ));
+        const form41Input = await Promise.all(
+            phases.map(async (phase) => {
+                const processes = (
+                    await Promise.all(
+                        processResults.map(async (process) => {
+                            const [inputResults] = await db.query(inputQuery, [process.process_id]);
+                            const [outputResults] = await db.query(outputQuery, [process.process_id]);
+                            const [wastetResults] = await db.query(wastetQuery, [process.process_id]);
 
-            const [FU] = await db.query(
-                `SELECT SUM(op.output_quantity) AS FU
-                 FROM output_processes op
-                 JOIN processes p ON op.process_id = p.process_id
-                 WHERE op.finish_output = 1 AND p.product_id = ?`,
-                [product_id]
-            );
+                            // phase 1–2: ใช้กติกาเดิม แต่ "ไม่เอา" 3 ชื่อพิเศษ
+                            if (phase === 1 || phase === 2) {
+                                if (excludedNames.includes(process.process_name)) return null;
 
+                                if (phase === 1) {
+                                    const rawInputs = inputResults.filter((it) => it.input_title === "วัตถุดิบ");
+                                    return { ...process, item: rawInputs };
+                                } else {
+                                    // phase 2
+                                    return { ...process, item: [...inputResults, ...outputResults, ...wastetResults] };
+                                }
+                            }
 
-            return {
-                life_cycle_phase: phase,
-                life_cycle_phase_name: phase_name[phase - 1],
-                product_id: product_id,
-                FU: FU[0]["FU"],
+                            // phase 3–5: ดึงเฉพาะ process ที่ชื่อเท่ากับ phase นั้นๆ
+                            if (nameByPhase[phase] && process.process_name === nameByPhase[phase]) {
+                                return { ...process, item: [...inputResults, ...outputResults, ...wastetResults] };
+                            }
 
-                processes
-            };
-        }));
+                            // ไม่เข้าเงื่อนไข → ไม่รวมใน phase นี้
+                            return null;
+                        })
+                    )
+                ).filter(Boolean); // ตัด null ออก
 
+                const [FU] = await db.query(
+                    `SELECT SUM(op.output_quantity) AS FU
+         FROM output_processes op
+         JOIN processes p ON op.process_id = p.process_id
+         WHERE op.finish_output = 1 AND p.product_id = ?`,
+                    [product_id]
+                );
+
+                return {
+                    life_cycle_phase: phase,
+                    life_cycle_phase_name: phase_name[phase - 1],
+                    product_id: product_id,
+                    FU: FU[0]?.FU ?? null,
+                    processes
+                };
+            })
+        );
+
+        // หมายเหตุ: โครงสร้างผลลัพธ์คงเดิมตามที่คุณใช้ (เป็น array หุ้มอีกชั้น)
         return [form41Input];
-
     },
+
 
     getFormByIdweb: async (id) => {
         // 1. ดึงข้อมูล form41 items + process_name
