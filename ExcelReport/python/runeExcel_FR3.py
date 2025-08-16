@@ -109,7 +109,7 @@ fill_waste = PatternFill(start_color='FFCCFFFF', end_color='FFCCFFFF', fill_type
 fill_arrow = PatternFill(start_color='00000000', end_color='00000000', fill_type='solid')
 fill_tail_title = PatternFill(start_color='002060', end_color='002060', fill_type='solid')
 fill_light_blue = PatternFill(start_color='DCE6F1', end_color='DCE6F1', fill_type='solid')  # ฟ้าอ่อน
-font_white = Font(color="FFFFFF", bold=True, size=12)
+font_white = Font(color="FFFFFF", bold=True, size=10)
 align_center = Alignment(horizontal="center", vertical="center")
 
 row = 13 
