@@ -343,7 +343,7 @@ def export_pdf_libreoffice(input_file, output_dir):
     if platform.system() == "Windows":
         libreoffice_path = r"C:\Program Files\LibreOffice\program\soffice.exe"
     else:
-        libreoffice_path = "libreoffice"
+        libreoffice_path = "/usr/bin/libreoffice"
     if not os.path.exists(libreoffice_path):
         raise FileNotFoundError(f"LibreOffice not found at {libreoffice_path}")
 
