@@ -111,7 +111,7 @@ fill_waste = PatternFill(start_color='FFCCFFFF', end_color='FFCCFFFF', fill_type
 fill_arrow = PatternFill(start_color='00000000', end_color='00000000', fill_type='solid')
 fill_tail_title = PatternFill(start_color='002060', end_color='002060', fill_type='solid')
 fill_light_blue = PatternFill(start_color='DCE6F1', end_color='DCE6F1', fill_type='solid')  # ฟ้าอ่อน
-font_white = Font(color="FFFFFF", bold=True, size=14)
+font_white = Font(color="FFFFFF", bold=True, size=12)
 align_center = Alignment(horizontal="center", vertical="center")
 
 row = 13 
@@ -361,14 +361,14 @@ output_pdf = os.path.join(output_dir, f"{timestamp}_Company{company.get('company
 try:
     if platform.system() == "Windows":
         try:
-            export_pdf_windows_excel(output_xlsx, output_pdf)
+            export_pdf_windows_excel(output_pdf, output_pdf)
             print("PDF saved via Excel COM:", output_pdf)
         except Exception:
             # ถ้าไม่มี Excel ใช้ LibreOffice
-            export_pdf_libreoffice(output_xlsx, output_dir)
+            export_pdf_libreoffice(output_pdf, output_dir)
             print("PDF saved via LibreOffice:", output_pdf)
     else:
-        export_pdf_libreoffice(output_xlsx, output_dir)
+        export_pdf_libreoffice(output_pdf, output_dir)
         print("PDF saved via LibreOffice:", output_pdf)
 except Exception as e:
     print("PDF export failed:", e)
