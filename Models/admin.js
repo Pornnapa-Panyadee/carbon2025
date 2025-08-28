@@ -198,6 +198,119 @@ const adminModel = {
         return result;
     },
 
+    listCompanies: async () => {
+        const query = `
+    SELECT c.company_id, c.name AS company_name, c.address, c.province_id, c.contact_no,
+           c.industrial_id, c.district_id, c.subdistrict_id, c.zipcode,
+           p.product_id, p.product_name_th, p.product_name_en, p.scope,
+           p.FU_value, p.PU_value, p.sale_ratio, p.product_techinfo,
+           p.verify_status, p.submitted_round, p.submitted_date
+    FROM companies c
+    LEFT JOIN products p ON c.company_id = p.company_id;
+  `;
+
+        const [rows] = await db.query(query);
+
+        return Object.values(rows.reduce((acc, row) => {
+            if (!acc[row.company_id]) {
+                acc[row.company_id] = {
+                    company_id: row.company_id,
+                    company_name: row.company_name,
+                    address: row.address,
+                    province_id: row.province_id,
+                    contact_no: row.contact_no,
+                    industrial_id: row.industrial_id,
+                    district_id: row.district_id,
+                    subdistrict_id: row.subdistrict_id,
+                    zipcode: row.zipcode,
+                    products: []
+                };
+            }
+            if (row.product_id) {
+                acc[row.company_id].products.push({
+                    product_id: row.product_id,
+                    product_name_th: row.product_name_th,
+                    product_name_en: row.product_name_en,
+                    scope: row.scope,
+                    FU_value: row.FU_value,
+                    PU_value: row.PU_value,
+                    sale_ratio: row.sale_ratio,
+                    product_techinfo: row.product_techinfo,
+                    verify_status: row.verify_status,
+                    submitted_round: row.submitted_round,
+                    submitted_date: row.submitted_date
+                });
+            }
+            return acc;
+        }, {}));
+    },
+
+    listCompanyId: async (companyId) => {
+        const query = `
+    SELECT c.company_id, c.name AS company_name, c.address, c.province_id, c.contact_no,
+           c.industrial_id, c.district_id, c.subdistrict_id, c.zipcode,
+           p.product_id, p.product_name_th, p.product_name_en, p.scope,
+           p.FU_value, p.PU_value, p.sale_ratio, p.product_techinfo,
+           p.verify_status, p.submitted_round, p.submitted_date
+    FROM companies c
+    LEFT JOIN products p ON c.company_id = p.company_id
+    WHERE c.company_id = ?;
+  `;
+
+        const [rows] = await db.query(query, [companyId]);
+
+        if (rows.length === 0) return null;
+
+        const company = {
+            company_id: rows[0].company_id,
+            company_name: rows[0].company_name,
+            address: rows[0].address,
+            province_id: rows[0].province_id,
+            contact_no: rows[0].contact_no,
+            industrial_id: rows[0].industrial_id,
+            district_id: rows[0].district_id,
+            subdistrict_id: rows[0].subdistrict_id,
+            zipcode: rows[0].zipcode,
+            products: []
+        };
+
+        rows.forEach(row => {
+            if (row.product_id) {
+                company.products.push({
+                    product_id: row.product_id,
+                    product_name_th: row.product_name_th,
+                    product_name_en: row.product_name_en,
+                    scope: row.scope,
+                    FU_value: row.FU_value,
+                    PU_value: row.PU_value,
+                    sale_ratio: row.sale_ratio,
+                    product_techinfo: row.product_techinfo,
+                    verify_status: row.verify_status,
+                    submitted_round: row.submitted_round,
+                    submitted_date: row.submitted_date
+                });
+            }
+        });
+
+        return company;
+    },
+
+    deleteCompanyId: async (companyId) => {
+        try {
+            // ลบ products ของบริษัทนี้ก่อน (ถ้าไม่มี CASCADE)
+            await db.query("DELETE FROM products WHERE company_id = ?", [companyId]);
+
+            // ลบ company
+            const [result] = await db.query("DELETE FROM companies WHERE company_id = ?", [companyId]);
+
+            return result.affectedRows > 0; // true = ลบได้, false = ไม่เจอ
+        } catch (err) {
+            console.error("Delete error:", err);
+            throw err;
+        }
+    }
+
+
 
 
 };

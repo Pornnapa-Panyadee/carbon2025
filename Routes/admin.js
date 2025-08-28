@@ -4,7 +4,8 @@ const { listDashboard, listRound, createRound, listRoundId, updateRoundId, delet
     listUnit, createUnit, listUnitId, updateUnitId, deleteUnitId,
     listPCR, createPCR, listPCRId, updatePCRId, deletePCRId,
     listIndustrial, createIndustrial, listIndustrialId, updateIndustrialId, deleteIndustrialId,
-    listTGOef, createTGOef, listTGOefId, updateTGOefId, deleteTGOefId, listTGOefCategories, listTGOefSubCategories
+    listTGOef, createTGOef, listTGOefId, updateTGOefId, deleteTGOefId, listTGOefCategories, listTGOefSubCategories,
+    listCompanies, listCompanyId, deleteCompanyId
 
 } = require('../Controllers/admin');
 
@@ -48,5 +49,10 @@ router.put('/admin/tgoef/:id', updateTGOefId);
 router.delete('/admin/tgoef/:id', deleteTGOefId);
 router.get('/admin/tgoefcategories', listTGOefCategories);
 router.get('/admin/tgoefsubcategories', listTGOefSubCategories);
+
+//--Company--
+router.get('/admin/companies', listCompanies);
+router.get('/admin/companies/:id', listCompanyId);
+router.delete('/admin/companies/:id', deleteCompanyId);
 
 module.exports = router;

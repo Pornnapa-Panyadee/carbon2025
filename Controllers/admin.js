@@ -59,3 +59,7 @@ exports.deleteTGOefId = handler(adminData.deleteTGOefId, req => [req.params.id])
 
 exports.listTGOefCategories = handler(adminData.listTGOefCategories);
 exports.listTGOefSubCategories = handler(adminData.listTGOefSubCategories);
+
+exports.listCompanies = handler(adminData.listCompanies);
+exports.listCompanyId = handler(adminData.listCompanyId, req => [req.params.id]);
+exports.deleteCompanyId = handler(adminData.deleteCompanyId, req => [req.params.id]);
