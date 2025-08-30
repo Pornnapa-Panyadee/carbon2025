@@ -3,6 +3,7 @@ from openpyxl import load_workbook
 from openpyxl.drawing.image import Image
 from openpyxl.utils import units
 from openpyxl.styles import Border, Side
+from openpyxl.styles import PatternFill
 from openpyxl.styles import PatternFill,Font,Alignment
 import requests
 from datetime import datetime
@@ -303,13 +304,12 @@ else:
     print("เกิดข้อผิดพลาดในการเรียก API:", response_form5.status_code)
 
 
-file_path = "ExcelReport/excel/form_CFP.xlsx"
+file_path = "ExcelReport/excel/form_CFP_B2C.xlsx"
 timestamp = datetime.now().strftime("%Y")
 output_path = "ExcelReport/output/"+timestamp+"_"+company["name"]+"_"+product["product_name_en"]+".xlsx"
 shutil.copy(file_path, output_path)
 process = data["process"]
 wb = load_workbook(file_path)
-
 fill = PatternFill(start_color='FFFFFF99', end_color='FFFFFF99', fill_type='solid') 
 fill_intput_head = PatternFill(start_color='FF92D050', end_color='FF92D050', fill_type='solid')
 fill_intput = PatternFill(start_color='FFCCFFCC', end_color='FFCCFFCC', fill_type='solid')
@@ -320,6 +320,7 @@ fill_tail_title = PatternFill(start_color='002060', end_color='002060', fill_typ
 fill_light_blue = PatternFill(start_color='DCE6F1', end_color='DCE6F1', fill_type='solid')  # ฟ้าอ่อน
 font_white = Font(color="FFFFFF", bold=True, size=10)
 align_center = Alignment(horizontal="center", vertical="center")
+
 
 ######## ------------------Fr-01---------------------------------------------------
 ws01 = wb["Fr-01"] # หรือระบุชื่อ sheet: wb["Sheet1"]
@@ -408,33 +409,67 @@ ws02.merge_cells(f"L{row_end}:P{row_end}")
 set_borderTop(ws02, f"L{row_end}:P{row_end}",'bottom')
 # Box Center
 # ws02.merge_cells(f"J8:J{row_end+3}")
+# ws02[f"R{row_end}"] = "ขนส่ง"
+ws02.merge_cells(f"R{row}:R{row_next}")
+ws02[f"R{row}"] = "ขนส่ง"
+set_border(ws02, f"R{row}:R{row_next}")
+ws02[f"Q{row_next}"].border = thin_top
+ws02[f"S{row_next}"].border = thin_top
+ws02[f"T{row_next}"].border = thin_top
+
+ws02.merge_cells(f"U{row}:U{row_next}")
+ws02[f"U{row}"] = "การกระจายสินค้า"
+set_border(ws02, f"U{row}:U{row_next}")
+ws02[f"V{row_next}"].border = thin_top
+ws02[f"W{row_next}"].border = thin_top
+
+ws02.merge_cells(f"x{row}:x{row_next}")
+ws02[f"x{row}"] = "การใช้งาน"
+set_border(ws02, f"x{row}:x{row_next}")
+ws02[f"Y{row_next}"].border = thin_top
+ws02[f"Z{row_next}"].border = thin_top
+
+ws02.merge_cells(f"AA{row}:AA{row_next}")
+ws02[f"AA{row}"] = "ขนส่ง"
+set_border(ws02, f"AA{row}:AA{row_next}")
+ws02[f"AB{row_next}"].border = thin_top
+
+ws02.merge_cells(f"AC{row}:AC{row_next}")
+ws02[f"AC{row}"] = "การจัดการซาก"
+set_border(ws02, f"AC{row}:AC{row_next}")
 
 set_borderCenter(ws02, f"J8:J{row_end+3}",'right')
+set_borderCenter(ws02, f"S8:S{row_end+3}",'right')
+set_borderCenter(ws02, f"V8:V{row_end+3}",'right')
+set_borderCenter(ws02, f"Y8:Y{row_end+3}",'right')
+
+
+
 
 # กำหนดค่าหลัก
 ws02[f"A{row+10}"] = "จัดทำโดย"
-ws02[f"F{row+10}"] = "เสร็จสิ้นวันที่"
-ws02[f"N{row+10}"] = "วันที่แก้ไข"
+ws02[f"N{row+10}"] = "เสร็จสิ้นวันที่"
+ws02[f"U{row+10}"] = "วันที่แก้ไข"
 
 # Merge E-F
-ws02.merge_cells(f"F{row+10}:I{row+10}")
+ws02.merge_cells(f"E{row+10}:F{row+10}")
 ws02[f"A{row+10}"].alignment = align_center
-ws02[f"F{row+10}"].alignment = align_center
+ws02[f"E{row+10}"].alignment = align_center
 
 # ใส่ fill น้ำเงิน + font ขาว
-for col in ["A", "F", "N"]:
+for col in ["A", "N", "U"]:
     cell = ws02[f"{col}{row+10}"]
     cell.fill = fill_tail_title
     cell.font = font_white
 
 # ใส่ฟ้าอ่อนใน B-D, G-I, K-M
-for col_range in ["B:E", "J:M", "O:Q"]:
+for col_range in ["B:M", "O:T", "V:AC"]:
     start_col, end_col = col_range.split(":")
     cell_range = f"{start_col}{row+10}:{end_col}{row+10}"
     for row_cells in ws02[cell_range]:
         for cell in row_cells:
             cell.fill = fill_light_blue
-    
+
 ######## ---------------------------------------------------------------------
 ws03 = wb["Fr-03"]   
 ws03["J1"] = date_range
@@ -650,6 +685,7 @@ for col_range in ["B:D", "G:I", "K:M"]:
     for row_cells in ws03[cell_range]:
         for cell in row_cells:
             cell.fill = fill_light_blue
+
 ######## ---------------------------------------------------------------------
 
 ws41 = wb["Fr-04.1 "]

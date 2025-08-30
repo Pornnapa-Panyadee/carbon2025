@@ -11,6 +11,7 @@ from openpyxl import load_workbook
 from openpyxl.drawing.image import Image
 import requests
 import json
+import re
 
 os.system("chcp 65001")  # เปลี่ยน code page เป็น UTF-8
 sys.stdout.reconfigure(encoding='utf-8')  # Python 3.7+
@@ -60,7 +61,7 @@ techinfo_list = json.loads(techinfo_raw) if techinfo_raw else []
 product_techinfo_array = [str(i).strip() for i in techinfo_list]
 
 # ----------------- File Paths -----------------
-template_path = "ExcelReport/excel/form_CFP_pdf.xlsx"
+template_path = "ExcelReport/excel/form_CFP_pdf_fr03.xlsx"
 timestamp = datetime.now().strftime("%Y")
 output_dir = "ExcelReport/output"
 if not os.path.exists(output_dir):

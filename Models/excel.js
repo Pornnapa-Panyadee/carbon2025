@@ -8,15 +8,19 @@ const db = require('../Config/db.js');
 const ExcelModel = {
     runPythonPDF: async function (sheet, company_id, product_id) {
         let scriptPath;
-        scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR3.py');
+        // scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR1.py');
 
-        // if (sheet.toLowerCase() === 'fr01') {
-        //     scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_pdf_F1.py');
-        // } else if (sheet.toLowerCase() === 'fr03') {
-        //     scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR3.py');
-        // } else {
-        //     scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR3.py');
-        // }
+        if (sheet.toLowerCase() === 'fr01') {
+            scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR1.py');
+        } else if (sheet.toLowerCase() === 'fr03') {
+            scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR3.py');
+        } else if (sheet.toLowerCase() === 'fr041') {
+            scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR41.py');
+        } else if (sheet.toLowerCase() === 'fr042') {
+            scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR42.py');
+        } else {
+            scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR3.py');
+        }
 
         // เรียก Python script
         const outputRaw = await new Promise((resolve, reject) => {
@@ -86,7 +90,18 @@ const ExcelModel = {
 
 
     runPythonExcel: async function (company_name, product_id) {
-        const scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel.py');
+        const query = 'SELECT scope FROM products WHERE product_id = ?';
+        const [result] = await db.query(query, [product_id]);
+        const scope = result ? result.scope : null;
+
+        let scriptPath; // declare here
+
+        if (scope === 'B2C') {
+            scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_B2C.py');
+        } else {
+            scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel.py');
+        }
+
         return await new Promise((resolve, reject) => {
             const py = spawn('python', [scriptPath, company_name, product_id]);
 
@@ -108,7 +123,6 @@ const ExcelModel = {
                 resolve(outputPath.trim());
             });
         });
-
     },
 
     runPythonExcelCompany: async function (company_id, product_id) {
