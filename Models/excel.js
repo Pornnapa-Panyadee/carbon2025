@@ -8,8 +8,8 @@ const db = require('../Config/db.js');
 const ExcelModel = {
     runPythonPDF: async function (sheet, company_id, product_id) {
         let scriptPath;
-        // scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR1.py');
 
+        // เลือก script ตาม sheet
         if (sheet.toLowerCase() === 'fr01') {
             scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR1.py');
         } else if (sheet.toLowerCase() === 'fr03') {
@@ -23,31 +23,18 @@ const ExcelModel = {
         }
 
         // เรียก Python script
-        const outputRaw = await new Promise((resolve, reject) => {
+        await new Promise((resolve, reject) => {
             const py = spawn('python', [scriptPath, company_id, product_id]);
 
-            let stdoutData = '';
             let stderrData = '';
 
-            py.stdout.on('data', (data) => { stdoutData += data.toString(); });
             py.stderr.on('data', (data) => { stderrData += data.toString(); });
 
             py.on('close', (code) => {
                 if (code !== 0) return reject(new Error(`Python script error: ${stderrData}`));
-                resolve(stdoutData);
+                resolve();
             });
         });
-
-        // filter stdout ให้เหลือเฉพาะบรรทัดที่เป็นไฟล์ PDF
-        const pdfLines = outputRaw.split('\n')
-            .map(l => l.trim())
-            .filter(l => l.endsWith('.pdf'));
-
-        if (pdfLines.length === 0) throw new Error('PDF export failed: no PDF generated');
-
-        const outputPath = pdfLines[pdfLines.length - 1];  // ใช้ไฟล์ PDF ล่าสุด
-        const fileName = path.basename(outputPath);
-        const relativePath = `/download/${fileName}`;
 
         // 🔍 ตรวจสอบว่า record มีอยู่แล้วหรือไม่
         const [existing] = await db.query(`
@@ -59,11 +46,10 @@ const ExcelModel = {
         if (existing.length > 0) {
             await db.query(`
             UPDATE company_excel_paths
-            SET path_pdf_fr03 = ?, updated_at = NOW()
+            SET updated_at = NOW()
             WHERE company_id = ? AND product_id = ?
-        `, [relativePath, company_id, product_id]);
+        `, [company_id, product_id]);
 
-            // ดึง record หลัง update
             const [updated] = await db.query(`
             SELECT * FROM company_excel_paths
             WHERE company_id = ? AND product_id = ?
@@ -71,11 +57,10 @@ const ExcelModel = {
             record = updated[0];
         } else {
             await db.query(`
-            INSERT INTO company_excel_paths (company_id, product_id, path_excel, path_pdf_fr03, created_at, updated_at)
-            VALUES (?, ?, ?, ?, NOW(), NOW())
-        `, [company_id, product_id, relativePath, relativePath]);
+            INSERT INTO company_excel_paths (company_id, product_id, created_at, updated_at)
+            VALUES (?, ?, NOW(), NOW())
+        `, [company_id, product_id]);
 
-            // ดึง record หลัง insert
             const [inserted] = await db.query(`
             SELECT * FROM company_excel_paths
             WHERE company_id = ? AND product_id = ?
@@ -83,8 +68,9 @@ const ExcelModel = {
             record = inserted[0];
         }
 
-        return [record];  // return array ตามต้องการ
+        return [record];  // return array ตามเดิม
     },
+
 
 
 
