@@ -8,35 +8,54 @@ const db = require('../Config/db.js');
 const ExcelModel = {
     runPythonPDF: async function (sheet, company_id, product_id) {
         let scriptPath;
+        let dbColumn; // column DB สำหรับเก็บ Excel path
 
-        // เลือก script ตาม sheet
+        // เลือก script และ column ตาม sheet
         if (sheet.toLowerCase() === 'fr01') {
             scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR1.py');
+            dbColumn = 'path_excel_fr01';
         } else if (sheet.toLowerCase() === 'fr03') {
             scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR3.py');
+            dbColumn = 'path_excel_fr03';
         } else if (sheet.toLowerCase() === 'fr041') {
             scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR41.py');
+            dbColumn = 'path_excel_fr41';
         } else if (sheet.toLowerCase() === 'fr042') {
             scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR42.py');
+            dbColumn = 'path_excel_fr42';
         } else {
             scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR3.py');
+            dbColumn = 'path_excel_fr03';
         }
 
         // เรียก Python script
-        await new Promise((resolve, reject) => {
+        const outputRaw = await new Promise((resolve, reject) => {
             const py = spawn('python', [scriptPath, company_id, product_id]);
 
+            let stdoutData = '';
             let stderrData = '';
 
+            py.stdout.on('data', (data) => { stdoutData += data.toString(); });
             py.stderr.on('data', (data) => { stderrData += data.toString(); });
 
             py.on('close', (code) => {
                 if (code !== 0) return reject(new Error(`Python script error: ${stderrData}`));
-                resolve();
+                resolve(stdoutData);
             });
         });
 
-        // 🔍 ตรวจสอบว่า record มีอยู่แล้วหรือไม่
+        // filter stdout ให้เหลือเฉพาะไฟล์ Excel (.xlsx)
+        const excelLines = outputRaw.split('\n')
+            .map(l => l.trim())
+            .filter(l => l.endsWith('.xlsx'));
+
+        if (excelLines.length === 0) throw new Error('Excel export failed: no file generated');
+
+        const outputPath = excelLines[excelLines.length - 1];  // ใช้ไฟล์ล่าสุด
+        const fileName = path.basename(outputPath);
+        const relativePath = `/download/${fileName}`;
+
+        // ตรวจสอบ record
         const [existing] = await db.query(`
         SELECT * FROM company_excel_paths
         WHERE company_id = ? AND product_id = ?
@@ -46,9 +65,9 @@ const ExcelModel = {
         if (existing.length > 0) {
             await db.query(`
             UPDATE company_excel_paths
-            SET updated_at = NOW()
+            SET ${dbColumn} = ?, updated_at = NOW()
             WHERE company_id = ? AND product_id = ?
-        `, [company_id, product_id]);
+        `, [relativePath, company_id, product_id]);
 
             const [updated] = await db.query(`
             SELECT * FROM company_excel_paths
@@ -57,9 +76,9 @@ const ExcelModel = {
             record = updated[0];
         } else {
             await db.query(`
-            INSERT INTO company_excel_paths (company_id, product_id, created_at, updated_at)
-            VALUES (?, ?, NOW(), NOW())
-        `, [company_id, product_id]);
+            INSERT INTO company_excel_paths (company_id, product_id, ${dbColumn}, created_at, updated_at)
+            VALUES (?, ?, ?, NOW(), NOW())
+        `, [company_id, product_id, relativePath]);
 
             const [inserted] = await db.query(`
             SELECT * FROM company_excel_paths
@@ -70,7 +89,6 @@ const ExcelModel = {
 
         return [record];  // return array ตามเดิม
     },
-
 
 
 
