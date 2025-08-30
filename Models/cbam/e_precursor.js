@@ -33,7 +33,7 @@ const Report = {
 
     updateByID: async (data) => {
         const [processRows] = await db.query(
-            'SELECT total_consumed_within_installation FROM d_processes WHERE report_id = ?',
+            'SELECT * FROM d_processes WHERE report_id = ?',
             [data.report_id]
         );
         const totalProcess = Number(processRows[0].total_consumed_within_installation) || Number(data.total_consumed_within_installation);

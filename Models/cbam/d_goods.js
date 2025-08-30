@@ -16,12 +16,16 @@ const Report = {
         const [result] = await db.query(query, insertData);
         return result;
     },
-    updateByID: async (data) => {
-        const totalConsumed = Number(data.total_consumed_within_installation) || 0;
 
+    updateByID: async (data) => {
+
+        const totalConsumed = Number(data.total_production_amounts) || 0;
         const directEmissions = Number(data.direct_emissions) || 0;
         const efImportedHeat = Number(data.ef_imported_heat) || 0;
         const importedHeatValue = Number(data.imported_heat_value) || 0;
+        const efExportedHeat = Number(data.ef_exported_heat) || 0;
+        const exportedHeatValue = Number(data.exported_heat_value) || 0;
+
         const importedWgases = Number(data.imported_wgases_amount) || 0;
         const exportedWgases = Number(data.exported_wgases_amount) || 0;
         const elecConsumption = Number(data.electricity_consumption_value) || 0;
@@ -36,6 +40,7 @@ const Report = {
                 directEmissions +
                 (efImportedHeat * importedHeatValue) +
                 (importedWgases * 56.1) -
+                (efExportedHeat * exportedHeatValue) -
                 (exportedWgases * 37.4187)
             ) / totalConsumed;
 
