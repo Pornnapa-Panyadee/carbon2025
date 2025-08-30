@@ -327,55 +327,55 @@ wb.save(output_xlsx)
 print("Excel saved:", output_xlsx)
 
 # ----------------- Export Sheet Fr-01 to PDF -----------------
-def export_pdf_windows_excel(input_file, output_file):
-    import win32com.client
-    excel = win32com.client.Dispatch("Excel.Application")
-    excel.Visible = False
-    wb_com = excel.Workbooks.Open(os.path.abspath(input_file))
-    ws_com = wb_com.Sheets("Fr-03")
-    ws_com.ExportAsFixedFormat(0, os.path.abspath(output_file))
-    wb_com.Close(False)
-    excel.Quit()
+# def export_pdf_windows_excel(input_file, output_file):
+#     import win32com.client
+#     excel = win32com.client.Dispatch("Excel.Application")
+#     excel.Visible = False
+#     wb_com = excel.Workbooks.Open(os.path.abspath(input_file))
+#     ws_com = wb_com.Sheets("Fr-03")
+#     ws_com.ExportAsFixedFormat(0, os.path.abspath(output_file))
+#     wb_com.Close(False)
+#     excel.Quit()
 
-def export_pdf_libreoffice(input_file, output_file):
-    if platform.system() == "Windows":
-        libreoffice_path = r"C:\Program Files\LibreOffice\program\soffice.exe"
-    else:
-        libreoffice_path = "/usr/bin/libreoffice"
-    if not os.path.exists(libreoffice_path):
-        raise FileNotFoundError(f"LibreOffice not found at {libreoffice_path}")
+# def export_pdf_libreoffice(input_file, output_file):
+#     if platform.system() == "Windows":
+#         libreoffice_path = r"C:\Program Files\LibreOffice\program\soffice.exe"
+#     else:
+#         libreoffice_path = "/usr/bin/libreoffice"
+#     if not os.path.exists(libreoffice_path):
+#         raise FileNotFoundError(f"LibreOffice not found at {libreoffice_path}")
 
-    output_dir = os.path.dirname(output_file)
-    os.makedirs(output_dir, exist_ok=True)
-    tmp_pdf_name = os.path.splitext(os.path.basename(input_file))[0] + ".pdf"
-    tmp_pdf_path = os.path.join(output_dir, tmp_pdf_name)
+#     output_dir = os.path.dirname(output_file)
+#     os.makedirs(output_dir, exist_ok=True)
+#     tmp_pdf_name = os.path.splitext(os.path.basename(input_file))[0] + ".pdf"
+#     tmp_pdf_path = os.path.join(output_dir, tmp_pdf_name)
 
-    subprocess.run([
-        libreoffice_path,
-        "--headless",
-        "--convert-to", "pdf",
-        "--outdir", output_dir,
-        input_file
-    ], check=True)
+#     subprocess.run([
+#         libreoffice_path,
+#         "--headless",
+#         "--convert-to", "pdf",
+#         "--outdir", output_dir,
+#         input_file
+#     ], check=True)
 
-    if os.path.exists(tmp_pdf_path):
-        os.rename(tmp_pdf_path, output_file)
-    else:
-        raise FileNotFoundError(f"PDF not generated: {tmp_pdf_path}")
-    return output_file
+#     if os.path.exists(tmp_pdf_path):
+#         os.rename(tmp_pdf_path, output_file)
+#     else:
+#         raise FileNotFoundError(f"PDF not generated: {tmp_pdf_path}")
+#     return output_file
 
-output_pdf = os.path.join(output_dir, f"{timestamp}_Company{company.get('company_id','')}_Product{product.get('product_id','')}_Fr03.pdf")
+# output_pdf = os.path.join(output_dir, f"{timestamp}_Company{company.get('company_id','')}_Product{product.get('product_id','')}_Fr03.pdf")
 
-try:
-    if platform.system() == "Windows":
-        try:
-            export_pdf_windows_excel(output_xlsx, output_pdf)
-            print("PDF saved via Excel COM:", output_pdf)
-        except Exception:
-            export_pdf_libreoffice(output_xlsx, output_pdf)
-            print("PDF saved via LibreOffice:", output_pdf)
-    else:
-        export_pdf_libreoffice(output_xlsx, output_pdf)
-        print("PDF saved via LibreOffice:", output_pdf)
-except Exception as e:
-    print("PDF export failed:", e)
+# try:
+#     if platform.system() == "Windows":
+#         try:
+#             export_pdf_windows_excel(output_xlsx, output_pdf)
+#             print("PDF saved via Excel COM:", output_pdf)
+#         except Exception:
+#             export_pdf_libreoffice(output_xlsx, output_pdf)
+#             print("PDF saved via LibreOffice:", output_pdf)
+#     else:
+#         export_pdf_libreoffice(output_xlsx, output_pdf)
+#         print("PDF saved via LibreOffice:", output_pdf)
+# except Exception as e:
+#     print("PDF export failed:", e)
