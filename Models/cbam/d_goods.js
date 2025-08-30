@@ -2,8 +2,20 @@ const db = require('../../Config/dbCbam.js');
 
 const Report = {
     create: async (data) => {
-        const SEE_direct = (data.direct_emissions + (data.ef_imported_heat * data.imported_heat_value) + (data.imported_wgases_amount * 56.1) - (data.exported_wgases_amount * 37.4187)) / data.total_consumed_within_installation
-        const SEE_indirect = (data.electricity_consumption_value * data.ef_electricity) / data.total_consumed_within_installation
+        const totalConsumed = Number(data.total_production_amounts) || 0;
+        const directEmissions = Number(data.direct_emissions) || 0;
+        const efImportedHeat = Number(data.ef_imported_heat) || 0;
+        const importedHeatValue = Number(data.imported_heat_value) || 0;
+        const efExportedHeat = Number(data.ef_exported_heat) || 0;
+        const exportedHeatValue = Number(data.exported_heat_value) || 0;
+
+        const importedWgases = Number(data.imported_wgases_amount) || 0;
+        const exportedWgases = Number(data.exported_wgases_amount) || 0;
+        const elecConsumption = Number(data.electricity_consumption_value) || 0;
+        const efElectricity = Number(data.ef_electricity) || 0;
+
+        const SEE_direct = (directEmissions + (efImportedHeat * importedHeatValue) + (importedWgases * 56.1) - (efExportedHeat * exportedHeatValue) - (exportedWgases * 37.4187)) / totalConsumed
+        const SEE_indirect = (elecConsumption * efElectricity) / totalConsumed
         const SEE_total = SEE_direct + SEE_indirect;
         const insertData = {
             ...data,

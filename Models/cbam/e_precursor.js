@@ -3,7 +3,7 @@ const db = require('../../Config/dbCbam.js');
 const Report = {
     create: async (data) => {
         const [processRows] = await db.query(
-            'SELECT total_consumed_within_installation FROM d_processes WHERE report_id = ?',
+            'SELECT * FROM d_processes WHERE report_id = ?',
             [data.report_id]
         );
 
