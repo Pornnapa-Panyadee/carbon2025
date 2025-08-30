@@ -8,8 +8,7 @@ const Report = {
         );
 
         // ถ้าไม่มี row หรือค่ามันเป็น null/undefined ให้ใช้ 1 แทน
-        const totalProcess = Number(processRows?.[0]?.total_consumed_within_installation) || Number(data.total_consumed_within_installation);
-
+        const totalProcess = Number(processRows[0].total_consumed_within_installation) || Number(data.total_consumed_within_installation);
         const consumed = Number(data.total_consumed_within_installation);
         const directValue = Number(data.embedded_direct_emissions_value);
         const indirectValue = Number(data.embedded_indirection_emissions_value);

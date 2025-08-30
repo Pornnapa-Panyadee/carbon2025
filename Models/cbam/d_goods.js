@@ -14,9 +14,27 @@ const Report = {
         const elecConsumption = Number(data.electricity_consumption_value) || 0;
         const efElectricity = Number(data.ef_electricity) || 0;
 
-        const SEE_direct = (directEmissions + (efImportedHeat * importedHeatValue) + (importedWgases * 56.1) - (efExportedHeat * exportedHeatValue) - (exportedWgases * 37.4187)) / totalConsumed
-        const SEE_indirect = (elecConsumption * efElectricity) / totalConsumed
-        const SEE_total = SEE_direct + SEE_indirect;
+        let SEE_direct = 0;
+        let SEE_indirect = 0;
+        let SEE_total = 0;
+
+        if (totalConsumed > 0) {
+            SEE_direct = (
+                directEmissions +
+                (efImportedHeat * importedHeatValue) +
+                (importedWgases * 56.1) -
+                (efExportedHeat * exportedHeatValue) -
+                (exportedWgases * 37.4187)
+            ) / totalConsumed;
+
+            SEE_indirect = (
+                elecConsumption * efElectricity
+            ) / totalConsumed;
+
+            SEE_total = SEE_direct + SEE_indirect;
+        }
+
+
         const insertData = {
             ...data,
             SEE_direct,
