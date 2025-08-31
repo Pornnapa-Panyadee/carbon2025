@@ -32,13 +32,10 @@ const Report = {
 
     updateByID: async (data) => {
         const [processRows] = await db.query(
-            `SELECT dp.id
-                FROM d_processes dp
-                JOIN reports r ON dp.report_id = r.id
-                WHERE r.id = ?`,
+            'SELECT * FROM d_processes WHERE report_id = ?',
             [data.report_id]
         );
-        const totalProcess = Number(processRows[0].total_consumed_within_installation) || Number(data.total_consumed_within_installation);
+        const totalProcess = Number(processRows[0].total_production_amounts) || Number(data.total_production_amounts);
         const consumed = Number(data.total_consumed_within_installation);
         const directValue = Number(data.embedded_direct_emissions_value);
         const indirectValue = Number(data.embedded_indirection_emissions_value);
