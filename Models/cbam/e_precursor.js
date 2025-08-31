@@ -8,7 +8,7 @@ const Report = {
         );
 
         // ถ้าไม่มี row หรือค่ามันเป็น null/undefined ให้ใช้ 1 แทน
-        const totalProcess = Number(processRows[0].total_consumed_within_installation) || Number(data.total_consumed_within_installation);
+        const totalProcess = Number(processRows[0].total_consumed_within_installation) || 1;
         const consumed = Number(data.total_consumed_within_installation);
         const directValue = Number(data.embedded_direct_emissions_value);
         const indirectValue = Number(data.embedded_indirection_emissions_value);
@@ -40,9 +40,14 @@ const Report = {
         const directValue = Number(data.embedded_direct_emissions_value);
         const indirectValue = Number(data.embedded_indirection_emissions_value);
 
-        const SEE_direct = (consumed / totalProcess) * directValue;
-        const SEE_indirect = (consumed / totalProcess) * indirectValue;
-        const SEE_total = SEE_direct + SEE_indirect;
+        const SEE_direct = totalProcess;
+        const SEE_indirect = consumed;
+        const SEE_total = indirectValue;
+
+        // const SEE_direct = (consumed / totalProcess) * directValue;
+        // const SEE_indirect = (consumed / totalProcess) * indirectValue;
+        // const SEE_total = SEE_direct + SEE_indirect;
+
         // SEE_direct = totalProcess;
 
         const insertData = {
