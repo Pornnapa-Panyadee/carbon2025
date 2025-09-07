@@ -656,7 +656,7 @@ for i in range(len(phase)):
     FU = 0  # กำหนดค่าเริ่มต้นของ FU
     Qemission = 0  # กำหนดค่าเริ่มต้นของ GHG Emission
     sum_emission=0
-    sum_lc_emission = report41Sum.get(columns[i], 0)
+    sum_lc_emission = report41Sum.get(columns[i], 1)
     for j in range(len(form41[i]["process"])):
         process = form41[i]["process"][j]
         process_start_row = row  # เก็บแถวเริ่มต้นของ process นี้
