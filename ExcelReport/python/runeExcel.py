@@ -297,7 +297,7 @@ else:
 file_path = "ExcelReport/excel/form_CFP.xlsx"
 timestamp = datetime.now().strftime("%Y")
 # product_id = productform1.get("product_id", "").replace(" ", "_")
-output_path = f"ExcelReport/output/{timestamp}_Company_{company['company_id']}_Product_{productform1['product_id']}.xlsx"
+output_path = f"ExcelReport/output/{timestamp}_Company{company['company_id']}_Product{productform1['product_id']}.xlsx"
 shutil.copy(file_path, output_path)
 process = data["process"]
 wb = load_workbook(file_path)
