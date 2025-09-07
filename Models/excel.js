@@ -24,8 +24,8 @@ const ExcelModel = {
             scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR42.py');
             dbColumn = 'path_excel_fr42';
         } else {
-            scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel_FR3.py');
-            dbColumn = 'path_excel_fr03';
+            scriptPath = path.join(__dirname, '..', 'ExcelReport', 'python', 'runeExcel.py');
+            dbColumn = 'path_excel';
         }
 
         // เรียก Python script
@@ -159,9 +159,9 @@ const ExcelModel = {
 
         // 🔍 ตรวจสอบก่อนว่า company_id + product_id นี้มีอยู่แล้วหรือไม่
         const [existing] = await db.query(`
-        SELECT id FROM company_excel_paths
-        WHERE company_id = ? AND product_id = ?
-    `, [company_id, product_id]);
+            SELECT id FROM company_excel_paths
+            WHERE company_id = ? AND product_id = ?
+        `, [company_id, product_id]);
 
         if (existing.length > 0) {
             // 👉 มีอยู่แล้ว ให้ update
