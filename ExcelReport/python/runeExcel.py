@@ -689,13 +689,13 @@ for i in range(len(phase)):
                 ws41[f"P{row}"] = items["ratio"]
                 ef = round(float(items["ef"] if items["ef"] is not None else 0), 2)
                 ws41[f"Q{row}"] = FU1 * ef
-                ws41[f"R{row}"] = (FU1 * ef)/sum_lc_emission    
+                ws41[f"R{row}"] = (FU1 * ef) / sum_lc_emission if sum_lc_emission else 0    
                 ws41[f"S{row}"] = items["cut_off"]
                 ws41[f"T{row}"] = items["description"]
                 row += 1  # ขยับแถวสำหรับ item ถัดไป
                 FU = FU + FU1
                 Qemission= Qemission + (FU1 * ef)
-                sum_emission=sum_emission+ ((FU1 * ef)/sum_lc_emission)
+                sum_emission += (FU1 * ef) / sum_lc_emission if sum_lc_emission else 0
 
 
         # หลังจบแต่ละ process ให้เว้น 1 แถว

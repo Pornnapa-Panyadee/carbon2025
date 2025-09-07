@@ -248,6 +248,104 @@ const form42Model = {
         };
     },
 
+    getFormByIdweb: async (id) => {
+        // 1. ดึงข้อมูล form41 items + process_name
+        const form42Query = `
+           SELECT
+                i.*,
+                p.process_name,
+                tgo.item AS type2_vehicle_outbound_display
+            FROM cfp_report42_items i
+            LEFT JOIN processes p ON i.process_id = p.process_id
+            LEFT JOIN tgo_efs tgo ON i.type2_vehicle_outbound = tgo.ef_id
+            WHERE i.product_id = ?
+            ORDER BY i.life_cycle_phase ASC;
+        `;
+        const [formResults] = await db.query(form42Query, [id]);
+        if (!formResults.length) throw new Error('Form42 not found');
+
+        const form42First = formResults[0];
+
+        // 2. ดึงข้อมูล company, product, process, report42Sum
+        const productQuery = 'SELECT * FROM products WHERE product_id = ?';
+        const companyQuery = 'SELECT * FROM companies WHERE company_id = ?';
+        const processQuery = 'SELECT * FROM processes WHERE product_id = ?';
+        const report42SumQuery = 'SELECT * FROM cfp_report42_sums WHERE product_id = ?';
+
+        const [[companyResults], [productResults], [processResults], [report42SumResults]] = await Promise.all([
+            db.query(companyQuery, [form42First.company_id]),
+            db.query(productQuery, [form42First.product_id]),
+            db.query(processQuery, [form42First.product_id]),
+            db.query(report42SumQuery, [form42First.product_id])
+        ]);
+
+        if (!companyResults.length) throw new Error('Company not found');
+        if (!productResults.length) throw new Error('Product not found');
+
+        // เตรียม process map
+        const processMap = {};
+        processResults.forEach(p => {
+            processMap[p.process_id] = p.process_name || 'Unknown Process';
+        });
+
+        // เตรียม process name list เฉพาะของ product นี้
+        const processNames = [...new Set(processResults.map(p => p.process_name || 'Unknown Process'))];
+
+        // สร้างโครงสร้างสำหรับเก็บข้อมูลจัดกลุ่ม
+        const groupedData = {};
+
+        // จัดกลุ่มจาก formResults: phase → process_name → production_class → items[]
+        formResults.forEach(item => {
+            const phase = item.life_cycle_phase;
+            const processName = processMap[item.process_id] || 'Unknown Process';
+            const prodClass = item.production_class || 'Unknown Production Class';
+
+            if (!groupedData[phase]) groupedData[phase] = {};
+            if (!groupedData[phase][processName]) groupedData[phase][processName] = {};
+            if (!groupedData[phase][processName][prodClass]) groupedData[phase][processName][prodClass] = [];
+
+            groupedData[phase][processName][prodClass].push(item);
+        });
+
+        // กำหนด phase ทั้งหมด (1–5)
+        const allPhases = [1, 2, 3, 4, 5];
+        const phase_name = ["การได้มาของวัตถุดิบ", "การผลิต", "การกระจายสินค้า", "การใช้งาน", "การจัดการซาก"];
+
+        // สร้างผลลัพธ์ groupedResult ครบทุก phase
+        const groupedResult = allPhases.map(phase => {
+            const processList = processNames.map(processName => {
+                const prodClassMap = groupedData[phase]?.[processName] || {};
+
+                // รวม item ทั้งหมด และใส่ production_class + process_name
+                const product = Object.entries(prodClassMap).flatMap(([prodClass, items]) =>
+                    items.map(item => ({
+                        ...item,
+                        production_class: prodClass,
+                        process_name: processName
+                    }))
+                );
+
+                return {
+                    process_name: processName,
+                    product: product // ไม่ต้องมี { items: [...] } อีกต่อไป
+                };
+            });
+
+            return {
+
+                life_cycle_phase: phase,
+                life_cycle_phase_name: phase_name[phase - 1],
+                process: processList
+            };
+        });
+
+        return {
+            form42: groupedResult,
+            report42Sum: report42SumResults
+        };
+        // return [groupedResult];
+    },
+
 };
 
 module.exports = form42Model;
