@@ -154,17 +154,17 @@ const Report = {
         const [result] = await db.query(query, [id]);
 
         const query1 = `
-                SELECT 
-                    (d.SEE_direct + SUM(e.SEE_direct)) AS SEE_direct_sum,
-                    (d.SEE_indirect + SUM(e.SEE_indirect)) AS SEE_indirect_sum,
-                    (d.SEE_total + SUM(e.SEE_total)) AS SEE_total_sum
-                FROM d_processes d
-                LEFT JOIN e_precursors e 
-                    ON d.report_id = e.report_id
-                WHERE d.report_id = ?
-                GROUP BY d.SEE_direct, d.SEE_indirect, d.SEE_total
-            `;
-        const [d_processes] = await db.query(query1, [id]);
+            SELECT 
+                (COALESCE(d.SEE_direct,0) + SUM(COALESCE(e.SEE_direct,0))) AS SEE_direct_sum,
+                (COALESCE(d.SEE_indirect,0) + SUM(COALESCE(e.SEE_indirect,0))) AS SEE_indirect_sum,
+                (COALESCE(d.SEE_total,0) + SUM(COALESCE(e.SEE_total,0))) AS SEE_total_sum
+            FROM d_processes d
+            LEFT JOIN e_precursors e 
+                ON d.report_id = e.report_id
+            WHERE d.report_id = ?
+            GROUP BY d.SEE_direct, d.SEE_indirect, d.SEE_total
+        `;
+        const [d_processes] = await db.query(query1, [id]); 
         const insertData = {
             'data': result,
             'sum': d_processes,
