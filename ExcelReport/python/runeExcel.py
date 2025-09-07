@@ -246,16 +246,7 @@ if form4_1.status_code == 200:
 else:
     print("เกิดข้อผิดพลาดในการเรียก API:", form4_1.status_code)
 
-form4_2 = requests.get(form4_2)
-if form4_2.status_code == 200:
-    data42 = form4_2.json()
-    form42 = data42["form42"]
-    company = data42["company"]
-    product = data42["product"]
-    process = data42["process"]
-    report42Sum = data42["report42Sum"][0]
-else:
-    print("เกิดข้อผิดพลาดในการเรียก API:", form4_2.status_code)
+
 
 
 response_form4_3 = requests.get(form4_3)
@@ -305,7 +296,8 @@ else:
 
 file_path = "ExcelReport/excel/form_CFP.xlsx"
 timestamp = datetime.now().strftime("%Y")
-output_path = "ExcelReport/output/"+timestamp+"_"+company["name"]+"_"+product["product_name_en"]+".xlsx"
+product_nameEng=productform1.get("product_name_en", "").replace(" ", "_")
+output_path = "ExcelReport/output/"+timestamp+"_"+company["name"]+"_"+product_nameEng+".xlsx"
 shutil.copy(file_path, output_path)
 process = data["process"]
 wb = load_workbook(file_path)
@@ -326,15 +318,15 @@ ws01 = wb["Fr-01"] # หรือระบุชื่อ sheet: wb["Sheet1"]
 
 ws01["J2"] = date_range
 ws01["F5"] = company.get("name", "")
-ws01["F6"] = product.get("product_name_th", "")
-ws01["J10"] = product.get("product_name_th", "")
-ws01["J11"] = product.get("product_name_en", "")
-ws01["J12"] = product.get("scope", "")
-ws01["J13"] = str(product.get("FU_value", "")) + " " + productform1.get("FU_th_name", "") if product.get("FU_value") and productform1.get("FU_th_name") else "0"
-ws01["J14"] = str(product.get("FU_value", "")) + " " + productform1.get("FU_en_name", "") if product.get("FU_value") and productform1.get("FU_en_name") else "0"
-ws01["J15"] = str(product.get("PU_value", "")) + " " + productform1.get("PU_th_name", "") if product.get("PU_value") and productform1.get("PU_th_name") else "0"
-ws01["J16"] = str(product.get("PU_value", "")) + " " +productform1.get("PU_en_name", "") if product.get("PU_value") and productform1.get("PU_en_name") else "0"
-ws01["J17"] = product.get("sale_ratio", "")
+ws01["F6"] = productform1.get("product_name_th", " ")
+ws01["J10"] = productform1.get("product_name_th", " ")
+ws01["J11"] = productform1.get("product_name_en", " ")
+ws01["J12"] = productform1.get("scope", " ")
+ws01["J13"] = str(productform1.get("FU_value", "")) + " " + productform1.get("FU_th_name", "") if productform1.get("FU_value") and productform1.get("FU_th_name") else "0"
+ws01["J14"] = str(productform1.get("FU_value", "")) + " " + productform1.get("FU_en_name", "") if productform1.get("FU_value") and productform1.get("FU_en_name") else "0"
+ws01["J15"] = str(productform1.get("PU_value", "")) + " " + productform1.get("PU_th_name", "") if productform1.get("PU_value") and productform1.get("PU_th_name") else "0"
+ws01["J16"] = str(productform1.get("PU_value", "")) + " " +productform1.get("PU_en_name", "") if productform1.get("PU_value") and productform1.get("PU_en_name") else "0"
+ws01["J17"] = productform1.get("sale_ratio", "")
 
 start_row = 19
 col = "I"
@@ -353,7 +345,7 @@ ws01["J25"] = submitted_date_thai
 # img.height = 300  
 # ws01.add_image(img, "B12")  
 
-image_url = product.get("product_photo", "")
+image_url = productform1.get("product_photo", "")
 
 if image_url and os.path.isfile(image_url):
     img = Image(image_url)
@@ -439,7 +431,7 @@ for col_range in ["B:E", "J:M", "O:Q"]:
 ws03 = wb["Fr-03"]   
 ws03["J1"] = date_range
 ws03["D2"] = company.get("name", "")
-ws03["D3"] = product.get("product_name_th", "")
+ws03["D3"] = productform1.get("product_name_th", "")
 
 
 row = 13 
@@ -664,7 +656,7 @@ for i in range(len(phase)):
     FU = 0  # กำหนดค่าเริ่มต้นของ FU
     Qemission = 0  # กำหนดค่าเริ่มต้นของ GHG Emission
     sum_emission=0
-    sum_lc_emission = report41Sum[columns[i]]
+    sum_lc_emission = report41Sum.get(columns[i], 0)
     for j in range(len(form41[i]["process"])):
         process = form41[i]["process"][j]
         process_start_row = row  # เก็บแถวเริ่มต้นของ process นี้
@@ -743,6 +735,18 @@ for i in range(len(phase)):
 
 
 ######## ---------------------------------------------------------------------
+
+form4_2 = requests.get(form4_2)
+if form4_2.status_code == 200:
+    data42 = form4_2.json()
+    form42 = data42["form42"]
+    company = data42["company"]
+    product = data42["product"]
+    process = data42["process"]
+    report42Sum = data42["report42Sum"][0]
+else:
+    print("เกิดข้อผิดพลาดในการเรียก API:", form4_2.status_code)
+
 
 ws42 = wb["Fr-04.2 "]
 fill_sum = PatternFill(start_color='FF808080', end_color='FF808080', fill_type='solid') 

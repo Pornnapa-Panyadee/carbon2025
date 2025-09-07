@@ -329,28 +329,28 @@ const form41Model = {
         const processQuery = 'SELECT process_id, process_name FROM processes WHERE product_id = ? ORDER BY `processes`.`ordering` ASC';
 
         const inputQuery = `
-    SELECT DISTINCT ip.input_process_id AS item_id, ip.input_name AS item_name, ip.input_unit AS item_unit,
-           ip.input_quantity AS item_quantity, ip.chemical_reaction AS chemical_reaction, ic.input_title, 'input' AS item_class
-    FROM input_processes ip
-    LEFT JOIN input_categories ic ON ip.input_title_id = ic.input_title_id
-    WHERE ip.process_id = ?
-  `;
+            SELECT DISTINCT ip.input_process_id AS item_id, ip.input_name AS item_name, ip.input_unit AS item_unit,
+                ip.input_quantity AS item_quantity, ip.chemical_reaction AS chemical_reaction, ic.input_title, 'input' AS item_class
+            FROM input_processes ip
+            LEFT JOIN input_categories ic ON ip.input_title_id = ic.input_title_id
+            WHERE ip.process_id = ?
+        `;
 
         const outputQuery = `
-    SELECT DISTINCT op.output_process_id AS item_id, op.output_name AS item_name, op.output_unit AS item_unit,
-           op.output_quantity AS item_quantity, 'output' AS item_class
-    FROM output_processes op
-    LEFT JOIN output_categories oc ON op.output_cat_id = oc.output_cat_id
-    WHERE op.process_id = ?
-  `;
+            SELECT DISTINCT op.output_process_id AS item_id, op.output_name AS item_name, op.output_unit AS item_unit,
+                op.output_quantity AS item_quantity, 'output' AS item_class
+            FROM output_processes op
+            LEFT JOIN output_categories oc ON op.output_cat_id = oc.output_cat_id
+            WHERE op.process_id = ?
+        `;
 
         const wastetQuery = `
-    SELECT DISTINCT op.waste_process_id AS item_id, op.waste_name AS item_name, op.waste_unit AS item_unit,
-           op.waste_qty AS item_quantity, 'waste' AS item_class
-    FROM waste_processes op
-    LEFT JOIN waste_categories oc ON op.waste_cat_id = oc.waste_cat_id
-    WHERE op.process_id = ?
-  `;
+            SELECT DISTINCT op.waste_process_id AS item_id, op.waste_name AS item_name, op.waste_unit AS item_unit,
+                op.waste_qty AS item_quantity, 'waste' AS item_class
+            FROM waste_processes op
+            LEFT JOIN waste_categories oc ON op.waste_cat_id = oc.waste_cat_id
+            WHERE op.process_id = ?
+        `;
 
         // 1. Company
         const [companyResults] = await db.query(companyQuery, [company_id]);
@@ -405,10 +405,11 @@ const form41Model = {
                 ).filter(Boolean); // ตัด null ออก
 
                 const [FU] = await db.query(
-                    `SELECT SUM(op.output_quantity) AS FU
-         FROM output_processes op
-         JOIN processes p ON op.process_id = p.process_id
-         WHERE op.finish_output = 1 AND p.product_id = ?`,
+                    `SELECT SUM(op.output_quantity) / COALESCE(pr.FU_value, 1) AS FU
+                        FROM output_processes op
+                        JOIN processes p ON op.process_id = p.process_id
+                        JOIN products pr ON p.product_id = pr.product_id
+                        WHERE op.finish_output = 1 AND p.product_id = ?`,
                     [product_id]
                 );
 
