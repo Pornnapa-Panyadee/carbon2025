@@ -1,19 +1,19 @@
 const express = require('express');
 const router = express.Router(); // Use router instead of app
-const authenticateToken = require('../Middlewares/auth');
+
 const { create, update, readperIDuser, readperID, deleteById, deleteByReportId, readsumaryperId, readDashboardPerId } = require('../../Controllers/cbam/report');
 
 // Province
-router.post('/report', create, authenticateToken);
-router.put('/report/:id', update, authenticateToken);
-router.get('/report/company/:id', readperIDuser, authenticateToken);
-router.get('/report/:id', readperID, authenticateToken);
-router.delete('/report/:id', deleteById, authenticateToken);
+router.post('/report', create);
+router.put('/report/:id', update);
+router.get('/report/company/:id', readperIDuser);
+router.get('/report/:id', readperID);
+router.delete('/report/:id', deleteById);
 
 
-router.delete('/report/del/:id', deleteByReportId, authenticateToken);
-router.get('/report/sumary/:id', readsumaryperId, authenticateToken);
-router.get('/report/dashboard/:company_id', readDashboardPerId, authenticateToken);
+router.delete('/report/del/:id', deleteByReportId);
+router.get('/report/sumary/:id', readsumaryperId);
+router.get('/report/dashboard/:company_id', readDashboardPerId);
 
 
 
