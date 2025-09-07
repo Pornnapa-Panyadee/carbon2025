@@ -4,7 +4,7 @@ const authenticateToken = require('../Middlewares/auth');
 
 const { read, list, create, update, remove, readByCompanyId, listCommentsByProduct } = require('../Controllers/company');
 
-router.post('/company', create);
+router.post('/company', authenticateToken, create);
 router.get('/company', authenticateToken, list);
 router.get('/company/:id', authenticateToken, read);
 router.put('/company/:id', authenticateToken, update);

@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router(); // Use router instead of app
+const authenticateToken = require('../Middlewares/auth');
 
 const { list, listAmp, listTumbon } = require('../Controllers/location');
 
