@@ -328,7 +328,7 @@ const adminModel = {
         return rows[0] || null;
     },
     updateUserId: async (userId, data) => {
-        const [rows] = await db.query('SELECT * FROM users WHERE user_id = ?', [user_id]);
+        const [rows] = await db.query('SELECT * FROM users WHERE user_id = ?', [userId]);
         if (rows.length === 0) return null;
 
         const user = rows[0];
@@ -351,7 +351,7 @@ const adminModel = {
             updatedEmail,
             updatedPassword,
             updatedStatus,
-            user_id
+            userId
         ]);
         return result;
     },
