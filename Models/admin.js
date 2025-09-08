@@ -308,11 +308,33 @@ const adminModel = {
             console.error("Delete error:", err);
             throw err;
         }
+    },
+    // User
+    createUser: async (data) => {
+        const query = 'INSERT INTO users SET ?';
+        const [result] = await db.query(query, data);
+        return result;
+    },
+    listUser: async () => {
+        const query = 'SELECT * FROM users';
+        const [rows] = await db.query(query);
+        return rows;
+    },
+    readUserId: async (userId) => {
+        const query = 'SELECT * FROM users WHERE user_id = ?';
+        const [rows] = await db.query(query, [userId]);
+        return rows[0] || null;
+    },
+    updateUserId: async (userId, data) => {
+        const query = 'UPDATE users SET ? WHERE user_id = ?';
+        const [result] = await db.query(query, [data, userId]);
+        return result.affectedRows > 0;
+    },
+    deleteUserId: async (userId) => {
+        const query = 'DELETE FROM users WHERE user_id = ?';
+        const [result] = await db.query(query, [userId]);
+        return result.affectedRows > 0;
     }
-
-
-
-
 };
 
 module.exports = adminModel;

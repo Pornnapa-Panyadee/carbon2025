@@ -5,7 +5,8 @@ const { listDashboard, listRound, createRound, listRoundId, updateRoundId, delet
     listPCR, createPCR, listPCRId, updatePCRId, deletePCRId,
     listIndustrial, createIndustrial, listIndustrialId, updateIndustrialId, deleteIndustrialId,
     listTGOef, createTGOef, listTGOefId, updateTGOefId, deleteTGOefId, listTGOefCategories, listTGOefSubCategories,
-    listCompanies, listCompanyId, deleteCompanyId
+    listCompanies, listCompanyId, deleteCompanyId,
+    createUser, listUser, readUserId, updateUserId, deleteUserId
 
 } = require('../Controllers/admin');
 
@@ -54,5 +55,13 @@ router.get('/admin/tgoefsubcategories', listTGOefSubCategories);
 router.get('/admin/companies', listCompanies);
 router.get('/admin/companies/:id', listCompanyId);
 router.delete('/admin/companies/:id', deleteCompanyId);
+
+
+// User
+router.post('/admin/users', createUser);
+router.get('/admin/users', listUser);
+router.get('/admin/users/:user_id', readUserId);
+router.put('/admin/users/:user_id', updateUserId);
+router.delete('/admin/users/:user_id', deleteUserId);
 
 module.exports = router;
