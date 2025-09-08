@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const db = require('../Config/db.js');
 
 const adminModel = {
@@ -311,8 +312,9 @@ const adminModel = {
     },
     // User
     createUser: async (data) => {
+        const hashedPassword = await bcrypt.hash(data.password, 10);
         const query = 'INSERT INTO users SET ?';
-        const [result] = await db.query(query, data);
+        const [result] = await db.query(query, { ...data, password: hashedPassword });
         return result;
     },
     listUser: async () => {
@@ -326,9 +328,32 @@ const adminModel = {
         return rows[0] || null;
     },
     updateUserId: async (userId, data) => {
-        const query = 'UPDATE users SET ? WHERE user_id = ?';
-        const [result] = await db.query(query, [data, userId]);
-        return result.affectedRows > 0;
+        const [rows] = await db.query('SELECT * FROM users WHERE user_id = ?', [user_id]);
+        if (rows.length === 0) return null;
+
+        const user = rows[0];
+        const updatedName = data.name ?? user.name;
+        const updatedEmail = data.email ?? user.email;
+        const updatedStatus = data.status ?? user.status;
+
+        let updatedPassword = user.password;
+        if (data.password) {
+            updatedPassword = await bcrypt.hash(data.password, 10);
+        }
+
+        const updateQuery = `
+                    UPDATE users
+                    SET name = ?, email = ?, password = ?, status = ?, updated_date = NOW()
+                    WHERE user_id = ?
+                `;
+        const [result] = await db.query(updateQuery, [
+            updatedName,
+            updatedEmail,
+            updatedPassword,
+            updatedStatus,
+            user_id
+        ]);
+        return result;
     },
     deleteUserId: async (userId) => {
         const query = 'DELETE FROM users WHERE user_id = ?';
