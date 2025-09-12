@@ -22,6 +22,12 @@ const auditorModel = {
         return rows;
     },
 
+    findByIdUser: async (user_id) => {
+        const [rows] = await db.query('SELECT * FROM auditors WHERE user_id = ?', [user_id]);
+        return rows[0] || null;
+    },
+
+
     findById: async (auditor_id) => {
         const [rows] = await db.query('SELECT * FROM auditors WHERE auditor_id = ?', [auditor_id]);
         return rows[0] || null;

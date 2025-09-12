@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../Models/user');
 const Company = require('../Models/company');
+const Auditor = require('../Models/auditor');
 
 // const JWT_SECRET = 'your_secret_key'; // ใช้ process.env.JWT_SECRET ใน production
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
@@ -29,6 +30,8 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
+        const auditor = await Auditor.findByIdUser(user.user_id);
+
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(401).json({ message: 'Invalid email or password' });
@@ -55,7 +58,8 @@ exports.login = async (req, res) => {
             expires_at: new Date(expirationTime).toISOString(),
             user,
             role,
-            company
+            company,
+            auditor
         });
     } catch (error) {
         console.error(error);

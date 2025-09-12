@@ -3,10 +3,9 @@ const router = express.Router(); // Use router instead of app
 
 const { read, list, create, update, remove, readAuditorReport,
     createComment, listComments, updateComment, deleteComment, readAuditorProductDetails,
-    updateStatusProduct
+    updateStatusProduct, getIdUser
 
 } = require('../Controllers/auditor');
-
 
 router.get('/auditor', list);
 router.get('/auditor/:auditor_id', read);
@@ -26,6 +25,10 @@ router.get('/auditor/product/:auditor_id/:product_id', readAuditorProductDetails
 
 // Update status product
 router.put('/auditor/product/status/:auditor_id/:product_id/:status_id', updateStatusProduct);
+
+
+// Export the router
+router.get('/auditor/user/:user_id', getIdUser);
 
 
 module.exports = router; // Export the router

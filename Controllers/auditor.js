@@ -1,5 +1,19 @@
 const Auditor = require('../Models/auditor');
 
+
+exports.getIdUser = async (req, res) => {
+    try {
+        const user_id = req.params.user_id;
+        const result = await Auditor.findByIdUser(user_id);
+        if (!result) return res.status(404).json({ message: 'Auditor not found' });
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+
+
 exports.read = async (req, res) => {
     try {
         const auditor_id = req.params.auditor_id;
