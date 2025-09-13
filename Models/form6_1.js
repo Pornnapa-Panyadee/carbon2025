@@ -41,21 +41,18 @@ const form61Model = {
         const r42 = result42[0] || {};
 
         // รวมค่าแต่ละฟิลด์ (ถ้าไม่มีให้ถือเป็น 0)
-        const sum_lc1_emission = (Number(r41.sum_lc1_emission) || 0) + (Number(r42.sum_lc1_emission) || 0);
-        const sum_lc2_emission = (Number(r41.sum_lc2_emission) || 0) + (Number(r42.sum_lc2_emission) || 0);
-        const sum_lc3_emission = (Number(r41.sum_lc3_emission) || 0) + (Number(r42.sum_lc3_emission) || 0);
-        const sum_lc4_emission = (Number(r41.sum_lc4_emission) || 0) + (Number(r42.sum_lc4_emission) || 0);
-        const sum_lc5_emission = (Number(r41.sum_lc5_emission) || 0) + (Number(r42.sum_lc5_emission) || 0);
+        const sum_lc1_emission = (Number(r41.sum_lc1_emission) || 0) + (Number(r42.lc1_transport_emission) || 0);
+        const sum_lc2_emission = (Number(r41.sum_lc2_emission) || 0) + (Number(r42.lc2_transport_emission) || 0);
+        const sum_lc3_emission = (Number(r41.sum_lc3_emission) || 0) + (Number(r42.lc3_transport_emission) || 0);
+        const sum_lc4_emission = (Number(r41.sum_lc4_emission) || 0) + (Number(r42.lc4_transport_emission) || 0);
+        const sum_lc5_emission = (Number(r41.sum_lc5_emission) || 0) + (Number(r42.lc5_transport_emission) || 0);
 
         return {
             sum_lc1_emission,
             sum_lc2_emission,
             sum_lc3_emission,
             sum_lc4_emission,
-            sum_lc5_emission,
-            total_emission: sum_lc1_emission + sum_lc2_emission + sum_lc3_emission + sum_lc4_emission + sum_lc5_emission,
-            r41,
-            r42
+            sum_lc5_emission
         };
     },
 };
