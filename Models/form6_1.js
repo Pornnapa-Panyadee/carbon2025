@@ -52,7 +52,10 @@ const form61Model = {
             sum_lc2_emission,
             sum_lc3_emission,
             sum_lc4_emission,
-            sum_lc5_emission
+            sum_lc5_emission,
+            total_emission: sum_lc1_emission + sum_lc2_emission + sum_lc3_emission + sum_lc4_emission + sum_lc5_emission,
+            r41,
+            r42
         };
     },
 };
