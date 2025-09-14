@@ -355,7 +355,13 @@ if image_url and os.path.isfile(image_url):
 
 ######## ---------------------------------------------------------------------
 ws02 = wb["Fr-02"]
-for i in range(len(process)):
+loop = productform1.get("scope", " ")
+if loop =="B2B":
+    loop_count = 2
+else:
+    loop_count = 5
+
+for i in range(loop_count):
     input_names = []
     row = 13 + (3 * i)
     row_next = row + 1
@@ -435,7 +441,16 @@ ws03["D3"] = productform1.get("product_name_th", "")
 
 
 row = 13 
-for i in range(len(process)):
+
+loop = productform1.get("scope", " ")
+p_loop=len(process)
+if loop =="B2B":
+    loop_count = p_loop-3
+else:
+    loop_count = p_loop
+
+
+for i in range(loop_count):
     input_names = []
     row_input = row
     row_input_offset = 0
