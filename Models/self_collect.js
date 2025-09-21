@@ -3,13 +3,22 @@ const db = require('../Config/db.js');
 
 const selfColModel = {
     create: async (data) => {
-        const sql = `
-        INSERT INTO self_collect_efs 
-        SET ?, 
-            created_date = NOW(), 
-            updated_date = NOW()
-    `;
+        const sql = `INSERT INTO self_collect_efs SET ?, created_date = NOW(), updated_date = NOW()`;
         const [result] = await db.query(sql, data);
+
+        // const dataOut = {
+        //     self_collect_id: result.insertId,
+        //     item_name: data.finish_output,
+        //     item_unit: data.output_unit,
+        //     item_qty: data.output_qut,
+        //     created_date: new Date(),
+        //     updated_date: new Date()
+        // };
+
+        // const sql1 = `INSERT INTO cfp_report43_selfcollect_efs SET ?`;
+
+        // await db.query(sql1, dataOut);
+
         return result;
     },
 
@@ -18,6 +27,20 @@ const selfColModel = {
                 INSERT INTO self_collect_efs SET ?, created_date = NOW(), updated_date = NOW()
             `;
         const [result] = await db.query(query, [data]);
+        const dataOut = {
+            self_collect_id: result.insertId,
+            item_name: data.finish_output,
+            item_type: "output",
+            item_unit: data.output_unit,
+            item_qty: data.output_qut,
+            created_date: new Date(),
+            updated_date: new Date()
+        };
+
+        const sql1 = `INSERT INTO cfp_report43_selfcollect_efs SET ?`;
+
+        await db.query(sql1, dataOut);
+
         return result;
     },
 
