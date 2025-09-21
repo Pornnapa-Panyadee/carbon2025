@@ -14,6 +14,6 @@ router.get('/company/product/:company_id', authenticateToken, readByCompanyId);
 
 
 // comment Review
-router.get('/company/comment/:auditor_id/:company_id/:product_id', listCommentsByProduct);
+router.get('/company/comment/:auditor_id/:company_id/:product_id', authenticateToken, listCommentsByProduct);
 
 module.exports = router; // Export the router

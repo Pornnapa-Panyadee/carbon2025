@@ -9,59 +9,60 @@ const { listDashboard, listRound, createRound, listRoundId, updateRoundId, delet
     createUser, listUser, readUserId, updateUserId, deleteUserId
 
 } = require('../Controllers/admin');
+const authenticateToken = require('../Middlewares/auth');
 
 // Dashboard
-router.get('/admin/dashboard', listDashboard);
+router.get('/admin/dashboard', listDashboard, authenticateToken);
 
 // Information
 // -- Round --
-router.get('/admin/rounds', listRound);
-router.post('/admin/rounds', createRound);
-router.get('/admin/rounds/:id', listRoundId);
-router.put('/admin/rounds/:id', updateRoundId);
-router.delete('/admin/rounds/:id', deleteRoundId);
+router.get('/admin/rounds', listRound, authenticateToken);
+router.post('/admin/rounds', createRound, authenticateToken);
+router.get('/admin/rounds/:id', listRoundId, authenticateToken);
+router.put('/admin/rounds/:id', updateRoundId, authenticateToken);
+router.delete('/admin/rounds/:id', deleteRoundId, authenticateToken);
 
 // -- Unit --
-router.get('/admin/units', listUnit);
-router.post('/admin/units', createUnit);
-router.get('/admin/units/:id', listUnitId);
-router.put('/admin/units/:id', updateUnitId);
-router.delete('/admin/units/:id', deleteUnitId);
+router.get('/admin/units', listUnit, authenticateToken);
+router.post('/admin/units', createUnit, authenticateToken);
+router.get('/admin/units/:id', listUnitId, authenticateToken);
+router.put('/admin/units/:id', updateUnitId, authenticateToken);
+router.delete('/admin/units/:id', deleteUnitId, authenticateToken);
 
 // -- PCR --
-router.get('/admin/pcrs', listPCR);
-router.post('/admin/pcrs', createPCR);
-router.get('/admin/pcrs/:id', listPCRId);
-router.put('/admin/pcrs/:id', updatePCRId);
-router.delete('/admin/pcrs/:id', deletePCRId);
+router.get('/admin/pcrs', listPCR, authenticateToken);
+router.post('/admin/pcrs', createPCR, authenticateToken);
+router.get('/admin/pcrs/:id', listPCRId, authenticateToken);
+router.put('/admin/pcrs/:id', updatePCRId, authenticateToken);
+router.delete('/admin/pcrs/:id', deletePCRId, authenticateToken);
 
 // -- Industrial --
-router.get('/admin/industrials', listIndustrial);
-router.post('/admin/industrials', createIndustrial);
-router.get('/admin/industrials/:id', listIndustrialId);
-router.put('/admin/industrials/:id', updateIndustrialId);
-router.delete('/admin/industrials/:id', deleteIndustrialId);
+router.get('/admin/industrials', listIndustrial, authenticateToken);
+router.post('/admin/industrials', createIndustrial, authenticateToken);
+router.get('/admin/industrials/:id', listIndustrialId, authenticateToken);
+router.put('/admin/industrials/:id', updateIndustrialId, authenticateToken);
+router.delete('/admin/industrials/:id', deleteIndustrialId, authenticateToken);
 
 // -- TGO --
-router.get('/admin/tgoef', listTGOef);
-router.post('/admin/tgoef', createTGOef);
-router.get('/admin/tgoef/:id', listTGOefId);
-router.put('/admin/tgoef/:id', updateTGOefId);
-router.delete('/admin/tgoef/:id', deleteTGOefId);
-router.get('/admin/tgoefcategories', listTGOefCategories);
-router.get('/admin/tgoefsubcategories', listTGOefSubCategories);
+router.get('/admin/tgoef', listTGOef, authenticateToken);
+router.post('/admin/tgoef', createTGOef, authenticateToken);
+router.get('/admin/tgoef/:id', listTGOefId, authenticateToken);
+router.put('/admin/tgoef/:id', updateTGOefId, authenticateToken);
+router.delete('/admin/tgoef/:id', deleteTGOefId, authenticateToken);
+router.get('/admin/tgoefcategories', listTGOefCategories, authenticateToken);
+router.get('/admin/tgoefsubcategories', listTGOefSubCategories, authenticateToken);
 
 //--Company--
-router.get('/admin/companies', listCompanies);
-router.get('/admin/companies/:id', listCompanyId);
-router.delete('/admin/companies/:id', deleteCompanyId);
+router.get('/admin/companies', listCompanies, authenticateToken);
+router.get('/admin/companies/:id', listCompanyId, authenticateToken);
+router.delete('/admin/companies/:id', deleteCompanyId, authenticateToken);
 
 
 // User
-router.post('/admin/users', createUser);
-router.get('/admin/users', listUser);
-router.get('/admin/users/:user_id', readUserId);
-router.put('/admin/users/:user_id', updateUserId);
-router.delete('/admin/users/:user_id', deleteUserId);
+router.post('/admin/users', createUser, authenticateToken);
+router.get('/admin/users', listUser, authenticateToken);
+router.get('/admin/users/:user_id', readUserId, authenticateToken);
+router.put('/admin/users/:user_id', updateUserId, authenticateToken);
+router.delete('/admin/users/:user_id', deleteUserId, authenticateToken);
 
 module.exports = router;

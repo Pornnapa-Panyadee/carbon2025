@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router(); // Use router instead of app
-
+authenticateToken = require('../Middlewares/auth');
 const { read, list, create, update, remove } = require('../Controllers/pcr');
 
-router.post('/pcr', create);
-router.get('/pcr', list);
-router.get('/pcr/:id', read);
-router.put('/pcr/:id', update);
-router.delete('pcr/:id', remove);
+router.post('/pcr', create, authenticateToken);
+router.get('/pcr', list, authenticateToken);
+router.get('/pcr/:id', read, authenticateToken);
+router.put('/pcr/:id', update, authenticateToken);
+router.delete('/pcr/:id', remove, authenticateToken);
 
 
 

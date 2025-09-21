@@ -7,6 +7,7 @@ const { read, read1, readall } = require('../Controllers/form1');
 
 
 
+
 router.get('/f1/:company_id/:product_id', read, authenticateToken);
 
 router.get('/f1/excel/:company_id/:product_id', read1, authenticateToken);

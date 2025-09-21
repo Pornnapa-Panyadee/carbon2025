@@ -9,33 +9,35 @@ const { read, create, update, remove, list,
     ListItemSCByProcess, deleteItemSCByProcess
 } = require('../Controllers/form_self_collect');
 
+const authenticateToken = require('../Middlewares/auth');
 
-router.post('/selfcollect/', create);
-router.get('/selfcollect/:id', read);
-router.put('/selfcollect/:id', update);
-router.delete('/selfcollect/:id', remove);
 
-router.get('/selfcollect/product/:company_id/:product_id', list);
+router.post('/selfcollect/', create, authenticateToken);
+router.get('/selfcollect/:id', read, authenticateToken);
+router.put('/selfcollect/:id', update, authenticateToken);
+router.delete('/selfcollect/:id', remove, authenticateToken);
 
-router.get('/selfcollect/list/:company_id', listselfcollect);
+router.get('/selfcollect/product/:company_id/:product_id', list, authenticateToken);
+
+router.get('/selfcollect/list/:company_id', listselfcollect, authenticateToken);
 
 // get list of name self collection data
-router.get('/selfcollect/list/:company_id/:product_id', listSelfCollectId);
-router.delete('/selfcollect/list/:company_id/:self_collect_id', deleteSelfCollect);
+router.get('/selfcollect/list/:company_id/:product_id', listSelfCollectId, authenticateToken);
+router.delete('/selfcollect/list/:company_id/:self_collect_id', deleteSelfCollect, authenticateToken);
 
 // Follow Process and input output data
-router.post('/selfcollect/process', createProcessSC);
-router.get('/selfcollect/process/:id', readProcessSCByID);
-router.put('/selfcollect/process/:id', updateProcessSCByID);
-router.delete('/selfcollect/process/:id', deleteProcessSCByID);
+router.post('/selfcollect/process', createProcessSC, authenticateToken);
+router.get('/selfcollect/process/:id', readProcessSCByID, authenticateToken);
+router.put('/selfcollect/process/:id', updateProcessSCByID, authenticateToken);
+router.delete('/selfcollect/process/:id', deleteProcessSCByID, authenticateToken);
 
-router.post('/selfcollect/process/item', createItemSC);
-router.get('/selfcollect/process/item/:id', readItemSCByID);
-router.put('/selfcollect/process/item/:id', updateItemSCByID);
-router.delete('/selfcollect/process/item/:id', deleteItemSCByID);
+router.post('/selfcollect/process/item', createItemSC, authenticateToken);
+router.get('/selfcollect/process/item/:id', readItemSCByID, authenticateToken);
+router.put('/selfcollect/process/item/:id', updateItemSCByID, authenticateToken);
+router.delete('/selfcollect/process/item/:id', deleteItemSCByID, authenticateToken);
 
-router.get('/selfcollect/process/list/:company_id/:id', ListItemSCByProcess);
+router.get('/selfcollect/process/list/:company_id/:id', ListItemSCByProcess, authenticateToken);
 
-router.delete('/selfcollect/process/list/:company_id/:id', deleteItemSCByProcess);
+router.delete('/selfcollect/process/list/:company_id/:id', deleteItemSCByProcess, authenticateToken);
 
 module.exports = router; // Export the router
