@@ -1,16 +1,16 @@
 const express = require('express');
 const router = express.Router(); // Use router instead of app
-
+const authenticateToken = require('../../Middlewares/auth');
 const { create, update, readperId, deleteById, readperIdreport, deleteByIdreport } = require('../../Controllers/cbam/d_goods');
 
 // Province
-router.post('/d_goods', create);
-router.put('/d_goods/:id', update);
-router.get('/d_goods/:id', readperId);
-router.delete('/d_goods/:id', deleteById);
+router.post('/d_goods', authenticateToken, create);
+router.put('/d_goods/:id', authenticateToken, update);
+router.get('/d_goods/:id', authenticateToken, readperId);
+router.delete('/d_goods/:id', authenticateToken, deleteById);
 
-router.get('/d_goods/report/:id', readperIdreport);
-router.delete('/d_goods/report/:id', deleteByIdreport);
+router.get('/d_goods/report/:id', authenticateToken, readperIdreport);
+router.delete('/d_goods/report/:id', authenticateToken, deleteByIdreport);
 
 
 
